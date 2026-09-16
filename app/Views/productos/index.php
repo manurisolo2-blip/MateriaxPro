@@ -1,0 +1,127 @@
+<?= view('templates/header', ['pageTitle' => $pageTitle ?? 'Inventario de Polímeros']) ?>
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+  <div>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: #ffffff;">Inventario de Polímeros Industriales</h1>
+    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+      Módulo funcional protegido: visualización de lotes de excedentes disponibles en la red.
+    </p>
+  </div>
+  <div>
+    <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary">
+      ➕ Publicar Nuevo Lote
+    </a>
+  </div>
+</div>
+
+<!-- Barra de Filtros y Búsqueda (GET nativo) -->
+<div class="card" style="margin-bottom: 1.5rem;">
+  <div class="card-body" style="padding: 1rem 1.25rem;">
+    <form action="<?= site_url('productos') ?>" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
+      <div style="flex: 2; min-width: 200px;">
+        <label for="q" class="form-label">Buscar por nombre o ubicación</label>
+        <input 
+          type="text" 
+          name="q" 
+          id="q" 
+          class="form-control" 
+          placeholder="Ej: Pellet, Río Tercero..." 
+          value="<?= esc($busqueda ?? '') ?>"
+        >
+      </div>
+
+      <div style="flex: 1; min-width: 180px;">
+        <label for="polimero" class="form-label">Tipo de Polímero</label>
+        <select name="polimero" id="polimero" class="form-select">
+          <option value="">Todos los polímeros</option>
+          <option value="Polietileno (PE)" <?= ($filtroActual === 'Polietileno (PE)') ? 'selected' : '' ?>>Polietileno (PE)</option>
+          <option value="Polipropileno (PP)" <?= ($filtroActual === 'Polipropileno (PP)') ? 'selected' : '' ?>>Polipropileno (PP)</option>
+          <option value="PVC" <?= ($filtroActual === 'PVC') ? 'selected' : '' ?>>PVC</option>
+          <option value="ABS" <?= ($filtroActual === 'ABS') ? 'selected' : '' ?>>ABS</option>
+          <option value="Nylon (PA)" <?= ($filtroActual === 'Nylon (PA)') ? 'selected' : '' ?>>Nylon (PA)</option>
+          <option value="PET" <?= ($filtroActual === 'PET') ? 'selected' : '' ?>>PET</option>
+        </select>
+      </div>
+
+      <div>
+        <button type="submit" class="btn btn-secondary">Filtrar</button>
+        <?php if (!empty($busqueda) || !empty($filtroActual)): ?>
+          <a href="<?= site_url('productos') ?>" class="btn btn-secondary" title="Limpiar filtros">Limpiar</a>
+        <?php endif; ?>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tabla del Módulo Funcional (CRUD) -->
+<div class="card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Material / Lote</th>
+          <th>Polímero</th>
+          <th>Cantidad</th>
+          <th>Precio / Kg</th>
+          <th>Ubicación</th>
+          <th>Empresa Oferente</th>
+          <th>Estado</th>
+          <th style="text-align: right;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php if (!empty($productos) && count($productos) > 0): ?>
+          <?php foreach ($productos as $p): ?>
+            <tr>
+              <td><strong style="color: var(--text-muted);">#<?= esc($p['id']) ?></strong></td>
+              <td>
+                <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="font-weight: 700; color: #ffffff;">
+                  <?= esc($p['nombre']) ?>
+                </a>
+              </td>
+              <td>
+                <span class="badge badge-polimero"><?= esc($p['tipo_polimero']) ?></span>
+              </td>
+              <td><strong><?= number_format((float)$p['cantidad_kg'], 0, ',', '.') ?></strong> kg</td>
+              <td>$<?= number_format((float)$p['precio_unitario'], 2, ',', '.') ?></td>
+              <td><?= esc($p['ubicacion']) ?></td>
+              <td><?= esc($p['empresa_nombre'] ?? 'Empresa Registrada') ?></td>
+              <td>
+                <?php 
+                  $badgeClass = 'badge-disponible';
+                  if ($p['estado'] === 'Reservado') $badgeClass = 'badge-reservado';
+                  if ($p['estado'] === 'Vendido') $badgeClass = 'badge-vendido';
+                ?>
+                <span class="badge <?= $badgeClass ?>"><?= esc($p['estado']) ?></span>
+              </td>
+              <td style="text-align: right; white-space: nowrap;">
+                <a href="<?= site_url('productos/ver/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Ver detalles">
+                  👁 Ver
+                </a>
+                <a href="<?= site_url('productos/editar/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Editar lote">
+                  ✏ Editar
+                </a>
+                <form action="<?= site_url('productos/eliminar/' . $p['id']) ?>" method="POST" style="display: inline-block;" onsubmit="return confirm('¿Confirma que desea eliminar este lote de material permanentemente?');">
+                  <?= csrf_field() ?>
+                  <button type="submit" class="btn btn-danger btn-sm" title="Eliminar lote">
+                    🗑
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+              <p style="font-size: 1.1rem; margin-bottom: 0.75rem;">No se encontraron lotes de polímeros que coincidan con la búsqueda.</p>
+              <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">Publicar el primer lote</a>
+            </td>
+          </tr>
+        <?php endif; ?>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<?= view('templates/footer') ?>
