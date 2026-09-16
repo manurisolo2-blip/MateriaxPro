@@ -7,11 +7,14 @@
 ---
 
 ## 1. Traducción del DER al Modelo Relacional
-
 A partir del Diagrama Entidad-Relación y aplicando las reglas de transformación relacional:
 1. Las entidades regulares se transforman en tablas relacionales.
 2. Cada atributo atómico pasa a ser una columna de la tabla.
 3. La relación **1 a N** entre `USUARIO` y `PRODUCTO` se resuelve propagando la clave primaria de la entidad del lado 1 (`USUARIO.id`) como clave foránea en la tabla del lado N (`PRODUCTOS.user_id`).
+
+> [!TIP]
+> **Visualización Gráfica en Draw.io:**  
+> Puedes ver y exportar este modelo en formato visual de tablas relacionales (con conectores Crow's Foot y tipos de datos de MySQL) en la **Pestaña 2 ("2. Modelo Relacional")** del archivo [`docs/DER_drawio.xml`](file:///c:/xampp/htdocs/MateriaxPro/docs/DER_drawio.xml).
 
 ---
 

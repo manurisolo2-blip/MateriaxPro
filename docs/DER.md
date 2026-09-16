@@ -91,8 +91,14 @@ erDiagram
 
 ---
 
-## 5. Apertura en Draw.io
-Se incluye el archivo vectorial [`docs/DER_drawio.xml`](file:///c:/xampp/htdocs/MateriaxPro/docs/DER_drawio.xml) en formato nativo de [Draw.io / diagrams.net](https://app.diagrams.net). Para abrirlo:
+## 5. Archivo Draw.io Oficial Multi-Pestaña
+El archivo [`docs/DER_drawio.xml`](file:///c:/xampp/htdocs/MateriaxPro/docs/DER_drawio.xml) contiene **2 páginas completas** listas para visualizar y editar en [Draw.io / diagrams.net](https://app.diagrams.net):
+
+1. **Pestaña 1: "1. DER (Entidad-Relación)"**: Diagrama Conceptual completo en notación Chen con entidades (`USUARIO`, `PRODUCTO`, `CATEGORIA_POLIMERO`), relaciones (`PUBLICA`, `CLASIFICA`), elipses de atributos, claves primarias subrayadas y cardinalidades mínimas/máximas `(1,1)` y `(0,N)`.
+2. **Pestaña 2: "2. Modelo Relacional (Tablas)"**: Diagrama Lógico/Físico de tablas con tipos de datos de MySQL (`INT`, `VARCHAR`, `DECIMAL`, `ENUM`), campos obligatorios, claves primarias (`PK`), claves foráneas (`FK`) y conectores relacionales de pata de gallo (*Crow's Foot* `1:N`) con regla `ON DELETE CASCADE`.
+
+### Cómo abrirlo en Draw.io:
 1. Ingresar a https://app.diagrams.net
 2. Seleccionar **Archivo > Abrir desde > Dispositivo**
 3. Cargar el archivo `docs/DER_drawio.xml`.
+4. En la parte inferior de Draw.io, cambiar entre las pestañas **1. DER** y **2. Modelo Relacional**.
