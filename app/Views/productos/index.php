@@ -102,12 +102,9 @@
                 <a href="<?= site_url('productos/editar/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Editar lote">
                   ✏ Editar
                 </a>
-                <form action="<?= site_url('productos/eliminar/' . $p['id']) ?>" method="POST" style="display: inline-block;" onsubmit="return confirm('¿Confirma que desea eliminar este lote de material permanentemente?');">
-                  <?= csrf_field() ?>
-                  <button type="submit" class="btn btn-danger btn-sm" title="Eliminar lote">
-                    🗑
-                  </button>
-                </form>
+                <a href="<?= site_url('productos/confirmar-eliminar/' . $p['id']) ?>" class="btn btn-danger btn-sm" title="Eliminar lote">
+                  🗑
+                </a>
               </td>
             </tr>
           <?php endforeach; ?>

@@ -60,7 +60,12 @@ El proyecto está estructurado estrictamente bajo el patrón arquitectónico **M
   - ➕ **Crear:** Formulario completo para registrar un lote.
   - 👁 **Ver Detalle:** Ficha técnica con cálculo de valor estimado del lote y datos de la empresa oferente.
   - ✏ **Editar:** Modificación de volúmenes, precios y especificaciones.
-  - 🗑 **Eliminar:** Baja física del lote con confirmación.
+  - 🗑 **Eliminar:** Baja del lote con pantalla de confirmación server-side en PHP puro (100% libre de JavaScript).
+
+### 6. Arquitectura 100% PHP y CSS Puro (Cero JavaScript)
+- El sistema opera sin ningún archivo `.js`, sin etiquetas `<script>` y sin manejadores de eventos en el cliente (`onsubmit`, `onclick`).
+- La interactividad, validaciones, confirmación de borrado y filtrado de catálogo se resuelven exclusivamente del lado del servidor mediante el patrón MVC de **CodeIgniter 4**.
+- Suite de pruebas automatizadas (`tests/unit/ZeroJavaScriptTest.php`) con 95+ aserciones que certifican la ausencia total de JavaScript en vistas, rutas y código fuente.
 
 ---
 

@@ -25,12 +25,9 @@
       <a href="<?= site_url('productos/editar/' . $producto['id']) ?>" class="btn btn-secondary btn-sm">
         ✏ Editar
       </a>
-      <form action="<?= site_url('productos/eliminar/' . $producto['id']) ?>" method="POST" onsubmit="return confirm('¿Está seguro de eliminar este lote permanentemente?');">
-        <?= csrf_field() ?>
-        <button type="submit" class="btn btn-danger btn-sm">
-          🗑 Eliminar
-        </button>
-      </form>
+      <a href="<?= site_url('productos/confirmar-eliminar/' . $producto['id']) ?>" class="btn btn-danger btn-sm">
+        🗑 Eliminar
+      </a>
     </div>
   </div>
 

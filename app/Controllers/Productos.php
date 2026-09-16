@@ -181,6 +181,29 @@ class Productos extends BaseController
     }
 
     /**
+     * 6.5 CONFIRMAR ELIMINACIÓN DE PRODUCTO (Flujo 100% PHP sin JavaScript)
+     */
+    public function confirmarEliminar($id = null)
+    {
+        if (empty($id)) {
+            return redirect()->to(site_url('productos'))->with('error', 'ID de producto inválido.');
+        }
+
+        $producto = $this->productoModel->select('productos.*, usuarios.nombre as empresa_nombre')
+                                        ->join('usuarios', 'usuarios.id = productos.user_id', 'left')
+                                        ->find($id);
+
+        if (!$producto) {
+            return redirect()->to(site_url('productos'))->with('error', 'El lote de material no existe o ya fue eliminado.');
+        }
+
+        return view('productos/confirmar_eliminar', [
+            'pageTitle' => 'Confirmar Eliminación de Lote #' . $id . ' | MateriaX',
+            'producto'  => $producto,
+        ]);
+    }
+
+    /**
      * 7. ELIMINAR PRODUCTO
      */
     public function eliminar($id = null)

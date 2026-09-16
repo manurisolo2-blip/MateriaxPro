@@ -25,5 +25,6 @@ $routes->group('productos', ['filter' => 'auth'], static function ($routes) {
     $routes->get('ver/(:num)', 'Productos::ver/$1');
     $routes->get('editar/(:num)', 'Productos::editar/$1');
     $routes->post('actualizar/(:num)', 'Productos::actualizar/$1');
+    $routes->get('confirmar-eliminar/(:num)', 'Productos::confirmarEliminar/$1');
     $routes->post('eliminar/(:num)', 'Productos::eliminar/$1');
 });

@@ -25,9 +25,24 @@
         <li class="nav-item">
           <a href="<?= site_url('/') ?>">Inicio</a>
         </li>
+        <li class="nav-item">
+          <a href="<?= site_url('/#ecosistema') ?>">Ecosistema</a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= site_url('/#polimeros') ?>">Polímeros</a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= site_url('/#seguridad') ?>">Seguridad</a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= site_url('/#metricas') ?>">Métricas</a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= site_url('/#contacto') ?>">Contacto</a>
+        </li>
         <?php if (session()->get('isLoggedIn')): ?>
           <li class="nav-item">
-            <a href="<?= site_url('productos') ?>">📦 Inventario de Polímeros</a>
+            <a href="<?= site_url('productos') ?>">📦 Inventario</a>
           </li>
           <li class="nav-item">
             <a href="<?= site_url('productos/crear') ?>">➕ Publicar Lote</a>

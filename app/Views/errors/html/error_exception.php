@@ -13,13 +13,11 @@ $errorId = uniqid('error', true);
     <title><?= esc($title) ?></title>
     <style>
         <?= preg_replace('#[\r\n\t ]+#', ' ', file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.css')) ?>
+        .content { display: block !important; }
+        .args-details[open] .args { display: block !important; }
     </style>
-
-    <script>
-        <?= file_get_contents(__DIR__ . DIRECTORY_SEPARATOR . 'debug.js') ?>
-    </script>
 </head>
-<body onload="init()">
+<body>
 
     <!-- Header -->
     <div class="header">
@@ -113,27 +111,29 @@ $errorId = uniqid('error', true);
                                 &nbsp;&nbsp;&mdash;&nbsp;&nbsp;<?= esc($row['class'] . $row['type'] . $row['function']) ?>
                                 <?php if (! empty($row['args'])) : ?>
                                     <?php $argsId = $errorId . 'args' . $index ?>
-                                    ( <a href="#" onclick="return toggle('<?= esc($argsId, 'attr') ?>');">arguments</a> )
-                                    <div class="args" id="<?= esc($argsId, 'attr') ?>">
-                                        <table cellspacing="0">
+                                    <details class="args-details" style="display: inline-block; margin-left: 0.35rem;">
+                                        <summary style="cursor: pointer; color: var(--brand-primary-color); display: inline;">arguments</summary>
+                                        <div class="args" id="<?= esc($argsId, 'attr') ?>" style="margin-top: 0.35rem;">
+                                            <table cellspacing="0">
 
-                                        <?php
-                                        $params = null;
-                                        // Reflection by name is not available for closure function
-                                        if (! str_ends_with($row['function'], '}')) {
-                                            $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
-                                            $params = $mirror->getParameters();
-                                        }
+                                            <?php
+                                            $params = null;
+                                            // Reflection by name is not available for closure function
+                                            if (! str_ends_with($row['function'], '}')) {
+                                                $mirror = isset($row['class']) ? new ReflectionMethod($row['class'], $row['function']) : new ReflectionFunction($row['function']);
+                                                $params = $mirror->getParameters();
+                                            }
 
-                                        foreach ($row['args'] as $key => $value) : ?>
-                                            <tr>
-                                                <td><code><?= esc(isset($params[$key]) ? '$' . $params[$key]->name : "#{$key}") ?></code></td>
-                                                <td><pre><?= esc(print_r($value, true)) ?></pre></td>
-                                            </tr>
-                                        <?php endforeach ?>
+                                            foreach ($row['args'] as $key => $value) : ?>
+                                                <tr>
+                                                    <td><code><?= esc(isset($params[$key]) ? '$' . $params[$key]->name : "#{$key}") ?></code></td>
+                                                    <td><pre><?= esc(print_r($value, true)) ?></pre></td>
+                                                </tr>
+                                            <?php endforeach ?>
 
-                                        </table>
-                                    </div>
+                                            </table>
+                                        </div>
+                                    </details>
                                 <?php else : ?>
                                     ()
                                 <?php endif; ?>
