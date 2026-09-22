@@ -17,7 +17,7 @@ class Auth extends BaseController
             if (session()->get('rol') === 'admin') {
                 return redirect()->to(site_url('admin'));
             }
-            return redirect()->to(site_url('productos'));
+            return redirect()->to(site_url('productos'))->with('error', 'Ya tienes una sesión activa como "' . esc(session()->get('nombre')) . '". Si deseas ingresar al Panel de Administrador (' . 'myadminpro@gmail.com' . '), primero debes hacer clic en "Cerrar Sesión".');
         }
 
         return view('auth/login', [
@@ -63,7 +63,8 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('error', 'Esta cuenta empresarial se encuentra inactiva o suspendida. Comuníquese con la administración.');
         }
 
-        if (!password_verify($password, $user['password'])) {
+        // Permitir verificación con y sin espacios accidentales por copia y pega
+        if (!password_verify($password, $user['password']) && !password_verify(trim($password), $user['password'])) {
             return redirect()->back()->withInput()->with('error', 'Contraseña incorrecta. Por favor verifica tus credenciales.');
         }
 
