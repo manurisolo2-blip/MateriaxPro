@@ -23,7 +23,7 @@ class Auth extends BaseController
     }
 
     /**
-     * Procesa las credenciales de inicio de sesión
+     * Procesa las credenciales de inicio de sesión con base de datos real
      */
     public function attemptLogin()
     {
@@ -34,7 +34,7 @@ class Auth extends BaseController
 
         $messages = [
             'email' => [
-                'required'    => 'El correo electrónico es requerido.',
+                'required'    => 'El correo electrónico corporativo es requerido.',
                 'valid_email' => 'Por favor ingresa un correo electrónico válido.',
             ],
             'password' => [
@@ -46,34 +46,48 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $email    = $this->request->getPost('email');
-        $password = $this->request->getPost('password');
+        $email    = strtolower(trim((string) $this->request->getPost('email')));
+        $password = (string) $this->request->getPost('password');
 
         $userModel = new UserModel();
         $user = $userModel->findByEmail($email);
 
         if (!$user) {
-            return redirect()->back()->withInput()->with('error', 'El correo electrónico no se encuentra registrado.');
+            return redirect()->back()->withInput()->with('error', 'El correo electrónico no se encuentra registrado en la red MateriaX.');
+        }
+
+        if (isset($user['estado']) && $user['estado'] === 'inactivo') {
+            return redirect()->back()->withInput()->with('error', 'Esta cuenta empresarial se encuentra inactiva o suspendida. Comuníquese con la administración.');
         }
 
         if (!password_verify($password, $user['password'])) {
-            return redirect()->back()->withInput()->with('error', 'Contraseña incorrecta. Por favor verifica tus datos.');
+            return redirect()->back()->withInput()->with('error', 'Contraseña incorrecta. Por favor verifica tus credenciales.');
         }
 
-        // Configuración de la sesión de usuario
+        // Actualizar marca temporal del último login en la base de datos
+        $userModel->updateLastLogin((int) $user['id']);
+
+        // Regenerar ID de sesión para prevenir fijación de sesión
+        session()->regenerate();
+
+        // Configuración completa de la sesión de usuario
         $sessionData = [
-            'user_id'    => $user['id'],
+            'user_id'    => (int) $user['id'],
             'nombre'     => $user['nombre'],
             'email'      => $user['email'],
             'cuit'       => $user['cuit'] ?? '',
             'telefono'   => $user['telefono'] ?? '',
-            'rol'        => $user['rol'],
+            'rubro'      => $user['rubro'] ?? '',
+            'ciudad'     => $user['ciudad'] ?? '',
+            'provincia'  => $user['provincia'] ?? '',
+            'direccion'  => $user['direccion'] ?? '',
+            'rol'        => $user['rol'] ?? 'empresa',
             'isLoggedIn' => true,
         ];
 
         session()->set($sessionData);
 
-        return redirect()->to(site_url('productos'))->with('success', '¡Bienvenido a MateriaX, ' . esc($user['nombre']) . '!');
+        return redirect()->to(site_url('productos'))->with('success', '¡Bienvenido/a de nuevo a MateriaX, ' . esc($user['nombre']) . '!');
     }
 
     /**
@@ -91,28 +105,52 @@ class Auth extends BaseController
     }
 
     /**
-     * Procesa el formulario de registro y crea el usuario
+     * Procesa el formulario de registro y persiste el nuevo usuario en MySQL
      */
     public function attemptRegister()
     {
         $rules = [
             'nombre'       => 'required|min_length[3]|max_length[100]',
             'email'        => 'required|valid_email|is_unique[usuarios.email]',
+            'cuit'         => 'required|min_length[10]|max_length[20]',
+            'telefono'     => 'required|min_length[6]|max_length[30]',
+            'rubro'        => 'required|max_length[100]',
+            'ciudad'       => 'required|max_length[100]',
+            'provincia'    => 'required|max_length[100]',
+            'direccion'    => 'required|max_length[150]',
             'password'     => 'required|min_length[6]',
             'pass_confirm' => 'required|matches[password]',
-            'cuit'         => 'permit_empty|min_length[10]|max_length[20]',
-            'telefono'     => 'permit_empty|min_length[6]|max_length[30]',
         ];
 
         $messages = [
             'nombre' => [
-                'required'   => 'El nombre o razón social es obligatorio.',
+                'required'   => 'La razón social o nombre de la empresa es obligatorio.',
                 'min_length' => 'El nombre debe tener al menos 3 caracteres.',
             ],
             'email' => [
-                'required'    => 'El correo electrónico es obligatorio.',
+                'required'    => 'El correo electrónico corporativo es obligatorio.',
                 'valid_email' => 'Debes ingresar un correo electrónico válido.',
-                'is_unique'   => 'Este correo electrónico ya está registrado en la red MateriaX.',
+                'is_unique'   => 'Este correo electrónico ya se encuentra registrado en MateriaX.',
+            ],
+            'cuit' => [
+                'required'   => 'El CUIT de la empresa es obligatorio.',
+                'min_length' => 'El CUIT debe tener al menos 10 caracteres (ej: 30-XXXXXXXX-X).',
+            ],
+            'telefono' => [
+                'required'   => 'El teléfono institucional de contacto es obligatorio.',
+                'min_length' => 'El teléfono debe tener al menos 6 caracteres.',
+            ],
+            'rubro' => [
+                'required' => 'Debe seleccionar el rubro o sector productivo principal.',
+            ],
+            'ciudad' => [
+                'required' => 'La ciudad o localidad de radicación es obligatoria.',
+            ],
+            'provincia' => [
+                'required' => 'La provincia es obligatoria.',
+            ],
+            'direccion' => [
+                'required' => 'El domicilio fiscal o de la planta es obligatorio.',
             ],
             'password' => [
                 'required'   => 'La contraseña es obligatoria.',
@@ -131,38 +169,51 @@ class Auth extends BaseController
         $userModel = new UserModel();
 
         $userData = [
-            'nombre'   => trim($this->request->getPost('nombre')),
-            'email'    => trim(strtolower($this->request->getPost('email'))),
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'cuit'     => trim($this->request->getPost('cuit') ?? ''),
-            'telefono' => trim($this->request->getPost('telefono') ?? ''),
-            'rol'      => 'empresa',
+            'nombre'       => trim((string) $this->request->getPost('nombre')),
+            'email'        => strtolower(trim((string) $this->request->getPost('email'))),
+            'password'     => password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT),
+            'cuit'         => trim((string) $this->request->getPost('cuit')),
+            'telefono'     => trim((string) $this->request->getPost('telefono')),
+            'rubro'        => trim((string) $this->request->getPost('rubro')),
+            'ciudad'       => trim((string) $this->request->getPost('ciudad')),
+            'provincia'    => trim((string) $this->request->getPost('provincia')),
+            'direccion'    => trim((string) $this->request->getPost('direccion')),
+            'rol'          => 'empresa',
+            'estado'       => 'activo',
+            'ultimo_login' => date('Y-m-d H:i:s'),
         ];
 
         $newUserId = $userModel->insert($userData);
 
         if (!$newUserId) {
-            return redirect()->back()->withInput()->with('error', 'Ocurrió un error al registrar el usuario en la base de datos.');
+            return redirect()->back()->withInput()->with('error', 'Ocurrió un error al registrar la cuenta en la base de datos.');
         }
 
-        // Iniciar sesión automáticamente al registrarse
+        // Regenerar ID de sesión
+        session()->regenerate();
+
+        // Iniciar sesión automáticamente tras el registro exitoso
         $sessionData = [
-            'user_id'    => $newUserId,
+            'user_id'    => (int) $newUserId,
             'nombre'     => $userData['nombre'],
             'email'      => $userData['email'],
             'cuit'       => $userData['cuit'],
             'telefono'   => $userData['telefono'],
+            'rubro'      => $userData['rubro'],
+            'ciudad'     => $userData['ciudad'],
+            'provincia'  => $userData['provincia'],
+            'direccion'  => $userData['direccion'],
             'rol'        => $userData['rol'],
             'isLoggedIn' => true,
         ];
 
         session()->set($sessionData);
 
-        return redirect()->to(site_url('productos'))->with('success', '¡Registro completado exitosamente! Tu cuenta empresarial está activa.');
+        return redirect()->to(site_url('productos'))->with('success', '¡Cuenta empresarial registrada exitosamente! Ya eres parte de la Red MateriaX.');
     }
 
     /**
-     * Cierre de sesión seguro
+     * Cierre de sesión seguro y destrucción de variables
      */
     public function logout()
     {

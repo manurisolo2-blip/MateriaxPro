@@ -16,6 +16,13 @@ $routes->get('register', 'Auth::register');
 $routes->post('register', 'Auth::attemptRegister');
 $routes->get('logout', 'Auth::logout');
 
+// Módulo de Gestión de Cuenta y Perfil (Protegido con 'auth')
+$routes->group('perfil', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'Perfil::index');
+    $routes->post('actualizar', 'Perfil::actualizar');
+    $routes->post('cambiar-password', 'Perfil::cambiarPassword');
+});
+
 // Módulo Funcional: CRUD de Entidad Secundaria (Productos)
 // Protegido estrictamente con el filtro de autenticación 'auth' (Solo visible para usuarios logueados)
 $routes->group('productos', ['filter' => 'auth'], static function ($routes) {

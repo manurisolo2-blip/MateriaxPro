@@ -47,19 +47,23 @@
           <li class="nav-item">
             <a href="<?= site_url('productos/crear') ?>">➕ Publicar Lote</a>
           </li>
+          <li class="nav-item">
+            <a href="<?= site_url('perfil') ?>">👤 Mi Cuenta</a>
+          </li>
         <?php endif; ?>
       </ul>
 
       <div class="nav-auth">
         <?php if (session()->get('isLoggedIn')): ?>
-          <div class="user-badge" title="Empresa conectada">
+          <a href="<?= site_url('perfil') ?>" class="user-badge" title="Ver mi cuenta empresarial" style="text-decoration: none;">
             <span class="status-dot"></span>
             <span><strong><?= esc(session()->get('nombre')) ?></strong></span>
-          </div>
-          <a href="<?= site_url('logout') ?>" class="btn btn-secondary btn-sm">Cerrar Sesión</a>
+          </a>
+          <a href="<?= site_url('perfil') ?>" class="btn btn-secondary btn-sm" title="Panel de cuenta empresarial">👤 Mi Cuenta</a>
+          <a href="<?= site_url('logout') ?>" class="btn btn-secondary btn-sm" title="Cerrar sesión de forma segura">Cerrar Sesión</a>
         <?php else: ?>
           <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm">Iniciar Sesión</a>
-          <a href="<?= site_url('register') ?>" class="btn btn-primary btn-sm">Registrarse</a>
+          <a href="<?= site_url('register') ?>" class="btn btn-primary btn-sm">Registrar Empresa</a>
         <?php endif; ?>
       </div>
     </div>

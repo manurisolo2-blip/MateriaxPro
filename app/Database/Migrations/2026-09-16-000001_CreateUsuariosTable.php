@@ -31,11 +31,29 @@ class CreateUsuariosTable extends Migration
             'cuit' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '20',
-                'null'       => true,
             ],
             'telefono' => [
                 'type'       => 'VARCHAR',
                 'constraint' => '30',
+            ],
+            'rubro' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+                'null'       => true,
+            ],
+            'ciudad' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+                'null'       => true,
+            ],
+            'provincia' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '100',
+                'null'       => true,
+            ],
+            'direccion' => [
+                'type'       => 'VARCHAR',
+                'constraint' => '150',
                 'null'       => true,
             ],
             'rol' => [
@@ -43,11 +61,20 @@ class CreateUsuariosTable extends Migration
                 'constraint' => '50',
                 'default'    => 'empresa',
             ],
+            'estado' => [
+                'type'       => 'ENUM',
+                'constraint' => ['activo', 'inactivo'],
+                'default'    => 'activo',
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true,
             ],
             'updated_at' => [
+                'type' => 'DATETIME',
+                'null' => true,
+            ],
+            'ultimo_login' => [
                 'type' => 'DATETIME',
                 'null' => true,
             ],

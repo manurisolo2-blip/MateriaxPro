@@ -22,11 +22,17 @@ Para el **Hito 1**, el sistema se compone de dos entidades nucleares:
 - **nombre** (Texto, hasta 100 caracteres): Nombre o razón social de la empresa.
 - **email** (Texto, hasta 150 caracteres, Único): Dirección de correo corporativo para login.
 - **password** (Texto, 255 caracteres): Hash criptográfico seguro (bcrypt) de la clave de acceso.
-- **cuit** (Texto, hasta 20 caracteres, Opcional): CUIT/CUIL de identificación fiscal de la entidad.
-- **telefono** (Texto, hasta 30 caracteres, Opcional): Línea o celular de contacto.
+- **cuit** (Texto, hasta 20 caracteres): CUIT de identificación fiscal de la entidad.
+- **telefono** (Texto, hasta 30 caracteres): Línea o celular institucional de contacto.
+- **rubro** (Texto, hasta 100 caracteres): Sector o rubro productivo (Inyección, Extrusión, Reciclado, etc.).
+- **ciudad** (Texto, hasta 100 caracteres): Ciudad o localidad de radicación.
+- **provincia** (Texto, hasta 100 caracteres): Provincia.
+- **direccion** (Texto, hasta 150 caracteres): Domicilio de planta o sede fiscal.
 - **rol** (Texto, hasta 50 caracteres): Perfil de usuario (por defecto: `'empresa'`).
-- **created_at** (Fecha y Hora): Fecha y hora en que se registró el usuario.
+- **estado** (Texto / Dominio: `activo`, `inactivo`): Estado operativo de la cuenta empresarial.
+- **created_at** (Fecha y Hora): Fecha y hora en que se registró la cuenta.
 - **updated_at** (Fecha y Hora): Última fecha de modificación del perfil.
+- **ultimo_login** (Fecha y Hora): Fecha y hora del último acceso exitoso.
 
 ### Entidad: `PRODUCTO` (Lote de Material)
 - **id** (Numérico, Entero, Clave Primaria - PK): Identificador unívoco del producto/lote publicado.

@@ -8,7 +8,7 @@ CREATE DATABASE IF NOT EXISTS `materiax_db` CHARACTER SET utf8mb4 COLLATE utf8mb
 USE `materiax_db`;
 
 -- ------------------------------------------------------------------------------
--- 1. TABLA: usuarios
+-- 1. TABLA: usuarios (Cuentas Empresariales Completas)
 -- ------------------------------------------------------------------------------
 DROP TABLE IF EXISTS `productos`;
 DROP TABLE IF EXISTS `usuarios`;
@@ -16,13 +16,19 @@ DROP TABLE IF EXISTS `usuarios`;
 CREATE TABLE `usuarios` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `nombre` VARCHAR(100) NOT NULL COMMENT 'Nombre completo o razón social de la empresa',
-  `email` VARCHAR(150) NOT NULL UNIQUE COMMENT 'Correo electrónico para login',
+  `email` VARCHAR(150) NOT NULL UNIQUE COMMENT 'Correo electrónico corporativo para login',
   `password` VARCHAR(255) NOT NULL COMMENT 'Contraseña cifrada con bcrypt (password_hash)',
-  `cuit` VARCHAR(20) NULL COMMENT 'CUIT de la empresa',
-  `telefono` VARCHAR(30) NULL COMMENT 'Teléfono de contacto institucional',
+  `cuit` VARCHAR(20) NOT NULL COMMENT 'CUIT de la empresa',
+  `telefono` VARCHAR(30) NOT NULL COMMENT 'Teléfono de contacto institucional',
+  `rubro` VARCHAR(100) NULL COMMENT 'Rubro o sector industrial',
+  `ciudad` VARCHAR(100) NULL COMMENT 'Ciudad o localidad',
+  `provincia` VARCHAR(100) NULL COMMENT 'Provincia',
+  `direccion` VARCHAR(150) NULL COMMENT 'Domicilio fiscal / planta',
   `rol` VARCHAR(50) NOT NULL DEFAULT 'empresa' COMMENT 'Rol del usuario (empresa, admin, etc.)',
+  `estado` ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo' COMMENT 'Estado operativo de la cuenta',
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ultimo_login` DATETIME NULL COMMENT 'Fecha y hora del último acceso exitoso'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------------------------
@@ -48,7 +54,7 @@ CREATE TABLE `productos` (
 -- ------------------------------------------------------------------------------
 
 -- Usuario Demo (Contraseña: admin123)
-INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `cuit`, `telefono`, `rol`, `created_at`, `updated_at`) 
+INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `cuit`, `telefono`, `rubro`, `ciudad`, `provincia`, `direccion`, `rol`, `estado`, `created_at`, `updated_at`, `ultimo_login`) 
 VALUES (
   1, 
   'Petroquímica Río Tercero S.A.', 
@@ -56,8 +62,14 @@ VALUES (
   '$2y$12$GSgxOxpOEIMf6piuA5Ss9uVNGSoyVARb7TgY7xr/RKiXf8lU9mUa6', 
   '30-50284912-8', 
   '+54 3571 42-1500', 
+  'Petroquímica & Polímeros',
+  'Río Tercero',
+  'Córdoba',
+  'Parque Industrial Química Sur, Lote 12',
   'empresa', 
+  'activo',
   NOW(), 
+  NOW(),
   NOW()
 );
 

@@ -29,11 +29,17 @@ Almacena las cuentas empresariales autorizadas para operar en la plataforma.
 | `nombre` | `VARCHAR(100)` | NO | | Razón social o nombre institucional |
 | `email` | `VARCHAR(150)` | NO | **UK** | Correo electrónico corporativo único |
 | `password` | `VARCHAR(255)` | NO | | Hash criptográfico bcrypt |
-| `cuit` | `VARCHAR(20)` | SÍ | | Identificación tributaria |
-| `telefono` | `VARCHAR(30)` | SÍ | | Teléfono de contacto |
+| `cuit` | `VARCHAR(20)` | NO | | Identificación tributaria (CUIT) |
+| `telefono` | `VARCHAR(30)` | NO | | Teléfono de contacto institucional |
+| `rubro` | `VARCHAR(100)` | SÍ | | Sector o rubro productivo |
+| `ciudad` | `VARCHAR(100)` | SÍ | | Ciudad o localidad de radicación |
+| `provincia` | `VARCHAR(100)` | SÍ | | Provincia |
+| `direccion` | `VARCHAR(150)` | SÍ | | Domicilio de planta o sede fiscal |
 | `rol` | `VARCHAR(50)` | NO | | Rol en el sistema (default: `'empresa'`) |
+| `estado` | `ENUM('activo','inactivo')` | NO | | Estado operativo de la cuenta |
 | `created_at` | `DATETIME` | SÍ | | Fecha y hora de alta |
 | `updated_at` | `DATETIME` | SÍ | | Fecha y hora de modificación |
+| `ultimo_login` | `DATETIME` | SÍ | | Fecha y hora del último acceso |
 
 ### Tabla: `productos` (Entidad Secundaria)
 Almacena los lotes de materiales y excedentes de polímeros industriales puestos en circulación.
@@ -56,7 +62,7 @@ Almacena los lotes de materiales y excedentes de polímeros industriales puestos
 
 ## 3. Notación Relacional Formal
 
-- **USUARIOS** (<u>id</u>, nombre, email, password, cuit, telefono, rol, created_at, updated_at)
+- **USUARIOS** (<u>id</u>, nombre, email, password, cuit, telefono, rubro, ciudad, provincia, direccion, rol, estado, created_at, updated_at, ultimo_login)
   - **PK:** `id`
   - **UK:** `email`
 

@@ -20,8 +20,8 @@
             name="email" 
             id="email" 
             class="form-control" 
-            value="<?= old('email', 'admin@materiax.com') ?>" 
-            placeholder="ejemplo@industria.com" 
+            value="<?= old('email') ?>" 
+            placeholder="contacto@empresa.com" 
             required 
             autofocus
           >
@@ -34,8 +34,7 @@
             name="password" 
             id="password" 
             class="form-control" 
-            value="admin123"
-            placeholder="Tu contraseña segura" 
+            placeholder="Tu contraseña de acceso" 
             required
           >
         </div>
@@ -44,13 +43,6 @@
           Iniciar Sesión
         </button>
       </form>
-
-      <!-- Nota de credenciales de prueba para el equipo docente -->
-      <div style="margin-top: 1.5rem; padding: 0.85rem; background-color: rgba(37, 99, 235, 0.08); border-radius: var(--radius-md); border: 1px solid rgba(37, 99, 235, 0.2); font-size: 0.82rem;">
-        <strong style="color: var(--color-accent);">Credenciales de Prueba (Demo Hito 1):</strong><br>
-        <strong>Usuario:</strong> <code>admin@materiax.com</code><br>
-        <strong>Clave:</strong> <code>admin123</code>
-      </div>
     </div>
 
     <div class="card-footer" style="text-align: center; font-size: 0.9rem;">

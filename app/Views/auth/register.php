@@ -1,17 +1,22 @@
 <?= view('templates/header', ['pageTitle' => 'Registro de Empresa | MateriaX']) ?>
 
-<div style="max-width: 560px; margin: 1.5rem auto;">
+<div style="max-width: 680px; margin: 1.5rem auto;">
   <div class="card">
     <div class="card-header" style="text-align: center; display: block;">
       <h2 class="card-title">Registro en la Red MateriaX</h2>
       <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 0.25rem;">
-        Crea tu cuenta empresarial para publicar y solicitar excedentes de polímeros
+        Crea tu cuenta empresarial para publicar, cotizar y solicitar excedentes de polímeros industriales
       </p>
     </div>
 
     <div class="card-body">
       <form action="<?= site_url('register') ?>" method="POST">
         <?= csrf_field() ?>
+
+        <!-- Sección 1: Identificación de la Empresa -->
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
+          1. Identificación Corporativa
+        </h3>
 
         <div class="form-group">
           <label for="nombre" class="form-label">Razón Social o Nombre de la Empresa *</label>
@@ -23,26 +28,13 @@
             value="<?= old('nombre') ?>" 
             placeholder="Ej: Industrias Plásticas del Centro S.A." 
             required
+            autofocus
           >
-        </div>
-
-        <div class="form-group">
-          <label for="email" class="form-label">Correo Electrónico Corporativo *</label>
-          <input 
-            type="email" 
-            name="email" 
-            id="email" 
-            class="form-control" 
-            value="<?= old('email') ?>" 
-            placeholder="contacto@industria.com" 
-            required
-          >
-          <p class="form-hint">Se utilizará para iniciar sesión y coordinar operaciones.</p>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="cuit" class="form-label">CUIT (Opcional)</label>
+            <label for="cuit" class="form-label">CUIT de la Empresa *</label>
             <input 
               type="text" 
               name="cuit" 
@@ -50,11 +42,49 @@
               class="form-control" 
               value="<?= old('cuit') ?>" 
               placeholder="30-XXXXXXXX-X"
+              required
             >
           </div>
 
           <div class="form-group">
-            <label for="telefono" class="form-label">Teléfono de Contacto</label>
+            <label for="rubro" class="form-label">Rubro / Sector Productivo *</label>
+            <select name="rubro" id="rubro" class="form-select" required>
+              <option value="">-- Seleccionar Rubro --</option>
+              <option value="Moldeo por Inyección" <?= (old('rubro') === 'Moldeo por Inyección') ? 'selected' : '' ?>>Moldeo por Inyección</option>
+              <option value="Extrusión de Película / Film" <?= (old('rubro') === 'Extrusión de Película / Film') ? 'selected' : '' ?>>Extrusión de Película / Film</option>
+              <option value="Reciclado & Granza" <?= (old('rubro') === 'Reciclado & Granza') ? 'selected' : '' ?>>Reciclado & Molienda / Granza</option>
+              <option value="Soplado de Cuerpos Huecos" <?= (old('rubro') === 'Soplado de Cuerpos Huecos') ? 'selected' : '' ?>>Soplado de Cuerpos Huecos / Bidones</option>
+              <option value="Compuestos & Masterbatch" <?= (old('rubro') === 'Compuestos & Masterbatch') ? 'selected' : '' ?>>Compuestos & Masterbatch</option>
+              <option value="Termoformado & Envases" <?= (old('rubro') === 'Termoformado & Envases') ? 'selected' : '' ?>>Termoformado & Envases</option>
+              <option value="Automotriz & Autopartes" <?= (old('rubro') === 'Automotriz & Autopartes') ? 'selected' : '' ?>>Automotriz & Autopartes</option>
+              <option value="Petroquímica & Resinas" <?= (old('rubro') === 'Petroquímica & Resinas') ? 'selected' : '' ?>>Petroquímica & Producción de Resinas</option>
+              <option value="Otro Sector Industrial" <?= (old('rubro') === 'Otro Sector Industrial') ? 'selected' : '' ?>>Otro Sector Industrial</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Sección 2: Contacto y Radicación -->
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1rem;">
+          2. Radicación & Datos de Contacto
+        </h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email" class="form-label">Correo Electrónico Corporativo *</label>
+            <input 
+              type="email" 
+              name="email" 
+              id="email" 
+              class="form-control" 
+              value="<?= old('email') ?>" 
+              placeholder="contacto@empresa.com" 
+              required
+            >
+            <p class="form-hint">Se utilizará para iniciar sesión en la plataforma.</p>
+          </div>
+
+          <div class="form-group">
+            <label for="telefono" class="form-label">Teléfono Institucional *</label>
             <input 
               type="text" 
               name="telefono" 
@@ -62,13 +92,64 @@
               class="form-control" 
               value="<?= old('telefono') ?>" 
               placeholder="+54 3571 XXXXXX"
+              required
             >
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="direccion" class="form-label">Domicilio de Planta o Sede Fiscal *</label>
+          <input 
+            type="text" 
+            name="direccion" 
+            id="direccion" 
+            class="form-control" 
+            value="<?= old('direccion') ?>" 
+            placeholder="Ej: Av. Industrial 1250, Parque Industrial" 
+            required
+          >
+        </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label for="password" class="form-label">Contraseña *</label>
+            <label for="ciudad" class="form-label">Ciudad / Localidad *</label>
+            <input 
+              type="text" 
+              name="ciudad" 
+              id="ciudad" 
+              class="form-control" 
+              value="<?= old('ciudad') ?>" 
+              placeholder="Ej: Río Tercero" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="provincia" class="form-label">Provincia *</label>
+            <select name="provincia" id="provincia" class="form-select" required>
+              <option value="">-- Seleccionar Provincia --</option>
+              <option value="Córdoba" <?= (old('provincia', 'Córdoba') === 'Córdoba') ? 'selected' : '' ?>>Córdoba</option>
+              <option value="Buenos Aires" <?= (old('provincia') === 'Buenos Aires') ? 'selected' : '' ?>>Buenos Aires</option>
+              <option value="Ciudad Autónoma de Buenos Aires" <?= (old('provincia') === 'Ciudad Autónoma de Buenos Aires') ? 'selected' : '' ?>>Ciudad Autónoma de Buenos Aires</option>
+              <option value="Santa Fe" <?= (old('provincia') === 'Santa Fe') ? 'selected' : '' ?>>Santa Fe</option>
+              <option value="Mendoza" <?= (old('provincia') === 'Mendoza') ? 'selected' : '' ?>>Mendoza</option>
+              <option value="Entre Ríos" <?= (old('provincia') === 'Entre Ríos') ? 'selected' : '' ?>>Entre Ríos</option>
+              <option value="Tucumán" <?= (old('provincia') === 'Tucumán') ? 'selected' : '' ?>>Tucumán</option>
+              <option value="San Luis" <?= (old('provincia') === 'San Luis') ? 'selected' : '' ?>>San Luis</option>
+              <option value="Salta" <?= (old('provincia') === 'Salta') ? 'selected' : '' ?>>Salta</option>
+              <option value="Otra Provincia" <?= (old('provincia') === 'Otra Provincia') ? 'selected' : '' ?>>Otra Provincia</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Sección 3: Credenciales de Seguridad -->
+        <h3 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1rem;">
+          3. Credenciales de Acceso
+        </h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password" class="form-label">Contraseña de Acceso *</label>
             <input 
               type="password" 
               name="password" 
@@ -92,14 +173,14 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
-          Registrar Empresa
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+          ✓ Completar Registro y Activar Cuenta
         </button>
       </form>
     </div>
 
     <div class="card-footer" style="text-align: center; font-size: 0.9rem;">
-      ¿Ya eres parte de MateriaX? 
+      ¿Ya tienes una cuenta empresarial en MateriaX? 
       <a href="<?= site_url('login') ?>" style="font-weight: 600;">Iniciar Sesión</a>
     </div>
   </div>
