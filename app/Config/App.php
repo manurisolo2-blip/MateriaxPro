@@ -199,4 +199,15 @@ class App extends BaseConfig
      * @see http://www.w3.org/TR/CSP/
      */
     public bool $CSPEnabled = false;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        // En Vercel o entornos cloud sin .env fijo, autodetectar el dominio
+        if (getenv('VERCEL') && isset($_SERVER['HTTP_HOST'])) {
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
+            $this->baseURL = $protocol . $_SERVER['HTTP_HOST'] . '/';
+        }
+    }
 }

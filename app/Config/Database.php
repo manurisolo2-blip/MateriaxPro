@@ -200,5 +200,30 @@ class Database extends Config
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
         }
+
+        // Si se ejecuta en el entorno serverless de Vercel y no se configuró un host MySQL externo
+        if (getenv('VERCEL') && empty(getenv('database.default.hostname')) && empty(getenv('DB_HOST'))) {
+            $this->default = [
+                'DSN'         => '',
+                'hostname'    => '',
+                'username'    => '',
+                'password'    => '',
+                'database'    => '/tmp/materiax_db.sqlite',
+                'DBDriver'    => 'SQLite3',
+                'DBPrefix'    => '',
+                'pConnect'    => false,
+                'DBDebug'     => true,
+                'swapPre'     => '',
+                'failover'    => [],
+                'foreignKeys' => true,
+                'busyTimeout' => 1000,
+                'synchronous' => null,
+                'dateFormat'  => [
+                    'date'     => 'Y-m-d',
+                    'datetime' => 'Y-m-d H:i:s',
+                    'time'     => 'H:i:s',
+                ],
+            ];
+        }
     }
 }
