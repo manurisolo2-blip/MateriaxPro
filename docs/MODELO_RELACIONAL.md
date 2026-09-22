@@ -36,7 +36,7 @@ Almacena las cuentas empresariales autorizadas para operar en la plataforma.
 | `provincia` | `VARCHAR(100)` | SÍ | | Provincia |
 | `direccion` | `VARCHAR(150)` | SÍ | | Domicilio de planta o sede fiscal |
 | `rol` | `VARCHAR(50)` | NO | | Rol en el sistema (default: `'empresa'`) |
-| `estado` | `ENUM('activo','inactivo')` | NO | | Estado operativo de la cuenta |
+| `estado` | `ENUM('pendiente','activo','inactivo','rechazado')` | NO | | Estado operativo y de auditoría de la cuenta |
 | `created_at` | `DATETIME` | SÍ | | Fecha y hora de alta |
 | `updated_at` | `DATETIME` | SÍ | | Fecha y hora de modificación |
 | `ultimo_login` | `DATETIME` | SÍ | | Fecha y hora del último acceso |

@@ -25,7 +25,7 @@ CREATE TABLE `usuarios` (
   `provincia` VARCHAR(100) NULL COMMENT 'Provincia',
   `direccion` VARCHAR(150) NULL COMMENT 'Domicilio fiscal / planta',
   `rol` VARCHAR(50) NOT NULL DEFAULT 'empresa' COMMENT 'Rol del usuario (empresa, admin, etc.)',
-  `estado` ENUM('activo', 'inactivo') NOT NULL DEFAULT 'activo' COMMENT 'Estado operativo de la cuenta',
+  `estado` ENUM('pendiente', 'activo', 'inactivo', 'rechazado') NOT NULL DEFAULT 'pendiente' COMMENT 'Estado operativo y de auditoría de la cuenta',
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `ultimo_login` DATETIME NULL COMMENT 'Fecha y hora del último acceso exitoso'

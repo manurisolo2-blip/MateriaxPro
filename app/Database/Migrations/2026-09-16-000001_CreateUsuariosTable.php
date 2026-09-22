@@ -63,8 +63,8 @@ class CreateUsuariosTable extends Migration
             ],
             'estado' => [
                 'type'       => 'ENUM',
-                'constraint' => ['activo', 'inactivo'],
-                'default'    => 'activo',
+                'constraint' => ['pendiente', 'activo', 'inactivo', 'rechazado'],
+                'default'    => 'pendiente',
             ],
             'created_at' => [
                 'type' => 'DATETIME',

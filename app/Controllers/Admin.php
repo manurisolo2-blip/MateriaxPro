@@ -18,25 +18,40 @@ class Admin extends BaseController
     }
 
     /**
-     * Dashboard principal del Administrador: Métricas y Listado de Empresas
+     * Dashboard principal del Administrador: Métricas, Bandeja de Auditoría y Empresas
      */
     public function index()
     {
-        $empresas = $this->userModel->where('rol !=', 'admin')
-                                    ->orderBy('created_at', 'DESC')
-                                    ->findAll();
+        // 1. Empresas pendientes de auditoría (prioridad)
+        $empresasPendientes = $this->userModel->where('rol !=', 'admin')
+                                              ->where('estado', 'pendiente')
+                                              ->orderBy('created_at', 'ASC')
+                                              ->findAll();
 
-        // Enriquecer cada empresa con la cantidad de lotes publicados
-        foreach ($empresas as &$empresa) {
-            $empresa['total_lotes'] = $this->productoModel->where('user_id', $empresa['id'])->countAllResults();
+        foreach ($empresasPendientes as &$ep) {
+            $ep['total_lotes'] = 0;
         }
-        unset($empresa);
+        unset($ep);
 
-        // Métricas del sistema
-        $totalEmpresas     = count($empresas);
-        $empresasActivas   = count(array_filter($empresas, fn($e) => $e['estado'] === 'activo'));
-        $empresasInactivas = count(array_filter($empresas, fn($e) => $e['estado'] === 'inactivo'));
-        $totalLotes        = $this->productoModel->countAllResults();
+        // 2. Empresas ya procesadas (activas, inactivas, rechazadas)
+        $empresasAuditadas = $this->userModel->where('rol !=', 'admin')
+                                            ->where('estado !=', 'pendiente')
+                                            ->orderBy('created_at', 'DESC')
+                                            ->findAll();
+
+        foreach ($empresasAuditadas as &$ea) {
+            $ea['total_lotes'] = $this->productoModel->where('user_id', $ea['id'])->countAllResults();
+        }
+        unset($ea);
+
+        // Métricas globales
+        $totalPendientes    = count($empresasPendientes);
+        $totalAuditadas     = count($empresasAuditadas);
+        $totalEmpresas      = $totalPendientes + $totalAuditadas;
+        $empresasActivas    = count(array_filter($empresasAuditadas, fn($e) => $e['estado'] === 'activo'));
+        $empresasInactivas  = count(array_filter($empresasAuditadas, fn($e) => $e['estado'] === 'inactivo'));
+        $empresasRechazadas = count(array_filter($empresasAuditadas, fn($e) => $e['estado'] === 'rechazado'));
+        $totalLotes         = $this->productoModel->countAllResults();
 
         // Sumatoria de volumen en KG
         $db = \Config\Database::connect();
@@ -44,14 +59,53 @@ class Admin extends BaseController
         $totalKg = $queryKg->getRow()->total_kg ?? 0;
 
         return view('admin/dashboard', [
-            'pageTitle'         => 'Panel de Administración | MateriaX',
-            'empresas'          => $empresas,
-            'totalEmpresas'     => $totalEmpresas,
-            'empresasActivas'   => $empresasActivas,
-            'empresasInactivas' => $empresasInactivas,
-            'totalLotes'        => $totalLotes,
-            'totalKg'           => (float) $totalKg,
+            'pageTitle'          => 'Panel de Administración y Auditoría | MateriaX',
+            'empresasPendientes' => $empresasPendientes,
+            'empresasAuditadas'  => $empresasAuditadas,
+            'totalPendientes'    => $totalPendientes,
+            'totalEmpresas'      => $totalEmpresas,
+            'empresasActivas'    => $empresasActivas,
+            'empresasInactivas'  => $empresasInactivas,
+            'empresasRechazadas' => $empresasRechazadas,
+            'totalLotes'         => $totalLotes,
+            'totalKg'            => (float) $totalKg,
         ]);
+    }
+
+    /**
+     * Aprueba una empresa en auditoría, otorgándole estado 'activo' para poder ingresar
+     */
+    public function aprobar($usuarioId)
+    {
+        $empresa = $this->userModel->find($usuarioId);
+
+        if (!$empresa || $empresa['rol'] === 'admin') {
+            return redirect()->to(site_url('admin'))->with('error', 'Empresa no encontrada o no sujeta a aprobación.');
+        }
+
+        $this->userModel->update($usuarioId, [
+            'estado' => 'activo',
+        ]);
+
+        return redirect()->to(site_url('admin'))->with('success', "¡Empresa \"{$empresa['nombre']}\" aprobada con éxito! Ya tiene habilitado el acceso comercial a la plataforma.");
+    }
+
+    /**
+     * Rechaza una solicitud de registro de empresa
+     */
+    public function rechazar($usuarioId)
+    {
+        $empresa = $this->userModel->find($usuarioId);
+
+        if (!$empresa || $empresa['rol'] === 'admin') {
+            return redirect()->to(site_url('admin'))->with('error', 'Empresa no encontrada o no sujeta a moderación.');
+        }
+
+        $this->userModel->update($usuarioId, [
+            'estado' => 'rechazado',
+        ]);
+
+        return redirect()->to(site_url('admin'))->with('success', "La solicitud de registro de \"{$empresa['nombre']}\" ha sido rechazada.");
     }
 
     /**
@@ -71,7 +125,7 @@ class Admin extends BaseController
             'estado' => $nuevoEstado,
         ]);
 
-        $accion = ($nuevoEstado === 'activo') ? 'activada' : 'suspendida/inactivada';
+        $accion = ($nuevoEstado === 'activo') ? 'reactivada' : 'suspendida/inactivada';
         return redirect()->to(site_url('admin'))->with('success', "La empresa \"{$empresa['nombre']}\" ha sido {$accion} correctamente.");
     }
 

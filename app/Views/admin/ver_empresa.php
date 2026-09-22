@@ -18,20 +18,44 @@
       </p>
     </div>
 
-    <div>
-      <!-- Formulario POST puro para cambiar estado (Cero JavaScript) -->
-      <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
-        <?= csrf_field() ?>
-        <?php if ($empresa['estado'] === 'activo'): ?>
+    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+      <?php if ($empresa['estado'] === 'pendiente'): ?>
+        <!-- Boton POST de aprobacion directa -->
+        <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
+          <?= csrf_field() ?>
+          <button type="submit" class="btn btn-primary" style="background: #059669; border-color: #10b981;">
+            ✓ Aprobar Empresa
+          </button>
+        </form>
+        <!-- Boton POST de rechazo -->
+        <form action="<?= site_url('admin/empresa/rechazar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
+          <?= csrf_field() ?>
+          <button type="submit" class="btn btn-secondary" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4);">
+            ✕ Rechazar Solicitud
+          </button>
+        </form>
+      <?php elseif ($empresa['estado'] === 'activo'): ?>
+        <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
+          <?= csrf_field() ?>
           <button type="submit" class="btn btn-secondary" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4);">
             ⏸️ Suspender Acceso
           </button>
-        <?php else: ?>
+        </form>
+      <?php elseif ($empresa['estado'] === 'inactivo'): ?>
+        <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
+          <?= csrf_field() ?>
           <button type="submit" class="btn btn-secondary" style="color: #4ade80; border-color: rgba(74, 222, 128, 0.4);">
-            ▶️ Habilitar / Activar Acceso
+            ▶️ Reactivar Acceso
           </button>
-        <?php endif; ?>
-      </form>
+        </form>
+      <?php elseif ($empresa['estado'] === 'rechazado'): ?>
+        <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
+          <?= csrf_field() ?>
+          <button type="submit" class="btn btn-secondary" style="color: #10b981; border-color: rgba(16, 185, 129, 0.4);">
+            ✓ Reconsiderar y Aprobar
+          </button>
+        </form>
+      <?php endif; ?>
     </div>
   </div>
 </div>
@@ -111,11 +135,19 @@
           Estado de la Cuenta
         </label>
         <div style="margin-top: 0.25rem;">
-          <?php if ($empresa['estado'] === 'activo'): ?>
-            <span class="badge badge-success">● Cuenta Activa y Operativa</span>
-          <?php else: ?>
+          <?php if ($empresa['estado'] === 'pendiente'): ?>
+            <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">
+              ⏳ En Etapa de Auditoría (Pendiente)
+            </span>
+          <?php elseif ($empresa['estado'] === 'activo'): ?>
+            <span class="badge badge-success">● Cuenta Habilitada y Operativa</span>
+          <?php elseif ($empresa['estado'] === 'rechazado'): ?>
             <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4);">
-              ● Cuenta Suspendida por Admin
+              ✕ Solicitud Rechazada por Auditoría
+            </span>
+          <?php else: ?>
+            <span class="badge" style="background: rgba(148, 163, 184, 0.2); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.4);">
+              ⏸️ Cuenta Suspendida por Admin
             </span>
           <?php endif; ?>
         </div>

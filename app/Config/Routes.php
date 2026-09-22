@@ -39,6 +39,8 @@ $routes->group('productos', ['filter' => 'auth'], static function ($routes) {
 // Módulo de Administración Exclusivo (Protegido estrictamente con el filtro 'admin')
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('/', 'Admin::index');
+    $routes->post('empresa/aprobar/(:num)', 'Admin::aprobar/$1');
+    $routes->post('empresa/rechazar/(:num)', 'Admin::rechazar/$1');
     $routes->post('empresa/cambiar-estado/(:num)', 'Admin::cambiarEstado/$1');
     $routes->get('empresa/(:num)', 'Admin::verEmpresa/$1');
     $routes->get('lotes', 'Admin::lotes');

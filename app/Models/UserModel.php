@@ -44,7 +44,7 @@ class UserModel extends Model
         'ciudad'    => 'permit_empty|max_length[100]',
         'provincia' => 'permit_empty|max_length[100]',
         'direccion' => 'permit_empty|max_length[150]',
-        'estado'    => 'in_list[activo,inactivo]',
+        'estado'    => 'in_list[pendiente,activo,inactivo,rechazado]',
     ];
 
     protected $validationMessages = [

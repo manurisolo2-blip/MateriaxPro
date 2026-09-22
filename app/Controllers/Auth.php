@@ -59,8 +59,17 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('error', 'El correo electrónico no se encuentra registrado en la red MateriaX.');
         }
 
-        if (isset($user['estado']) && $user['estado'] === 'inactivo') {
-            return redirect()->back()->withInput()->with('error', 'Esta cuenta empresarial se encuentra inactiva o suspendida. Comuníquese con la administración.');
+        // Verificación de estado de auditoría y operatividad
+        if (isset($user['estado'])) {
+            if ($user['estado'] === 'pendiente') {
+                return redirect()->back()->withInput()->with('error', 'Tu cuenta empresarial se encuentra en etapa de auditoría y pendiente de aprobación por el administrador. Podrás ingresar tan pronto como tus datos fiscales sean validados.');
+            }
+            if ($user['estado'] === 'rechazado') {
+                return redirect()->back()->withInput()->with('error', 'Tu solicitud de registro ha sido desestimada tras la auditoría fiscal. Comunícate con la administración.');
+            }
+            if ($user['estado'] === 'inactivo') {
+                return redirect()->back()->withInput()->with('error', 'Esta cuenta empresarial se encuentra inactiva o suspendida. Comuníquese con la administración.');
+            }
         }
 
         // Permitir verificación con y sin espacios accidentales por copia y pega
@@ -116,7 +125,7 @@ class Auth extends BaseController
     }
 
     /**
-     * Procesa el formulario de registro y persiste el nuevo usuario en MySQL
+     * Procesa el formulario de registro y persiste el nuevo usuario en MySQL en estado pendiente de auditoría
      */
     public function attemptRegister()
     {
@@ -190,8 +199,8 @@ class Auth extends BaseController
             'provincia'    => trim((string) $this->request->getPost('provincia')),
             'direccion'    => trim((string) $this->request->getPost('direccion')),
             'rol'          => 'empresa',
-            'estado'       => 'activo',
-            'ultimo_login' => date('Y-m-d H:i:s'),
+            'estado'       => 'pendiente',
+            'ultimo_login' => null,
         ];
 
         $newUserId = $userModel->insert($userData);
@@ -200,27 +209,8 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('error', 'Ocurrió un error al registrar la cuenta en la base de datos.');
         }
 
-        // Regenerar ID de sesión
-        session()->regenerate();
-
-        // Iniciar sesión automáticamente tras el registro exitoso
-        $sessionData = [
-            'user_id'    => (int) $newUserId,
-            'nombre'     => $userData['nombre'],
-            'email'      => $userData['email'],
-            'cuit'       => $userData['cuit'],
-            'telefono'   => $userData['telefono'],
-            'rubro'      => $userData['rubro'],
-            'ciudad'     => $userData['ciudad'],
-            'provincia'  => $userData['provincia'],
-            'direccion'  => $userData['direccion'],
-            'rol'        => $userData['rol'],
-            'isLoggedIn' => true,
-        ];
-
-        session()->set($sessionData);
-
-        return redirect()->to(site_url('productos'))->with('success', '¡Cuenta empresarial registrada exitosamente! Ya eres parte de la Red MateriaX.');
+        // Notificar y redirigir al login para esperar la auditoría del administrador
+        return redirect()->to(site_url('login'))->with('success', '¡Solicitud de registro recibida con éxito! Tu cuenta ha ingresado a la etapa de auditoría. El administrador revisará tus datos corporativos para habilitar tu acceso.');
     }
 
     /**

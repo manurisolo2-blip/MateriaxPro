@@ -29,7 +29,7 @@ Para el **Hito 1**, el sistema se compone de dos entidades nucleares:
 - **provincia** (Texto, hasta 100 caracteres): Provincia.
 - **direccion** (Texto, hasta 150 caracteres): Domicilio de planta o sede fiscal.
 - **rol** (Texto, hasta 50 caracteres): Perfil de usuario (por defecto: `'empresa'`).
-- **estado** (Texto / Dominio: `activo`, `inactivo`): Estado operativo de la cuenta empresarial.
+- **estado** (Texto / Dominio: `pendiente`, `activo`, `inactivo`, `rechazado`): Estado operativo y de auditoría de la cuenta empresarial.
 - **created_at** (Fecha y Hora): Fecha y hora en que se registró la cuenta.
 - **updated_at** (Fecha y Hora): Última fecha de modificación del perfil.
 - **ultimo_login** (Fecha y Hora): Fecha y hora del último acceso exitoso.
