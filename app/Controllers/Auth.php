@@ -7,6 +7,7 @@ use App\Models\UserModel;
 class Auth extends BaseController
 {
     protected $helpers = ['form', 'url'];
+    protected ?UserModel $userModel = null;
 
     /**
      * Muestra la vista de Inicio de Sesión
@@ -17,7 +18,7 @@ class Auth extends BaseController
             if (session()->get('rol') === 'admin') {
                 return redirect()->to(site_url('admin'));
             }
-            return redirect()->to(site_url('productos'))->with('error', 'Ya tienes una sesión activa como "' . esc(session()->get('nombre')) . '". Si deseas ingresar al Panel de Administrador (' . 'myadminpro@gmail.com' . '), primero debes hacer clic en "Cerrar Sesión".');
+            return redirect()->to(site_url('panel'));
         }
 
         return view('auth/login', [
@@ -52,7 +53,7 @@ class Auth extends BaseController
         $email    = strtolower(trim((string) $this->request->getPost('email')));
         $password = (string) $this->request->getPost('password');
 
-        $userModel = new UserModel();
+        $userModel = $this->userModel ?? new UserModel();
         $user = $userModel->findByEmail($email);
 
         if (!$user) {
@@ -104,7 +105,7 @@ class Auth extends BaseController
             return redirect()->to(site_url('admin'))->with('success', '¡Bienvenido al Panel de Administración de MateriaX, ' . esc($user['nombre']) . '!');
         }
 
-        return redirect()->to(site_url('productos'))->with('success', '¡Bienvenido/a de nuevo a MateriaX, ' . esc($user['nombre']) . '!');
+        return redirect()->to(site_url('panel'))->with('success', '¡Bienvenido/a a tu Panel de Empresa en MateriaX, ' . esc($user['nombre']) . '!');
     }
 
     /**
@@ -116,7 +117,7 @@ class Auth extends BaseController
             if (session()->get('rol') === 'admin') {
                 return redirect()->to(site_url('admin'));
             }
-            return redirect()->to(site_url('productos'));
+            return redirect()->to(site_url('panel'));
         }
 
         return view('auth/register', [

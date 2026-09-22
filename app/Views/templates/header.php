@@ -48,9 +48,13 @@
             <li class="nav-item">
               <a href="<?= site_url('admin/lotes') ?>">📋 Moderar Lotes</a>
             </li>
+          <?php else: ?>
+            <li class="nav-item">
+              <a href="<?= site_url('panel') ?>" style="color: #14b8a6; font-weight: 700;">📊 Mi Panel</a>
+            </li>
           <?php endif; ?>
           <li class="nav-item">
-            <a href="<?= site_url('productos') ?>">📦 Inventario</a>
+            <a href="<?= site_url('productos') ?>">📦 Mercado</a>
           </li>
           <li class="nav-item">
             <a href="<?= site_url('productos/crear') ?>">➕ Publicar Lote</a>
@@ -67,12 +71,16 @@
             <a href="<?= site_url('admin') ?>" class="btn btn-primary btn-sm" style="background: #0f766e; border-color: #14b8a6;" title="Ir al Panel de Administración">
               🛡️ Panel Admin
             </a>
+          <?php else: ?>
+            <a href="<?= site_url('panel') ?>" class="btn btn-primary btn-sm" style="background: #0f766e; border-color: #14b8a6;" title="Ir a Mi Panel de Empresa">
+              📊 Mi Panel
+            </a>
           <?php endif; ?>
           <a href="<?= site_url('perfil') ?>" class="user-badge" title="Ver mi cuenta" style="text-decoration: none;">
             <span class="status-dot"></span>
             <span><strong><?= esc(session()->get('nombre')) ?></strong></span>
           </a>
-          <a href="<?= site_url('perfil') ?>" class="btn btn-secondary btn-sm" title="Panel de cuenta empresarial">👤 Mi Cuenta</a>
+          <a href="<?= site_url('perfil') ?>" class="btn btn-secondary btn-sm" title="Panel de cuenta empresarial">👤 Perfil</a>
           <a href="<?= site_url('logout') ?>" class="btn btn-secondary btn-sm" title="Cerrar sesión de forma segura">Cerrar Sesión</a>
         <?php else: ?>
           <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm">Iniciar Sesión</a>

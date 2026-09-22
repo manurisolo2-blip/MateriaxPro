@@ -16,6 +16,9 @@ $routes->get('register', 'Auth::register');
 $routes->post('register', 'Auth::attemptRegister');
 $routes->get('logout', 'Auth::logout');
 
+// Panel de Control para Empresa Registrada (Protegido con 'auth')
+$routes->get('panel', 'Panel::index', ['filter' => 'auth']);
+
 // Módulo de Gestión de Cuenta y Perfil (Protegido con 'auth')
 $routes->group('perfil', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Perfil::index');

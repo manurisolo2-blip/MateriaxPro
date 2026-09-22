@@ -73,12 +73,21 @@
       <tbody>
         <?php if (!empty($productos) && count($productos) > 0): ?>
           <?php foreach ($productos as $p): ?>
-            <tr>
+            <?php 
+              $esPropio = ((int)($p['user_id'] ?? 0) === (int)session()->get('user_id'));
+              $esAdmin  = (session()->get('rol') === 'admin');
+            ?>
+            <tr style="<?= $esPropio ? 'background-color: rgba(20, 184, 166, 0.05);' : '' ?>">
               <td><strong style="color: var(--text-muted);">#<?= esc($p['id']) ?></strong></td>
               <td>
                 <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="font-weight: 700; color: #ffffff;">
                   <?= esc($p['nombre']) ?>
                 </a>
+                <?php if ($esPropio): ?>
+                  <span class="badge" style="background: rgba(20, 184, 166, 0.2); color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.4); font-size: 0.72rem; margin-left: 0.35rem;">
+                    Mi Lote
+                  </span>
+                <?php endif; ?>
               </td>
               <td>
                 <span class="badge badge-polimero"><?= esc($p['tipo_polimero']) ?></span>
@@ -96,15 +105,19 @@
                 <span class="badge <?= $badgeClass ?>"><?= esc($p['estado']) ?></span>
               </td>
               <td style="text-align: right; white-space: nowrap;">
-                <a href="<?= site_url('productos/ver/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Ver detalles">
-                  👁 Ver
-                </a>
-                <a href="<?= site_url('productos/editar/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Editar lote">
-                  ✏ Editar
-                </a>
-                <a href="<?= site_url('productos/confirmar-eliminar/' . $p['id']) ?>" class="btn btn-danger btn-sm" title="Eliminar lote">
-                  🗑
-                </a>
+                <div style="display: inline-flex; gap: 0.3rem; align-items: center;">
+                  <a href="<?= site_url('productos/ver/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Ver detalles y contacto">
+                    👁 Ver
+                  </a>
+                  <?php if ($esPropio || $esAdmin): ?>
+                    <a href="<?= site_url('productos/editar/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Editar lote propio">
+                      ✏ Editar
+                    </a>
+                    <a href="<?= site_url('productos/confirmar-eliminar/' . $p['id']) ?>" class="btn btn-danger btn-sm" title="Eliminar este lote">
+                      🗑
+                    </a>
+                  <?php endif; ?>
+                </div>
               </td>
             </tr>
           <?php endforeach; ?>

@@ -132,6 +132,13 @@ class Productos extends BaseController
             throw PageNotFoundException::forPageNotFound('El producto solicitado no existe.');
         }
 
+        // Control de Autorización: Solo el dueño del producto o un administrador pueden editarlo
+        $userId = (int) session()->get('user_id');
+        $userRol = session()->get('rol');
+        if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para editar publicaciones pertenecientes a otra empresa.');
+        }
+
         return view('productos/editar', [
             'pageTitle' => 'Editar: ' . esc($producto['nombre']) . ' | MateriaX',
             'producto'  => $producto,
@@ -150,6 +157,13 @@ class Productos extends BaseController
         $producto = $this->productoModel->find($id);
         if (!$producto) {
             return redirect()->to(site_url('productos'))->with('error', 'El producto no existe.');
+        }
+
+        // Control de Autorización: Solo el dueño del producto o un administrador pueden modificarlo
+        $userId = (int) session()->get('user_id');
+        $userRol = session()->get('rol');
+        if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para modificar publicaciones pertenecientes a otra empresa.');
         }
 
         $rules = [
@@ -197,6 +211,13 @@ class Productos extends BaseController
             return redirect()->to(site_url('productos'))->with('error', 'El lote de material no existe o ya fue eliminado.');
         }
 
+        // Control de Autorización: Solo el dueño del producto o un administrador pueden solicitar la eliminación
+        $userId = (int) session()->get('user_id');
+        $userRol = session()->get('rol');
+        if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para eliminar publicaciones pertenecientes a otra empresa.');
+        }
+
         return view('productos/confirmar_eliminar', [
             'pageTitle' => 'Confirmar Eliminación de Lote #' . $id . ' | MateriaX',
             'producto'  => $producto,
@@ -215,6 +236,13 @@ class Productos extends BaseController
         $producto = $this->productoModel->find($id);
         if (!$producto) {
             return redirect()->to(site_url('productos'))->with('error', 'El producto no existe o ya fue eliminado.');
+        }
+
+        // Control de Autorización: Solo el dueño del producto o un administrador pueden eliminarlo
+        $userId = (int) session()->get('user_id');
+        $userRol = session()->get('rol');
+        if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para eliminar publicaciones pertenecientes a otra empresa.');
         }
 
         $this->productoModel->delete($id);
