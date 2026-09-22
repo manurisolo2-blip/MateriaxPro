@@ -35,3 +35,13 @@ $routes->group('productos', ['filter' => 'auth'], static function ($routes) {
     $routes->get('confirmar-eliminar/(:num)', 'Productos::confirmarEliminar/$1');
     $routes->post('eliminar/(:num)', 'Productos::eliminar/$1');
 });
+
+// Módulo de Administración Exclusivo (Protegido estrictamente con el filtro 'admin')
+$routes->group('admin', ['filter' => 'admin'], static function ($routes) {
+    $routes->get('/', 'Admin::index');
+    $routes->post('empresa/cambiar-estado/(:num)', 'Admin::cambiarEstado/$1');
+    $routes->get('empresa/(:num)', 'Admin::verEmpresa/$1');
+    $routes->get('lotes', 'Admin::lotes');
+    $routes->post('lotes/eliminar/(:num)', 'Admin::eliminarLote/$1');
+});
+

@@ -73,6 +73,26 @@ VALUES (
   NOW()
 );
 
+-- Usuario Administrador Exclusivo (Email: myadminpro@gmail.com | Contraseña: Bautiprouwu123)
+INSERT INTO `usuarios` (`id`, `nombre`, `email`, `password`, `cuit`, `telefono`, `rubro`, `ciudad`, `provincia`, `direccion`, `rol`, `estado`, `created_at`, `updated_at`, `ultimo_login`) 
+VALUES (
+  2, 
+  'Administrador General MateriaX', 
+  'myadminpro@gmail.com', 
+  '$2y$12$Xj8.8AGGrUflhu4k3GtChuhgA3trDI6Zgpv7Eo77/fVfF25Z72J66', 
+  '20-00000000-0', 
+  '+54 3571 00-0000', 
+  'Administración Central',
+  'Río Tercero',
+  'Córdoba',
+  'Sede Central MateriaX',
+  'admin', 
+  'activo',
+  NOW(), 
+  NOW(),
+  NOW()
+);
+
 -- Productos Demo asociados al usuario 1
 INSERT INTO `productos` (`id`, `user_id`, `nombre`, `tipo_polimero`, `cantidad_kg`, `precio_unitario`, `ubicacion`, `descripcion`, `estado`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Pellet Polietileno Alta Densidad (HDPE)', 'Polietileno (PE)', 2500.00, 1850.50, 'Río Tercero, Córdoba', 'Pellet virgen recuperado de purga de soplado. Color natural, índice de fluidez 0.35 g/10min. Envasado en big bags de 1000 kg con control de humedad.', 'Disponible', NOW(), NOW()),

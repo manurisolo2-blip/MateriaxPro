@@ -504,6 +504,13 @@ a:hover {
   margin-top: 2rem;
 }
 
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
 .feature-box {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);

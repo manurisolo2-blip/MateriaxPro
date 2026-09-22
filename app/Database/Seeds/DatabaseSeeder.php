@@ -25,6 +25,31 @@ class DatabaseSeeder extends Seeder
             $userId = $demoUser['id'];
         }
 
+        // 1.1 Insertar Administrador General exclusivo
+        $adminUser = $userModel->where('email', 'myadminpro@gmail.com')->first();
+        if (!$adminUser) {
+            $userModel->insert([
+                'nombre'       => 'Administrador General MateriaX',
+                'email'        => 'myadminpro@gmail.com',
+                'password'     => password_hash('Bautiprouwu123', PASSWORD_BCRYPT),
+                'cuit'         => '20-00000000-0',
+                'telefono'     => '+54 3571 00-0000',
+                'rubro'        => 'Administración Central',
+                'ciudad'       => 'Río Tercero',
+                'provincia'    => 'Córdoba',
+                'direccion'    => 'Sede Central MateriaX',
+                'rol'          => 'admin',
+                'estado'       => 'activo',
+                'ultimo_login' => date('Y-m-d H:i:s'),
+            ]);
+        } else {
+            $userModel->update($adminUser['id'], [
+                'password' => password_hash('Bautiprouwu123', PASSWORD_BCRYPT),
+                'rol'      => 'admin',
+                'estado'   => 'activo',
+            ]);
+        }
+
         // 2. Insertar productos iniciales asociados al usuario demo
         $productoModel = new \App\Models\ProductoModel();
 

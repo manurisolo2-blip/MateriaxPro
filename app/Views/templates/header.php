@@ -41,6 +41,14 @@
           <a href="<?= site_url('/#contacto') ?>">Contacto</a>
         </li>
         <?php if (session()->get('isLoggedIn')): ?>
+          <?php if (session()->get('rol') === 'admin'): ?>
+            <li class="nav-item">
+              <a href="<?= site_url('admin') ?>" style="color: #14b8a6; font-weight: 700;">🛡️ Panel Admin</a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('admin/lotes') ?>">📋 Moderar Lotes</a>
+            </li>
+          <?php endif; ?>
           <li class="nav-item">
             <a href="<?= site_url('productos') ?>">📦 Inventario</a>
           </li>
@@ -55,7 +63,12 @@
 
       <div class="nav-auth">
         <?php if (session()->get('isLoggedIn')): ?>
-          <a href="<?= site_url('perfil') ?>" class="user-badge" title="Ver mi cuenta empresarial" style="text-decoration: none;">
+          <?php if (session()->get('rol') === 'admin'): ?>
+            <a href="<?= site_url('admin') ?>" class="btn btn-primary btn-sm" style="background: #0f766e; border-color: #14b8a6;" title="Ir al Panel de Administración">
+              🛡️ Panel Admin
+            </a>
+          <?php endif; ?>
+          <a href="<?= site_url('perfil') ?>" class="user-badge" title="Ver mi cuenta" style="text-decoration: none;">
             <span class="status-dot"></span>
             <span><strong><?= esc(session()->get('nombre')) ?></strong></span>
           </a>

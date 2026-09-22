@@ -14,6 +14,9 @@ class Auth extends BaseController
     public function login()
     {
         if (session()->get('isLoggedIn')) {
+            if (session()->get('rol') === 'admin') {
+                return redirect()->to(site_url('admin'));
+            }
             return redirect()->to(site_url('productos'));
         }
 
@@ -87,6 +90,10 @@ class Auth extends BaseController
 
         session()->set($sessionData);
 
+        if ($user['rol'] === 'admin') {
+            return redirect()->to(site_url('admin'))->with('success', '¡Bienvenido al Panel de Administración de MateriaX, ' . esc($user['nombre']) . '!');
+        }
+
         return redirect()->to(site_url('productos'))->with('success', '¡Bienvenido/a de nuevo a MateriaX, ' . esc($user['nombre']) . '!');
     }
 
@@ -96,6 +103,9 @@ class Auth extends BaseController
     public function register()
     {
         if (session()->get('isLoggedIn')) {
+            if (session()->get('rol') === 'admin') {
+                return redirect()->to(site_url('admin'));
+            }
             return redirect()->to(site_url('productos'));
         }
 
