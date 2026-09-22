@@ -1,0 +1,7 @@
+/vendor
+.git
+.github
+tests
+.env
+phpunit.dist.xml
+phpunit.xml

@@ -58,7 +58,19 @@ class Paths
     public function __construct()
     {
         if (getenv('VERCEL')) {
-            $this->writableDirectory = '/tmp';
+            $tmp = sys_get_temp_dir();
+            $baseWritable = (!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp';
+            $targetDir = rtrim($baseWritable, '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable';
+            if (!is_dir($targetDir)) {
+                @mkdir($targetDir, 0777, true);
+            }
+            foreach (['cache', 'logs', 'session', 'uploads', 'debugbar'] as $sub) {
+                $subDir = $targetDir . DIRECTORY_SEPARATOR . $sub;
+                if (!is_dir($subDir)) {
+                    @mkdir($subDir, 0777, true);
+                }
+            }
+            $this->writableDirectory = $targetDir;
         }
     }
 

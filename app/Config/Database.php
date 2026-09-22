@@ -203,12 +203,16 @@ class Database extends Config
 
         // Si se ejecuta en el entorno serverless de Vercel y no se configuró un host MySQL externo
         if (getenv('VERCEL') && empty(getenv('database.default.hostname')) && empty(getenv('DB_HOST'))) {
+            $tmp = sys_get_temp_dir();
+            $baseWritable = (!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp';
+            $dbPath = rtrim($baseWritable, '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable' . DIRECTORY_SEPARATOR . 'materiax_db.sqlite';
+
             $this->default = [
                 'DSN'         => '',
                 'hostname'    => '',
                 'username'    => '',
                 'password'    => '',
-                'database'    => '/tmp/materiax_db.sqlite',
+                'database'    => $dbPath,
                 'DBDriver'    => 'SQLite3',
                 'DBPrefix'    => '',
                 'pConnect'    => false,
