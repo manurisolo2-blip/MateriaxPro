@@ -21,13 +21,19 @@
       </div>
     </div>
 
-    <div style="display: flex; gap: 0.5rem;">
-      <a href="<?= site_url('productos/editar/' . $producto['id']) ?>" class="btn btn-secondary btn-sm">
-        ✏ Editar
-      </a>
-      <a href="<?= site_url('productos/confirmar-eliminar/' . $producto['id']) ?>" class="btn btn-danger btn-sm">
-        🗑 Eliminar
-      </a>
+    <?php 
+      $esPropio = ((int)($producto['user_id'] ?? 0) === (int)session()->get('user_id'));
+      $esAdmin  = (session()->get('rol') === 'admin');
+    ?>
+    <div style="display: flex; gap: 0.5rem; align-items: center;">
+      <?php if ($esPropio || $esAdmin): ?>
+        <a href="<?= site_url('productos/editar/' . $producto['id']) ?>" class="btn btn-secondary btn-sm" title="Editar ficha de lote">
+          ✏ Editar Lote
+        </a>
+        <a href="<?= site_url('productos/confirmar-eliminar/' . $producto['id']) ?>" class="btn btn-danger btn-sm" title="Eliminar publicación">
+          🗑 Dar de Baja
+        </a>
+      <?php endif; ?>
     </div>
   </div>
 

@@ -22,65 +22,57 @@
       </a>
 
       <ul class="nav-menu">
-        <li class="nav-item">
-          <a href="<?= site_url('/') ?>">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a href="<?= site_url('/#ecosistema') ?>">Ecosistema</a>
-        </li>
-        <li class="nav-item">
-          <a href="<?= site_url('/#polimeros') ?>">Polímeros</a>
-        </li>
-        <li class="nav-item">
-          <a href="<?= site_url('/#seguridad') ?>">Seguridad</a>
-        </li>
-        <li class="nav-item">
-          <a href="<?= site_url('/#metricas') ?>">Métricas</a>
-        </li>
-        <li class="nav-item">
-          <a href="<?= site_url('/#contacto') ?>">Contacto</a>
-        </li>
         <?php if (session()->get('isLoggedIn')): ?>
           <?php if (session()->get('rol') === 'admin'): ?>
             <li class="nav-item">
-              <a href="<?= site_url('admin') ?>" style="color: #14b8a6; font-weight: 700;">🛡️ Panel Admin</a>
+              <a href="<?= site_url('admin') ?>" class="active">🛡️ Panel Admin</a>
             </li>
             <li class="nav-item">
               <a href="<?= site_url('admin/lotes') ?>">📋 Moderar Lotes</a>
             </li>
+            <li class="nav-item">
+              <a href="<?= site_url('productos') ?>">📦 Mercado</a>
+            </li>
           <?php else: ?>
             <li class="nav-item">
-              <a href="<?= site_url('panel') ?>" style="color: #14b8a6; font-weight: 700;">📊 Mi Panel</a>
+              <a href="<?= site_url('panel') ?>" class="active">📊 Mi Panel</a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('productos') ?>">📦 Mercado</a>
+            </li>
+            <li class="nav-item">
+              <a href="<?= site_url('productos/crear') ?>">➕ Publicar Lote</a>
             </li>
           <?php endif; ?>
+        <?php else: ?>
           <li class="nav-item">
-            <a href="<?= site_url('productos') ?>">📦 Mercado</a>
+            <a href="<?= site_url('/') ?>">Inicio</a>
           </li>
           <li class="nav-item">
-            <a href="<?= site_url('productos/crear') ?>">➕ Publicar Lote</a>
+            <a href="<?= site_url('/#ecosistema') ?>">Ecosistema</a>
           </li>
           <li class="nav-item">
-            <a href="<?= site_url('perfil') ?>">👤 Mi Cuenta</a>
+            <a href="<?= site_url('/#polimeros') ?>">Polímeros</a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= site_url('/#seguridad') ?>">Seguridad</a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= site_url('/#metricas') ?>">Métricas</a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= site_url('/#contacto') ?>">Contacto</a>
           </li>
         <?php endif; ?>
       </ul>
 
       <div class="nav-auth">
         <?php if (session()->get('isLoggedIn')): ?>
-          <?php if (session()->get('rol') === 'admin'): ?>
-            <a href="<?= site_url('admin') ?>" class="btn btn-primary btn-sm" style="background: #0f766e; border-color: #14b8a6;" title="Ir al Panel de Administración">
-              🛡️ Panel Admin
-            </a>
-          <?php else: ?>
-            <a href="<?= site_url('panel') ?>" class="btn btn-primary btn-sm" style="background: #0f766e; border-color: #14b8a6;" title="Ir a Mi Panel de Empresa">
-              📊 Mi Panel
-            </a>
-          <?php endif; ?>
-          <a href="<?= site_url('perfil') ?>" class="user-badge" title="Ver mi cuenta" style="text-decoration: none;">
+          <a href="<?= site_url('perfil') ?>" class="user-badge" title="Ver perfil y datos corporativos" style="text-decoration: none;">
             <span class="status-dot"></span>
-            <span><strong><?= esc(session()->get('nombre')) ?></strong></span>
+            <span><?= esc(session()->get('nombre')) ?></span>
           </a>
-          <a href="<?= site_url('perfil') ?>" class="btn btn-secondary btn-sm" title="Panel de cuenta empresarial">👤 Perfil</a>
+          <a href="<?= site_url('perfil') ?>" class="btn btn-secondary btn-sm" title="Editar datos y contraseña">👤 Perfil</a>
           <a href="<?= site_url('logout') ?>" class="btn btn-secondary btn-sm" title="Cerrar sesión de forma segura">Cerrar Sesión</a>
         <?php else: ?>
           <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm">Iniciar Sesión</a>

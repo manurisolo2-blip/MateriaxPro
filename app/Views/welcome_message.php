@@ -7,8 +7,8 @@
   <div>
     <span class="hero-pill">Proyecto Página Web · Hito 1 · 6° B · ITRT</span>
     <h1 class="hero-heading" style="text-align: left; margin-bottom: 1rem;">
-      TRANSFORMAR EXCEDENTES EN <br>
-      <span style="color: var(--color-accent);">RECURSOS DE VALOR</span>
+      Transformar excedentes plásticos en <br>
+      <span style="color: var(--color-accent);">recursos industriales de valor</span>
     </h1>
     <p class="hero-desc" style="text-align: left; max-width: 580px; margin-bottom: 1.75rem;">
       Plataforma corporativa que conecta industrias y plantas manufactureras para publicar, solicitar y reutilizar excedentes de polímeros industriales (PE, PP, PVC, ABS, Nylon) con trazabilidad verificada, sesiones seguras y arquitectura MVC en CodeIgniter 4.
@@ -124,15 +124,15 @@
       </p>
       <ul class="role-list">
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Homologación de Empresas:</strong> Validación estricta de CUIT ante AFIP y poderes de representación legal.</span>
         </li>
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Moderación de Calidad:</strong> Control sobre fichas técnicas para asegurar lotes de polímeros verídicos.</span>
         </li>
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Trazabilidad de Masa:</strong> Supervisión de indicadores de impacto ecológico y kilogramos valorizados.</span>
         </li>
       </ul>
@@ -152,15 +152,15 @@
       </p>
       <ul class="role-list">
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Faceta Oferente:</strong> Publicación directa de excedentes, scraps limpios, granzas y pallets con ficha técnica oficial.</span>
         </li>
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Faceta Demandante:</strong> Consulta protegida y reserva de materias primas secundarias para reinyección en procesos.</span>
         </li>
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Trato Directo B2B:</strong> Datos de contacto corporativo e intercambio directo entre plantas productivas.</span>
         </li>
       </ul>
@@ -180,15 +180,15 @@
       </p>
       <ul class="role-list">
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Catálogo Estandarizado:</strong> Clasificación por tipo de polímero (PE, PP, PVC, ABS, PA, PET).</span>
         </li>
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Filtros por Origen:</strong> Búsqueda por ubicación geográfica y características mecánicas del lote.</span>
         </li>
         <li>
-          <span>🔹</span>
+          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Acceso Protegido:</strong> Datos de contacto y reserva reservados para miembros registrados con sesión iniciada.</span>
         </li>
       </ul>
