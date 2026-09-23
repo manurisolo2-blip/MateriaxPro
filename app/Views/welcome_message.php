@@ -4,7 +4,7 @@
      SECCIÓN 1: HERO SECTION ASIMÉTRICO (100% PHP & CSS PURO)
      ========================================================================== -->
 <section class="hero-wrapper" id="inicio">
-  <div>
+  <div class="hero-content">
     <span class="hero-pill">Proyecto Página Web · Hito 1 · 6° B · ITRT</span>
     <h1 class="hero-heading" style="text-align: left; margin-bottom: 1rem;">
       Transformar excedentes plásticos en <br>
