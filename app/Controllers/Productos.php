@@ -136,7 +136,7 @@ class Productos extends BaseController
         $userId = (int) session()->get('user_id');
         $userRol = session()->get('rol');
         if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
-            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para editar publicaciones pertenecientes a otra empresa.');
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: El lote #' . $id . ' pertenece a otra empresa. Sólo puedes editar publicaciones de tu propia autoría.');
         }
 
         return view('productos/editar', [
@@ -156,14 +156,14 @@ class Productos extends BaseController
 
         $producto = $this->productoModel->find($id);
         if (!$producto) {
-            return redirect()->to(site_url('productos'))->with('error', 'El producto no existe.');
+            return redirect()->to(site_url('productos'))->with('error', 'El producto solicitado no existe.');
         }
 
         // Control de Autorización: Solo el dueño del producto o un administrador pueden modificarlo
         $userId = (int) session()->get('user_id');
         $userRol = session()->get('rol');
         if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
-            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para modificar publicaciones pertenecientes a otra empresa.');
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: El lote #' . $id . ' pertenece a otra empresa. Sólo puedes modificar publicaciones de tu propia autoría.');
         }
 
         $rules = [
@@ -191,7 +191,7 @@ class Productos extends BaseController
 
         $this->productoModel->update($id, $data);
 
-        return redirect()->to(site_url('productos'))->with('success', '¡El producto fue actualizado con éxito!');
+        return redirect()->to(site_url('productos'))->with('success', '¡Los datos técnicos y comerciales del lote fueron actualizados con éxito!');
     }
 
     /**
@@ -200,7 +200,7 @@ class Productos extends BaseController
     public function confirmarEliminar($id = null)
     {
         if (empty($id)) {
-            return redirect()->to(site_url('productos'))->with('error', 'ID de producto inválido.');
+            return redirect()->to(site_url('productos'))->with('error', 'Identificador de lote inválido.');
         }
 
         $producto = $this->productoModel->select('productos.*, usuarios.nombre as empresa_nombre')
@@ -215,7 +215,7 @@ class Productos extends BaseController
         $userId = (int) session()->get('user_id');
         $userRol = session()->get('rol');
         if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
-            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para eliminar publicaciones pertenecientes a otra empresa.');
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: El lote #' . $id . ' pertenece a otra empresa. Sólo puedes dar de baja publicaciones de tu propia autoría.');
         }
 
         return view('productos/confirmar_eliminar', [
@@ -230,23 +230,23 @@ class Productos extends BaseController
     public function eliminar($id = null)
     {
         if (empty($id)) {
-            return redirect()->to(site_url('productos'))->with('error', 'ID de producto inválido.');
+            return redirect()->to(site_url('productos'))->with('error', 'Identificador de lote inválido.');
         }
 
         $producto = $this->productoModel->find($id);
         if (!$producto) {
-            return redirect()->to(site_url('productos'))->with('error', 'El producto no existe o ya fue eliminado.');
+            return redirect()->to(site_url('productos'))->with('error', 'El lote no existe o ya fue eliminado previamente.');
         }
 
         // Control de Autorización: Solo el dueño del producto o un administrador pueden eliminarlo
         $userId = (int) session()->get('user_id');
         $userRol = session()->get('rol');
         if ((int)$producto['user_id'] !== $userId && $userRol !== 'admin') {
-            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: No tienes permiso para eliminar publicaciones pertenecientes a otra empresa.');
+            return redirect()->to(site_url('productos'))->with('error', 'Acceso denegado: El lote #' . $id . ' pertenece a otra empresa. Sólo puedes eliminar publicaciones de tu propia autoría.');
         }
 
         $this->productoModel->delete($id);
 
-        return redirect()->to(site_url('productos'))->with('success', 'El lote de material fue eliminado correctamente.');
+        return redirect()->to(site_url('productos'))->with('success', 'El lote de material #' . $id . ' fue retirado y eliminado definitivamente de la red.');
     }
 }

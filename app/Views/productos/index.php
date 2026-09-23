@@ -123,9 +123,28 @@
           <?php endforeach; ?>
         <?php else: ?>
           <tr>
-            <td colspan="9" style="text-align: center; padding: 3rem; color: var(--text-secondary);">
-              <p style="font-size: 1.1rem; margin-bottom: 0.75rem;">No se encontraron lotes de polímeros que coincidan con la búsqueda.</p>
-              <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">Publicar el primer lote</a>
+            <td colspan="9" style="text-align: center; padding: 3rem 1.5rem; color: var(--text-secondary);">
+              <?php if (!empty($busqueda) || !empty($filtroActual)): ?>
+                <p style="font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">
+                  No se encontraron lotes de polímeros que coincidan con los filtros aplicados.
+                </p>
+                <p style="font-size: 0.92rem; margin-bottom: 1.25rem;">
+                  Intenta modificando los términos de búsqueda o restableciendo los filtros de polímero.
+                </p>
+                <a href="<?= site_url('productos') ?>" class="btn btn-secondary btn-sm">
+                  Limpiar Filtros de Búsqueda
+                </a>
+              <?php else: ?>
+                <p style="font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">
+                  No hay lotes de polímeros disponibles en el inventario actualmente.
+                </p>
+                <p style="font-size: 0.92rem; margin-bottom: 1.25rem;">
+                  Sé el primero en circular excedentes o mermas plásticas para la industria de la red.
+                </p>
+                <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">
+                  ➕ Publicar Primer Lote
+                </a>
+              <?php endif; ?>
             </td>
           </tr>
         <?php endif; ?>

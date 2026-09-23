@@ -262,22 +262,22 @@
                   <?php if ($empresa['estado'] === 'activo'): ?>
                     <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Pausar cuenta">
-                        Pausar
+                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Pausar temporalmente acceso de la empresa">
+                        ⏸ Pausar
                       </button>
                     </form>
                   <?php elseif ($empresa['estado'] === 'inactivo'): ?>
                     <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #16a34a;" title="Reactivar cuenta">
-                        Reactivar
+                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #16a34a;" title="Reactivar acceso comercial de la empresa">
+                        ▶ Reactivar
                       </button>
                     </form>
                   <?php elseif ($empresa['estado'] === 'rechazado'): ?>
                     <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #059669;" title="Reconsiderar y habilitar">
-                        Aprobar
+                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #059669;" title="Reconsiderar y autorizar ingreso">
+                        ✓ Aprobar
                       </button>
                     </form>
                   <?php endif; ?>
@@ -287,8 +287,14 @@
           <?php endforeach; ?>
         <?php else: ?>
           <tr>
-            <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-              No hay empresas procesadas registradas aún.
+            <td colspan="9" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary);">
+              <span style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">🏢</span>
+              <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">
+                No hay empresas procesadas registradas aún.
+              </p>
+              <div style="font-size: 0.85rem; color: var(--text-muted);">
+                Las cuentas aprobadas, suspendidas o rechazadas figurarán en este registro histórico.
+              </div>
             </td>
           </tr>
         <?php endif; ?>

@@ -3,14 +3,14 @@
 <div style="max-width: 650px; margin: 2rem auto;">
   <div style="margin-bottom: 1.25rem;">
     <a href="<?= site_url('productos') ?>" style="color: var(--text-secondary); font-size: 0.9rem;">
-      &larr; Cancelar y volver al inventario
+      &larr; Conservar lote y volver al inventario
     </a>
   </div>
 
   <div class="card" style="border-color: rgba(239, 68, 68, 0.4);">
     <div class="card-header" style="background-color: rgba(239, 68, 68, 0.12); border-bottom-color: rgba(239, 68, 68, 0.3);">
       <h2 class="card-title" style="color: #f87171; display: flex; align-items: center; gap: 0.6rem;">
-        <span>⚠️</span> Confirmar Eliminación de Lote
+        <span>⚠️</span> Confirmar Eliminación Definitiva de Lote
       </h2>
     </div>
 
@@ -57,12 +57,12 @@
       <form action="<?= site_url('productos/eliminar/' . $producto['id']) ?>" method="POST" style="display: flex; gap: 1rem; flex-wrap: wrap;">
         <?= csrf_field() ?>
 
-        <button type="submit" class="btn btn-danger" style="flex: 1; min-width: 200px;">
-          🗑 Sí, Eliminar Permanentemente
+        <button type="submit" class="btn btn-danger" style="flex: 1; min-width: 240px;">
+          🗑 Eliminar Lote Definitivamente de la Red
         </button>
 
         <a href="<?= site_url('productos/ver/' . $producto['id']) ?>" class="btn btn-secondary" style="text-align: center;">
-          Cancelar
+          ← Conservar Lote y Volver
         </a>
       </form>
     </div>

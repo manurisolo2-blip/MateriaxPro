@@ -29,6 +29,7 @@
             placeholder="Ej: Pellet Polietileno Alta Densidad (HDPE) Recuperado" 
             required
           >
+          <span class="form-hint">Nombre técnico descriptivo del polímero o excedente (ej: pellet, scrap de inyección, granza reciclada).</span>
         </div>
 
         <div class="form-row">
@@ -43,6 +44,7 @@
               <option value="Nylon (PA)" <?= (old('tipo_polimero') === 'Nylon (PA)') ? 'selected' : '' ?>>Nylon / Poliamida (PA)</option>
               <option value="PET" <?= (old('tipo_polimero') === 'PET') ? 'selected' : '' ?>>Polietileno Tereftalato (PET)</option>
             </select>
+            <span class="form-hint">Familia química según código de identificación de resinas (RIC).</span>
           </div>
 
           <div class="form-group">
@@ -52,12 +54,13 @@
               <option value="Reservado" <?= (old('estado') === 'Reservado') ? 'selected' : '' ?>>Reservado</option>
               <option value="Vendido" <?= (old('estado') === 'Vendido') ? 'selected' : '' ?>>Vendido</option>
             </select>
+            <span class="form-hint">Disponibilidad para cotización o retiro inmediato.</span>
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="cantidad_kg" class="form-label">Cantidad Disponible (en Kilogramos) *</label>
+            <label for="cantidad_kg" class="form-label">Volumen Disponible (en Kilogramos) *</label>
             <input 
               type="number" 
               step="0.01" 
@@ -68,10 +71,11 @@
               placeholder="Ej: 1500" 
               required
             >
+            <span class="form-hint">Peso neto total en kg listo para pesaje en báscula y despacho logístico.</span>
           </div>
 
           <div class="form-group">
-            <label for="precio_unitario" class="form-label">Precio Unitario ($ por Kg) *</label>
+            <label for="precio_unitario" class="form-label">Precio Unitario ($ ARS por Kilogramo) *</label>
             <input 
               type="number" 
               step="0.01" 
@@ -82,11 +86,12 @@
               placeholder="Ej: 1450.00" 
               required
             >
+            <span class="form-hint">Valor neto en pesos argentinos ($ ARS) por kilogramo, sin flete ni IVA.</span>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="ubicacion" class="form-label">Ubicación de Origen / Planta Industrial *</label>
+          <label for="ubicacion" class="form-label">Ubicación de Origen / Planta de Retiro *</label>
           <input 
             type="text" 
             name="ubicacion" 
@@ -96,25 +101,27 @@
             placeholder="Ej: Parque Industrial Río Tercero, Córdoba" 
             required
           >
+          <span class="form-hint">Planta fabril, parque industrial o depósito habilitado para la carga.</span>
         </div>
 
         <div class="form-group">
-          <label for="descripcion" class="form-label">Ficha Técnica y Descripción del Lote</label>
+          <label for="descripcion" class="form-label">Ficha Técnica y Especificaciones del Lote</label>
           <textarea 
             name="descripcion" 
             id="descripcion" 
             class="form-textarea" 
             rows="4" 
-            placeholder="Detalles sobre color, pureza, malla de molienda, humedad, envase (big bags / tambores), etc."
+            placeholder="Detalles sobre color, pureza, malla de molienda, humedad, fluidez MFI, tipo de envase (big bags / tambores), etc."
           ><?= old('descripcion') ?></textarea>
+          <span class="form-hint">Detallar fluidez (MFI), coloración, tipo de molienda o pellet, pureza y presentación de carga.</span>
         </div>
 
-        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
           <button type="submit" class="btn btn-primary">
-            ✓ Publicar Lote en la Red
+            ✓ Publicar Lote en Inventario
           </button>
           <a href="<?= site_url('productos') ?>" class="btn btn-secondary">
-            Cancelar
+            ← Descartar y Volver
           </a>
         </div>
       </form>

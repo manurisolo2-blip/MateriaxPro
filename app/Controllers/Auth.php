@@ -57,25 +57,25 @@ class Auth extends BaseController
         $user = $userModel->findByEmail($email);
 
         if (!$user) {
-            return redirect()->back()->withInput()->with('error', 'El correo electrónico no se encuentra registrado en la red MateriaX.');
+            return redirect()->back()->withInput()->with('error', 'El correo electrónico no se encuentra registrado en la red MateriaX. Si aún no eres miembro, puedes registrar tu empresa.');
         }
 
         // Verificación de estado de auditoría y operatividad
         if (isset($user['estado'])) {
             if ($user['estado'] === 'pendiente') {
-                return redirect()->back()->withInput()->with('error', 'Tu cuenta empresarial se encuentra en etapa de auditoría y pendiente de aprobación por el administrador. Podrás ingresar tan pronto como tus datos fiscales sean validados.');
+                return redirect()->back()->withInput()->with('error', 'Tu cuenta empresarial para ' . esc($user['nombre']) . ' está en proceso de auditoría fiscal. Podrás ingresar una vez que el Administrador valide tu CUIT y datos de radicación.');
             }
             if ($user['estado'] === 'rechazado') {
-                return redirect()->back()->withInput()->with('error', 'Tu solicitud de registro ha sido desestimada tras la auditoría fiscal. Comunícate con la administración.');
+                return redirect()->back()->withInput()->with('error', 'Tu solicitud de registro no fue aprobada por el Administrador tras la auditoría fiscal. Para consultas o reenvío de documentación, contacta a contacto@materiax.com.ar.');
             }
             if ($user['estado'] === 'inactivo') {
-                return redirect()->back()->withInput()->with('error', 'Esta cuenta empresarial se encuentra inactiva o suspendida. Comuníquese con la administración.');
+                return redirect()->back()->withInput()->with('error', 'Esta cuenta empresarial se encuentra temporalmente suspendida o inactiva. Por favor comunícate con administración para gestionar su reactivación.');
             }
         }
 
         // Permitir verificación con y sin espacios accidentales por copia y pega
         if (!password_verify($password, $user['password']) && !password_verify(trim($password), $user['password'])) {
-            return redirect()->back()->withInput()->with('error', 'Contraseña incorrecta. Por favor verifica tus credenciales.');
+            return redirect()->back()->withInput()->with('error', 'La contraseña ingresada es incorrecta. Por favor verifica tus credenciales e inténtalo nuevamente.');
         }
 
         // Actualizar marca temporal del último login en la base de datos
@@ -211,7 +211,7 @@ class Auth extends BaseController
         }
 
         // Notificar y redirigir al login para esperar la auditoría del administrador
-        return redirect()->to(site_url('login'))->with('success', '¡Solicitud de registro recibida con éxito! Tu cuenta ha ingresado a la etapa de auditoría. El administrador revisará tus datos corporativos para habilitar tu acceso.');
+        return redirect()->to(site_url('login'))->with('success', '¡Solicitud de registro enviada con éxito! Tu empresa ha ingresado a la etapa de auditoría fiscal. El Administrador revisará tus datos corporativos para habilitar el acceso a la red.');
     }
 
     /**

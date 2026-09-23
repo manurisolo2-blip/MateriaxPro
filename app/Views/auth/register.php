@@ -182,7 +182,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-          ✓ Completar Registro y Activar Cuenta
+          ✓ Enviar Solicitud de Registro a Auditoría
         </button>
       </form>
     </div>
