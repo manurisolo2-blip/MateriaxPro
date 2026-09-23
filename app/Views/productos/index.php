@@ -2,7 +2,7 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <h1 style="font-size: 1.8rem; font-weight: 800; color: #ffffff;">Inventario de Polímeros Industriales</h1>
+    <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">Inventario de Polímeros Industriales</h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem;">
       Módulo funcional protegido: visualización de lotes de excedentes disponibles en la red.
     </p>
@@ -80,7 +80,7 @@
             <tr style="<?= $esPropio ? 'background-color: rgba(20, 184, 166, 0.05);' : '' ?>">
               <td><strong style="color: var(--text-muted);">#<?= esc($p['id']) ?></strong></td>
               <td>
-                <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="font-weight: 700; color: #ffffff;">
+                <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="font-weight: 700; color: var(--text-primary);">
                   <?= esc($p['nombre']) ?>
                 </a>
                 <?php if ($esPropio): ?>

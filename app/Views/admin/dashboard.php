@@ -2,10 +2,10 @@
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <span style="font-size: 0.85rem; color: #14b8a6; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+    <span style="font-size: 0.85rem; color: var(--brand-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
       🛡️ AUDITORÍA CORPORATIVA & ADMINISTRACIÓN EXCLUSIVA
     </span>
-    <h1 style="font-size: 2.2rem; font-weight: 800; color: #ffffff; margin-top: 0.25rem;">
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
       Auditoría y Gestión de la Red MateriaX
     </h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -24,11 +24,11 @@
 
 <!-- Tarjetas de Métricas Globales del Administrador -->
 <div class="grid-4" style="margin-bottom: 2rem;">
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem; border-left: 4px solid <?= ($totalPendientes > 0) ? '#f59e0b' : '#14b8a6' ?>;">
+  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
       Auditorías Pendientes
     </span>
-    <div style="font-size: 2.2rem; font-weight: 800; color: <?= ($totalPendientes > 0) ? '#f59e0b' : '#14b8a6' ?>; margin-top: 0.25rem;">
+    <div style="font-size: 2.2rem; font-weight: 800; color: <?= ($totalPendientes > 0) ? '#d97706' : 'var(--brand-teal)' ?>; margin-top: 0.25rem;">
       <?= $totalPendientes ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">
@@ -36,9 +36,9 @@
     </span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem; border-left: 4px solid var(--color-success);">
+  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Empresas Habilitadas</span>
-    <div style="font-size: 2rem; font-weight: 800; color: #ffffff; margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
       <?= $empresasActivas ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--color-success); font-weight: 600;">
@@ -46,17 +46,17 @@
     </span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem; border-left: 4px solid #14b8a6;">
+  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Lotes Publicados</span>
-    <div style="font-size: 2rem; font-weight: 800; color: #14b8a6; margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 800; color: var(--brand-teal); margin-top: 0.25rem;">
       <?= $totalLotes ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Inventario circular activo</span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem; border-left: 4px solid #8b5cf6;">
+  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Volumen Total en Red</span>
-    <div style="font-size: 1.8rem; font-weight: 800; color: #ffffff; margin-top: 0.25rem;">
+    <div style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
       <?= number_format($totalKg, 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 500; color: var(--text-muted);">kg</span>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Materiales reciclables</span>
@@ -74,7 +74,7 @@
         Empresas que completaron el registro y están esperando que verifiques sus datos fiscales y apruebes su ingreso.
       </p>
     </div>
-    <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.85rem; font-weight: 700;">
+    <span class="badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; font-size: 0.85rem; font-weight: 700;">
       <?= $totalPendientes ?> pendientes de aprobación
     </span>
   </div>
@@ -101,7 +101,7 @@
                 #<?= esc($ep['id']) ?>
               </td>
               <td>
-                <strong style="color: #ffffff; font-size: 0.95rem;">
+                <strong style="color: var(--text-primary); font-size: 0.95rem;">
                   <?= esc($ep['nombre']) ?>
                 </strong>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">
@@ -109,7 +109,7 @@
                 </div>
               </td>
               <td>
-                <span style="font-family: monospace; font-weight: 700; color: #fbbf24; background: rgba(245, 158, 11, 0.1); padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid rgba(245, 158, 11, 0.25);">
+                <span style="font-family: monospace; font-weight: 700; color: #92400e; background: #fef3c7; padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid #fde68a;">
                   <?= esc($ep['cuit']) ?>
                 </span>
               </td>
@@ -118,7 +118,7 @@
                 <div style="font-size: 0.75rem; color: var(--text-muted);">📍 <?= esc($ep['direccion'] ?? 'Sin dirección') ?></div>
               </td>
               <td style="font-size: 0.85rem;">
-                <div style="color: #ffffff; font-weight: 600;"><?= esc($ep['rubro'] ?? 'No especificado') ?></div>
+                <div style="color: var(--text-primary); font-weight: 600;"><?= esc($ep['rubro'] ?? 'No especificado') ?></div>
                 <div style="color: var(--text-muted); font-size: 0.8rem;">
                   <?= esc($ep['ciudad'] ?? '-') ?>, <?= esc($ep['provincia'] ?? '-') ?>
                 </div>
@@ -128,7 +128,7 @@
                 <div style="font-size: 0.75rem; color: var(--text-muted);"><?= date('H:i', strtotime($ep['created_at'])) ?> hs</div>
               </td>
               <td>
-                <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4);">
+                <span class="badge badge-reservado">
                   ⏳ En Auditoría
                 </span>
               </td>
@@ -182,7 +182,7 @@
         Historial de empresas aprobadas, activas, suspendidas o rechazadas en MateriaX.
       </p>
     </div>
-    <span class="badge" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.3);">
+    <span class="badge" style="background: rgba(15, 118, 110, 0.1); color: var(--brand-teal); border: 1px solid rgba(15, 118, 110, 0.25);">
       <?= count($empresasAuditadas) ?> empresas procesadas
     </span>
   </div>
@@ -210,7 +210,7 @@
                 #<?= esc($empresa['id']) ?>
               </td>
               <td>
-                <strong style="color: #ffffff; font-size: 0.95rem;">
+                <strong style="color: var(--text-primary); font-size: 0.95rem;">
                   <?= esc($empresa['nombre']) ?>
                 </strong>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">
@@ -218,7 +218,7 @@
                 </div>
               </td>
               <td>
-                <span style="font-family: monospace; font-weight: 600; color: #e2e8f0; background: rgba(255,255,255,0.05); padding: 0.2rem 0.4rem; border-radius: 4px;">
+                <span style="font-family: monospace; font-weight: 600; color: var(--text-primary); background: var(--bg-main); padding: 0.2rem 0.4rem; border-radius: 4px; border: 1px solid var(--border-color);">
                   <?= esc($empresa['cuit']) ?>
                 </span>
               </td>
@@ -227,13 +227,13 @@
                 <div style="font-size: 0.75rem; color: var(--text-muted);"><?= esc($empresa['direccion'] ?? 'Sin dirección') ?></div>
               </td>
               <td style="font-size: 0.85rem;">
-                <div style="color: #ffffff;"><?= esc($empresa['rubro'] ?? 'No especificado') ?></div>
+                <div style="color: var(--text-primary);"><?= esc($empresa['rubro'] ?? 'No especificado') ?></div>
                 <div style="color: var(--text-muted); font-size: 0.8rem;">
                   <?= esc($empresa['ciudad'] ?? '-') ?>, <?= esc($empresa['provincia'] ?? '-') ?>
                 </div>
               </td>
               <td>
-                <span class="badge" style="background: rgba(255,255,255,0.08); color: #ffffff;">
+                <span class="badge" style="background: var(--bg-main); color: var(--text-primary); border: 1px solid var(--border-color);">
                   <?= (int) $empresa['total_lotes'] ?>
                 </span>
               </td>
@@ -244,11 +244,11 @@
                 <?php if ($empresa['estado'] === 'activo'): ?>
                   <span class="badge badge-success">● Habilitada / Activa</span>
                 <?php elseif ($empresa['estado'] === 'rechazado'): ?>
-                  <span class="badge" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3);">
+                  <span class="badge" style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;">
                     ✕ Solicitud Rechazada
                   </span>
                 <?php else: ?>
-                  <span class="badge" style="background: rgba(148, 163, 184, 0.2); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.3);">
+                  <span class="badge" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;">
                     ⏸️ Suspendida
                   </span>
                 <?php endif; ?>
@@ -262,21 +262,21 @@
                   <?php if ($empresa['estado'] === 'activo'): ?>
                     <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #f87171;" title="Pausar cuenta">
+                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Pausar cuenta">
                         Pausar
                       </button>
                     </form>
                   <?php elseif ($empresa['estado'] === 'inactivo'): ?>
                     <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #4ade80;" title="Reactivar cuenta">
+                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #16a34a;" title="Reactivar cuenta">
                         Reactivar
                       </button>
                     </form>
                   <?php elseif ($empresa['estado'] === 'rechazado'): ?>
                     <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #10b981;" title="Reconsiderar y habilitar">
+                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #059669;" title="Reconsiderar y habilitar">
                         Aprobar
                       </button>
                     </form>

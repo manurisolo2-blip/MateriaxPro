@@ -6,7 +6,7 @@
       <a href="<?= site_url('productos') ?>" style="color: var(--text-secondary); font-size: 0.9rem;">
         &larr; Volver al inventario general
       </a>
-      <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin-top: 0.35rem;">
+      <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.35rem;">
         <?= esc($producto['nombre']) ?>
       </h1>
       <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem;">
@@ -41,7 +41,7 @@
   <div class="grid-3" style="margin-top: 0; margin-bottom: 1.5rem;">
     <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Volumen Total</span>
-      <div style="font-size: 1.6rem; font-weight: 800; color: #ffffff; margin-top: 0.25rem;">
+      <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
         <?= number_format((float)$producto['cantidad_kg'], 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 500; color: var(--text-secondary);">kg</span>
       </div>
     </div>
@@ -69,7 +69,7 @@
     <div class="card-body">
       <div style="margin-bottom: 1.25rem;">
         <strong style="color: var(--text-secondary); font-size: 0.9rem;">Ubicación de Origen / Planta:</strong>
-        <p style="font-size: 1.05rem; color: #ffffff; margin-top: 0.2rem;">📍 <?= esc($producto['ubicacion']) ?></p>
+        <p style="font-size: 1.05rem; color: var(--text-primary); margin-top: 0.2rem;">📍 <?= esc($producto['ubicacion']) ?></p>
       </div>
 
       <div>
@@ -90,7 +90,7 @@
       <div class="form-row">
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">Empresa Oferente:</span>
-          <p style="font-size: 1.05rem; font-weight: 700; color: #ffffff;">🏢 <?= esc($producto['empresa_nombre'] ?? 'Empresa Registrada') ?></p>
+          <p style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">🏢 <?= esc($producto['empresa_nombre'] ?? 'Empresa Registrada') ?></p>
         </div>
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">Correo Electrónico:</span>
@@ -98,11 +98,11 @@
         </div>
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">Teléfono:</span>
-          <p style="font-size: 1.05rem; color: #ffffff;">📞 <?= esc($producto['empresa_telefono'] ?? 'No especificado') ?></p>
+          <p style="font-size: 1.05rem; color: var(--text-primary);">📞 <?= esc($producto['empresa_telefono'] ?? 'No especificado') ?></p>
         </div>
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">CUIT:</span>
-          <p style="font-size: 1.05rem; color: #ffffff;">📄 <?= esc($producto['empresa_cuit'] ?? 'Sin CUIT') ?></p>
+          <p style="font-size: 1.05rem; color: var(--text-primary);">📄 <?= esc($producto['empresa_cuit'] ?? 'Sin CUIT') ?></p>
         </div>
       </div>
     </div>

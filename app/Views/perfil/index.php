@@ -4,7 +4,7 @@
   <span style="font-size: 0.85rem; color: var(--color-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
     PANEL DE GESTIÓN CORPORATIVA
   </span>
-  <h1 style="font-size: 2rem; font-weight: 800; color: #ffffff; margin-top: 0.25rem;">
+  <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
     <?= esc($user['nombre']) ?>
   </h1>
   <p style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -24,7 +24,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Miembro Desde</span>
-    <div style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-top: 0.4rem;">
+    <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-top: 0.4rem;">
       <?= date('d/m/Y', strtotime($user['created_at'])) ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--color-success);">● Cuenta Homologada</span>
@@ -32,7 +32,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Último Acceso Registrado</span>
-    <div style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-top: 0.4rem;">
+    <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-top: 0.4rem;">
       <?= !empty($user['ultimo_login']) ? date('d/m/Y H:i', strtotime($user['ultimo_login'])) : 'Sesión actual' ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">IP / Conexión Segura</span>
@@ -228,8 +228,8 @@
             <?php foreach ($misProductos as $p): ?>
               <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
                 <div>
-                  <div style="font-weight: 700; color: #ffffff;">
-                    <a href="<?= site_url('productos/ver/' . $p['id']) ?>"><?= esc($p['nombre']) ?></a>
+                  <div style="font-weight: 700; color: var(--text-primary);">
+                    <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="color: var(--text-primary); text-decoration: none;"><?= esc($p['nombre']) ?></a>
                   </div>
                   <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
                     <span class="badge badge-polimero"><?= esc($p['tipo_polimero']) ?></span>

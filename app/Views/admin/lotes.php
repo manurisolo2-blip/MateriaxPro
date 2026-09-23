@@ -2,10 +2,10 @@
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <span style="font-size: 0.85rem; color: #14b8a6; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
+    <span style="font-size: 0.85rem; color: var(--brand-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
       MODERACIÓN DEL MERCADO
     </span>
-    <h1 style="font-size: 2.2rem; font-weight: 800; color: #ffffff; margin-top: 0.25rem;">
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
       Supervisión Global de Lotes
     </h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -28,7 +28,7 @@
         Listado consolidado con trazabilidad de la empresa oferente.
       </p>
     </div>
-    <span class="badge" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.3);">
+    <span class="badge" style="background: rgba(15, 118, 110, 0.1); color: var(--brand-teal); border: 1px solid rgba(15, 118, 110, 0.25);">
       <?= count($lotes) ?> publicaciones
     </span>
   </div>
@@ -56,7 +56,7 @@
                 #<?= esc($lote['id']) ?>
               </td>
               <td>
-                <strong style="color: #ffffff; font-size: 0.95rem;">
+                <strong style="color: var(--text-primary); font-size: 0.95rem;">
                   <?= esc($lote['nombre']) ?>
                 </strong>
                 <div style="font-size: 0.8rem; color: var(--text-muted);">
@@ -72,7 +72,7 @@
                 </div>
               </td>
               <td>
-                <span class="badge" style="background: rgba(20, 184, 166, 0.15); color: #14b8a6;">
+                <span class="badge badge-polimero">
                   <?= esc($lote['tipo_polimero']) ?>
                 </span>
               </td>
@@ -91,7 +91,7 @@
                 <?php elseif ($lote['estado'] === 'Reservado'): ?>
                   <span class="badge badge-warning">● Reservado</span>
                 <?php else: ?>
-                  <span class="badge" style="background: rgba(100, 116, 139, 0.2); color: #94a3b8;">● Vendido</span>
+                  <span class="badge badge-vendido">● Vendido</span>
                 <?php endif; ?>
               </td>
               <td style="text-align: right;">
@@ -103,7 +103,7 @@
                   <!-- Formulario POST puro de baja administrativa (Cero JavaScript) -->
                   <form action="<?= site_url('admin/lotes/eliminar/' . $lote['id']) ?>" method="POST" style="margin: 0; display: inline;">
                     <?= csrf_field() ?>
-                    <button type="submit" class="btn btn-secondary btn-sm" style="color: #f87171;" title="Dar de baja lote por moderación">
+                    <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Dar de baja lote por moderación">
                       Dar de baja
                     </button>
                   </form>

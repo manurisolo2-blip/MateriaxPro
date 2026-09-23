@@ -56,7 +56,7 @@
       <span class="featured-lot-badge">✓ AUDITADO</span>
     </div>
 
-    <h3 style="font-size: 1.3rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem;">
+    <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.5rem;">
       PEAD Molido Inyección & Soplado
     </h3>
     <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
@@ -381,24 +381,24 @@
     <div class="card-body">
       <div class="form-row">
         <div>
-          <p><strong style="color: #ffffff;">1. DER del Sistema:</strong></p>
+          <p><strong style="color: var(--text-primary);">1. DER del Sistema:</strong></p>
           <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
             Documentado formalmente en <a href="<?= site_url('../docs/DER.md') ?>">docs/DER.md</a> y editable en Draw.io con <a href="<?= site_url('../docs/DER_drawio.xml') ?>">docs/DER_drawio.xml</a>.
           </p>
 
-          <p><strong style="color: #ffffff;">2. Modelo Relacional:</strong></p>
+          <p><strong style="color: var(--text-primary);">2. Modelo Relacional:</strong></p>
           <p style="font-size: 0.9rem; color: var(--text-secondary);">
             Normalizado rigurosamente en 1FN, 2FN y 3FN en <a href="<?= site_url('../docs/MODELO_RELACIONAL.md') ?>">docs/MODELO_RELACIONAL.md</a> y script ejecutable en <code>database.sql</code>.
           </p>
         </div>
 
         <div>
-          <p><strong style="color: #ffffff;">3. Login y Registro Seguro:</strong></p>
+          <p><strong style="color: var(--text-primary);">3. Login y Registro Seguro:</strong></p>
           <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
             Autenticación MVC funcionando con sesiones de CodeIgniter 4 y hash seguro <code>password_hash()</code>.
           </p>
 
-          <p><strong style="color: #ffffff;">4. Primer Módulo Funcional (CRUD de Productos):</strong></p>
+          <p><strong style="color: var(--text-primary);">4. Primer Módulo Funcional (CRUD de Productos):</strong></p>
           <p style="font-size: 0.9rem; color: var(--text-secondary);">
             CRUD de la entidad secundaria <strong>productos</strong> (lotes de polímeros), con listado protegido sólo para usuarios con sesión activa y confirmación de borrado server-side.
           </p>
@@ -423,21 +423,21 @@
   <div class="grid-3">
     <div class="card" style="margin-bottom: 0; padding: 1.5rem; text-align: center;">
       <div style="font-size: 2rem; margin-bottom: 0.5rem;">📧</div>
-      <h4 style="color: #ffffff; margin-bottom: 0.25rem;">Mesa de Operaciones</h4>
+      <h4 style="color: var(--text-primary); margin-bottom: 0.25rem;">Mesa de Operaciones</h4>
       <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Consultas sobre lotes y registros corporativos</p>
       <a href="mailto:contacto@materiax.com.ar" style="font-weight: 600;">contacto@materiax.com.ar</a>
     </div>
 
     <div class="card" style="margin-bottom: 0; padding: 1.5rem; text-align: center;">
       <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏢</div>
-      <h4 style="color: #ffffff; margin-bottom: 0.25rem;">Sede Institucional</h4>
+      <h4 style="color: var(--text-primary); margin-bottom: 0.25rem;">Sede Institucional</h4>
       <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Instituto Técnico Río Tercero</p>
-      <span style="color: #ffffff; font-size: 0.9rem;">Río Tercero, Córdoba, Argentina</span>
+      <span style="color: var(--text-primary); font-size: 0.9rem;">Río Tercero, Córdoba, Argentina</span>
     </div>
 
     <div class="card" style="margin-bottom: 0; padding: 1.5rem; text-align: center;">
       <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏱️</div>
-      <h4 style="color: #ffffff; margin-bottom: 0.25rem;">Horario Operativo</h4>
+      <h4 style="color: var(--text-primary); margin-bottom: 0.25rem;">Horario Operativo</h4>
       <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Atención a plantas industriales</p>
       <span style="color: var(--color-success); font-weight: 600; font-size: 0.9rem;">Lunes a Viernes: 08:00 — 17:00 hs</span>
     </div>

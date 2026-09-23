@@ -15,7 +15,7 @@
     </div>
 
     <div class="card-body">
-      <p style="font-size: 1.05rem; color: #ffffff; margin-bottom: 1.25rem;">
+      <p style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 1.25rem;">
         ¿Está completamente seguro de que desea eliminar el siguiente lote de material de la plataforma?
       </p>
 
@@ -23,7 +23,7 @@
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
           <div>
             <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">LOTE #<?= esc($producto['id']) ?></span>
-            <h3 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-top: 0.15rem;">
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-top: 0.15rem;">
               <?= esc($producto['nombre']) ?>
             </h3>
           </div>
@@ -33,7 +33,7 @@
         <div class="form-row" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
           <div>
             <span style="font-size: 0.82rem; color: var(--text-muted);">Volumen:</span>
-            <p style="font-weight: 700; color: #ffffff;"><?= number_format((float)$producto['cantidad_kg'], 0, ',', '.') ?> kg</p>
+            <p style="font-weight: 700; color: var(--text-primary);"><?= number_format((float)$producto['cantidad_kg'], 0, ',', '.') ?> kg</p>
           </div>
           <div>
             <span style="font-size: 0.82rem; color: var(--text-muted);">Precio Unitario:</span>
@@ -41,7 +41,7 @@
           </div>
           <div>
             <span style="font-size: 0.82rem; color: var(--text-muted);">Planta de Origen:</span>
-            <p style="font-weight: 600; color: #ffffff;"><?= esc($producto['ubicacion']) ?></p>
+            <p style="font-weight: 600; color: var(--text-primary);"><?= esc($producto['ubicacion']) ?></p>
           </div>
         </div>
       </div>

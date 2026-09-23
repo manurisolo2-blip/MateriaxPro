@@ -10,7 +10,7 @@
         ● Cuenta Habilitada y Auditada
       </span>
     </div>
-    <h1 style="font-size: 2.2rem; font-weight: 800; color: #ffffff; margin: 0;">
+    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0;">
       <?= esc($user['nombre']) ?>
     </h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.35rem;">
@@ -37,7 +37,7 @@
 <div class="grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Mis Lotes Publicados</span>
-    <div style="font-size: 2rem; font-weight: 800; color: #14b8a6; margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin-top: 0.25rem;">
       <?= $totalLotes ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);"><?= $lotesDisponibles ?> disponibles en la red</span>
@@ -45,7 +45,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Kilos en Oferta</span>
-    <div style="font-size: 2rem; font-weight: 800; color: #38bdf8; margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 800; color: var(--color-cyan); margin-top: 0.25rem;">
       <?= number_format($totalKilos, 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 600; color: var(--text-secondary);">kg</span>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Materia prima circular</span>
@@ -53,7 +53,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Valor en Oferta (Est.)</span>
-    <div style="font-size: 2rem; font-weight: 800; color: #4ade80; margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 800; color: var(--color-success); margin-top: 0.25rem;">
       $<?= number_format($valorEstimado, 0, ',', '.') ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Valorización total de inventario</span>
@@ -61,7 +61,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Estado de Cuenta</span>
-    <div style="font-size: 1.25rem; font-weight: 700; color: #4ade80; margin-top: 0.5rem;">
+    <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-success); margin-top: 0.5rem;">
       ● Homologada
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Revisión fiscal aprobada</span>
@@ -103,7 +103,7 @@
           <?php foreach ($misProductos as $p): ?>
             <tr>
               <td>
-                <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="font-weight: 700; color: #ffffff;">
+                <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="font-weight: 700; color: var(--text-primary);">
                   <?= esc($p['nombre']) ?>
                 </a>
                 <div style="font-size: 0.78rem; color: var(--text-muted);">
@@ -145,7 +145,7 @@
         <?php else: ?>
           <tr>
             <td colspan="8" style="text-align: center; padding: 3rem 1.5rem; color: var(--text-secondary);">
-              <p style="font-size: 1.1rem; color: #ffffff; font-weight: 600; margin-bottom: 0.5rem;">
+              <p style="font-size: 1.1rem; color: var(--text-primary); font-weight: 600; margin-bottom: 0.5rem;">
                 Aún no has publicado ningún lote de excedente industrial
               </p>
               <p style="font-size: 0.92rem; margin-bottom: 1.25rem;">
@@ -166,7 +166,7 @@
 <?php if (!empty($lotesMercado) && count($lotesMercado) > 0): ?>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
     <div>
-      <h3 style="font-size: 1.25rem; font-weight: 700; color: #ffffff; margin: 0;">
+      <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0;">
         🌐 Oportunidades Recientes en la Red
       </h3>
       <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0.2rem 0 0 0;">
@@ -188,13 +188,13 @@
             <span class="badge badge-polimero"><?= esc($lm['tipo_polimero']) ?></span>
             <span class="badge badge-disponible">Disponible</span>
           </div>
-          <h4 style="font-size: 1.05rem; font-weight: 700; color: #ffffff; margin: 0.25rem 0 0.5rem 0;">
-            <a href="<?= site_url('productos/ver/' . $lm['id']) ?>" style="text-decoration: none; color: #ffffff;">
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0.25rem 0 0.5rem 0;">
+            <a href="<?= site_url('productos/ver/' . $lm['id']) ?>" style="text-decoration: none; color: var(--text-primary);">
               <?= esc($lm['nombre']) ?>
             </a>
           </h4>
           <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 0.75rem;">
-            Ofertado por: <strong style="color: #e2e8f0;"><?= esc($lm['empresa_nombre'] ?? 'Empresa Registrada') ?></strong>
+            Ofertado por: <strong style="color: var(--text-primary);"><?= esc($lm['empresa_nombre'] ?? 'Empresa Registrada') ?></strong>
             <br>
             Ubicación: <?= esc($lm['ubicacion']) ?>
           </p>
@@ -203,9 +203,9 @@
         <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 0.75rem; margin-top: 0.5rem;">
           <div>
             <div style="font-size: 0.8rem; color: var(--text-muted);">Volumen / Precio</div>
-            <div style="font-size: 0.95rem; font-weight: 700; color: #ffffff;">
+            <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
               <?= number_format((float)$lm['cantidad_kg'], 0, ',', '.') ?> kg &nbsp;|&nbsp; 
-              <span style="color: #4ade80;">$<?= number_format((float)$lm['precio_unitario'], 2, ',', '.') ?>/kg</span>
+              <span style="color: var(--color-success);">$<?= number_format((float)$lm['precio_unitario'], 2, ',', '.') ?>/kg</span>
             </div>
           </div>
           <div>
