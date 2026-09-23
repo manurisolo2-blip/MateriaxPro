@@ -661,6 +661,49 @@ a:hover {
   font-family: var(--font-mono);
 }
 
+/* Codificación Cromática Industrial de Resinas (WCAG AA ≥ 4.5:1) */
+.badge-polimero-pe {
+  background-color: #f0fdfa;
+  color: #0f766e;
+  border-color: #99f6e4;
+}
+
+.badge-polimero-pp {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.badge-polimero-pvc {
+  background-color: #f5f3ff;
+  color: #6d28d9;
+  border-color: #ddd6fe;
+}
+
+.badge-polimero-abs {
+  background-color: #fff1f2;
+  color: #be123c;
+  border-color: #fecdd3;
+}
+
+.badge-polimero-nylon {
+  background-color: #fdf2f8;
+  color: #be185d;
+  border-color: #fbcfe8;
+}
+
+.badge-polimero-pet {
+  background-color: #f0f9ff;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+.badge-polimero-equipamiento {
+  background-color: #faf5ff;
+  color: #7e22ce;
+  border-color: #e9d5ff;
+}
+
 /* ==============================================================================
    HERO Y SECCIONES DE PORTADA (WELCOME)
    ============================================================================== */
@@ -1067,6 +1110,22 @@ a:hover {
   line-height: 1.1;
   margin-bottom: 0.4rem;
   letter-spacing: -0.03em;
+}
+
+.impact-card:nth-child(1) .impact-num {
+  color: #0f766e;
+}
+
+.impact-card:nth-child(2) .impact-num {
+  color: #1d4ed8;
+}
+
+.impact-card:nth-child(3) .impact-num {
+  color: #059669;
+}
+
+.impact-card:nth-child(4) .impact-num {
+  color: #4f46e5;
 }
 
 .impact-label {

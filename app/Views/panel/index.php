@@ -111,7 +111,7 @@
                 </div>
               </td>
               <td>
-                <span class="badge badge-polimero"><?= esc($p['tipo_polimero']) ?></span>
+                <span class="badge badge-polimero <?= badge_polimero_class($p['tipo_polimero']) ?>"><?= esc($p['tipo_polimero']) ?></span>
               </td>
               <td><strong><?= number_format((float)$p['cantidad_kg'], 0, ',', '.') ?></strong> kg</td>
               <td>$<?= number_format((float)$p['precio_unitario'], 2, ',', '.') ?></td>
@@ -185,7 +185,7 @@
       <div class="card" style="margin-bottom: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem;">
-            <span class="badge badge-polimero"><?= esc($lm['tipo_polimero']) ?></span>
+            <span class="badge badge-polimero <?= badge_polimero_class($lm['tipo_polimero']) ?>"><?= esc($lm['tipo_polimero']) ?></span>
             <span class="badge badge-disponible">Disponible</span>
           </div>
           <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin: 0.25rem 0 0.5rem 0;">

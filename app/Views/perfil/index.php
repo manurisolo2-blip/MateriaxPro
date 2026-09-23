@@ -232,7 +232,7 @@
                     <a href="<?= site_url('productos/ver/' . $p['id']) ?>" style="color: var(--text-primary); text-decoration: none;"><?= esc($p['nombre']) ?></a>
                   </div>
                   <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
-                    <span class="badge badge-polimero"><?= esc($p['tipo_polimero']) ?></span>
+                    <span class="badge badge-polimero <?= badge_polimero_class($p['tipo_polimero']) ?>"><?= esc($p['tipo_polimero']) ?></span>
                     &nbsp;•&nbsp; <strong><?= number_format((float)$p['cantidad_kg'], 0, ',', '.') ?> kg</strong>
                     &nbsp;•&nbsp; $<?= number_format((float)$p['precio_unitario'], 2, ',', '.') ?> / kg
                   </div>

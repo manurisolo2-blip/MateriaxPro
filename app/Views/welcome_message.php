@@ -139,11 +139,11 @@
     </div>
 
     <!-- Pilar 2: Empresas Verificadas -->
-    <div class="role-card" style="border-color: rgba(56, 189, 248, 0.4);">
+    <div class="role-card">
       <div class="role-header">
-        <div class="role-icon" style="background-color: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.25);">🏭</div>
+        <div class="role-icon" style="background-color: #ecfdf5; border-color: #a7f3d0;">🏭</div>
         <div>
-          <span style="font-size: 0.75rem; color: #34d399; font-weight: 700; text-transform: uppercase;">RED HOMOLOGADA</span>
+          <span style="font-size: 0.75rem; color: #047857; font-weight: 700; text-transform: uppercase;">RED HOMOLOGADA</span>
           <h3 class="role-title">Empresas & Plantas</h3>
         </div>
       </div>
@@ -169,9 +169,9 @@
     <!-- Pilar 3: Transparencia Total -->
     <div class="role-card">
       <div class="role-header">
-        <div class="role-icon" style="background-color: rgba(245, 158, 11, 0.12); border-color: rgba(245, 158, 11, 0.25);">🌐</div>
+        <div class="role-icon" style="background-color: #fef3c7; border-color: #fde68a;">🌐</div>
         <div>
-          <span style="font-size: 0.75rem; color: #fbbf24; font-weight: 700; text-transform: uppercase;">TRANSPARENCIA</span>
+          <span style="font-size: 0.75rem; color: #b45309; font-weight: 700; text-transform: uppercase;">TRANSPARENCIA</span>
           <h3 class="role-title">Catálogo Abierto</h3>
         </div>
       </div>
@@ -212,7 +212,7 @@
     <!-- Familia 1: Polietileno -->
     <div class="polymer-card">
       <div>
-        <span class="polymer-badge">Polietileno (PE)</span>
+        <span class="polymer-badge badge-polimero-pe">Polietileno (PE)</span>
         <h4 class="polymer-title">PEAD, PEBD & Film</h4>
         <p class="polymer-desc">
           Sobrantes de inyección y soplado, baldes industriales, bidones descontaminados y film termocontraíble limpio para extrusión.
@@ -232,7 +232,7 @@
     <!-- Familia 2: Polipropileno -->
     <div class="polymer-card">
       <div>
-        <span class="polymer-badge" style="background-color: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">Polipropileno (PP)</span>
+        <span class="polymer-badge badge-polimero-pp">Polipropileno (PP)</span>
         <h4 class="polymer-title">PP Homopolímero & Copolímero</h4>
         <p class="polymer-desc">
           Scrap de recortes de prensa, carcasas de electrodomésticos, tapas y baldes con índices de fluidez verificados (MFI 8-15).
@@ -252,7 +252,7 @@
     <!-- Familia 3: Materiales Técnicos -->
     <div class="polymer-card">
       <div>
-        <span class="polymer-badge" style="background-color: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #fbbf24;">Materiales Técnicos</span>
+        <span class="polymer-badge badge-polimero-abs">Materiales Técnicos</span>
         <h4 class="polymer-title">ABS, PVC & Nylon (PA)</h4>
         <p class="polymer-desc">
           Descarte de perfilería rígida de PVC, piezas de ABS y poliamida PA6 molida con fibra de vidrio procedente del sector automotriz.
@@ -272,7 +272,7 @@
     <!-- Familia 4: Equipamiento & Logística -->
     <div class="polymer-card">
       <div>
-        <span class="polymer-badge" style="background-color: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); color: #c084fc;">Equipamiento</span>
+        <span class="polymer-badge badge-polimero-equipamiento">Equipamiento</span>
         <h4 class="polymer-title">Pallets & Logística Reusable</h4>
         <p class="polymer-desc">
           Pallets plásticos reforzados (1200x1000mm) para rack y piso, cajas plásticas industriales, tolvas y tambores homologados.
@@ -373,8 +373,8 @@
      SECCIÓN 6: RESUMEN DE ENTREGABLES ACADÉMICOS (HITO 1)
      ========================================================================== -->
 <section class="content-section" style="margin-bottom: 2rem;">
-  <div class="card" style="border-color: rgba(56, 189, 248, 0.3);">
-    <div class="card-header" style="background-color: rgba(30, 41, 59, 0.6);">
+  <div class="card">
+    <div class="card-header">
       <h3 class="card-title">Resumen de Entregables — Hito 1 (Primeros Pasos)</h3>
       <span style="font-size: 0.8rem; color: var(--color-accent); font-weight: 700;">Instituto Técnico Río Tercero · 6° B</span>
     </div>

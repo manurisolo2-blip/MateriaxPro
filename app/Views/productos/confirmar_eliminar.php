@@ -27,7 +27,7 @@
               <?= esc($producto['nombre']) ?>
             </h3>
           </div>
-          <span class="badge badge-polimero"><?= esc($producto['tipo_polimero']) ?></span>
+          <span class="badge badge-polimero <?= badge_polimero_class($producto['tipo_polimero']) ?>"><?= esc($producto['tipo_polimero']) ?></span>
         </div>
 
         <div class="form-row" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">

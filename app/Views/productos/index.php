@@ -84,13 +84,13 @@
                   <?= esc($p['nombre']) ?>
                 </a>
                 <?php if ($esPropio): ?>
-                  <span class="badge" style="background: rgba(20, 184, 166, 0.2); color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.4); font-size: 0.72rem; margin-left: 0.35rem;">
+                  <span class="badge" style="background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; font-size: 0.72rem; margin-left: 0.35rem;">
                     Mi Lote
                   </span>
                 <?php endif; ?>
               </td>
               <td>
-                <span class="badge badge-polimero"><?= esc($p['tipo_polimero']) ?></span>
+                <span class="badge badge-polimero <?= badge_polimero_class($p['tipo_polimero']) ?>"><?= esc($p['tipo_polimero']) ?></span>
               </td>
               <td><strong><?= number_format((float)$p['cantidad_kg'], 0, ',', '.') ?></strong> kg</td>
               <td>$<?= number_format((float)$p['precio_unitario'], 2, ',', '.') ?></td>

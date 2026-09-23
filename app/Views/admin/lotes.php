@@ -72,7 +72,7 @@
                 </div>
               </td>
               <td>
-                <span class="badge badge-polimero">
+                <span class="badge badge-polimero <?= badge_polimero_class($lote['tipo_polimero']) ?>">
                   <?= esc($lote['tipo_polimero']) ?>
                 </span>
               </td>
