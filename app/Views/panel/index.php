@@ -2,18 +2,15 @@
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
-      <span class="badge badge-polimero" style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em;">
-        Panel Corporativo
-      </span>
+    <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap;">
+      <h1 style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+        <?= esc($user['nombre']) ?>
+      </h1>
       <span class="badge badge-success">
-        ● Cuenta Habilitada y Auditada
+        ● Cuenta Habilitada
       </span>
     </div>
-    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0;">
-      <?= esc($user['nombre']) ?>
-    </h1>
-    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.35rem;">
+    <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
       <strong>CUIT:</strong> <?= esc($user['cuit'] ?? 'N/D') ?> &nbsp;|&nbsp; 
       <strong>Rubro:</strong> <?= esc($user['rubro'] ?? 'Industrial') ?> &nbsp;|&nbsp; 
       <strong>Radicación:</strong> <?= esc($user['ciudad'] ?? 'Córdoba') ?>, <?= esc($user['provincia'] ?? 'Argentina') ?>
@@ -22,13 +19,13 @@
 
   <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
     <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary">
-      ➕ Publicar Nuevo Lote
+      Publicar Lote
     </a>
     <a href="<?= site_url('productos') ?>" class="btn btn-secondary">
-      🌐 Explorar Mercado
+      Explorar Mercado
     </a>
     <a href="<?= site_url('perfil') ?>" class="btn btn-secondary">
-      👤 Datos de Empresa
+      Datos de Empresa
     </a>
   </div>
 </div>
@@ -37,7 +34,7 @@
 <div class="grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Mis Lotes Publicados</span>
-    <div style="font-size: 2rem; font-weight: 800; color: var(--color-accent); margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
       <?= $totalLotes ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);"><?= $lotesDisponibles ?> disponibles en la red</span>
@@ -45,7 +42,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Kilos en Oferta</span>
-    <div style="font-size: 2rem; font-weight: 800; color: var(--color-cyan); margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 700; color: var(--color-cyan); margin-top: 0.25rem;">
       <?= number_format($totalKilos, 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 600; color: var(--text-secondary);">kg</span>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Materia prima circular</span>
@@ -53,7 +50,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Valor en Oferta (Est.)</span>
-    <div style="font-size: 2rem; font-weight: 800; color: var(--color-success); margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 700; color: var(--color-success); margin-top: 0.25rem;">
       $<?= number_format($valorEstimado, 0, ',', '.') ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Valorización total de inventario</span>
@@ -72,14 +69,14 @@
 <div class="card" style="margin-bottom: 2.5rem;">
   <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
     <div>
-      <h3 class="card-title" style="margin: 0;">📦 Mis Publicaciones en MateriaX</h3>
+      <h3 class="card-title" style="margin: 0;">Mis Publicaciones en MateriaX</h3>
       <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem; margin-bottom: 0;">
         Lotes registrados bajo la titularidad exclusiva de tu empresa. Puedes editarlos o darlos de baja cuando lo desees.
       </p>
     </div>
     <div>
       <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">
-        ➕ Publicar Nuevo Lote
+        Publicar Lote
       </a>
     </div>
   </div>
@@ -130,13 +127,13 @@
               <td style="text-align: right; white-space: nowrap;">
                 <div style="display: inline-flex; gap: 0.35rem; align-items: center;">
                   <a href="<?= site_url('productos/ver/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Ver ficha pública del lote">
-                    👁 Ver
+                    Ver
                   </a>
                   <a href="<?= site_url('productos/editar/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Editar lote propio">
-                    ✏ Editar
+                    Editar
                   </a>
                   <a href="<?= site_url('productos/confirmar-eliminar/' . $p['id']) ?>" class="btn btn-danger btn-sm" title="Eliminar este lote">
-                    🗑
+                    Eliminar
                   </a>
                 </div>
               </td>
@@ -152,7 +149,7 @@
                 Comienza a circular tus mermas, descartes o granzas plásticas para conectar con compradores industriales en toda la región.
               </p>
               <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary">
-                ➕ Publicar Primer Lote de Material
+                Publicar Primer Lote de Material
               </a>
             </td>
           </tr>
@@ -167,7 +164,7 @@
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
     <div>
       <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0;">
-        🌐 Oportunidades Recientes en la Red
+        Oportunidades Recientes en la Red
       </h3>
       <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0.2rem 0 0 0;">
         Materiales industriales publicados por otras empresas registradas en MateriaX.
@@ -175,7 +172,7 @@
     </div>
     <div>
       <a href="<?= site_url('productos') ?>" class="btn btn-secondary btn-sm">
-        Ver Todo el Inventario →
+        Ver Todo el Inventario &rarr;
       </a>
     </div>
   </div>
@@ -210,7 +207,7 @@
           </div>
           <div>
             <a href="<?= site_url('productos/ver/' . $lm['id']) ?>" class="btn btn-secondary btn-sm">
-              👁 Ver Ficha
+              Ver Ficha
             </a>
           </div>
         </div>

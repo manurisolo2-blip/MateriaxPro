@@ -2,10 +2,7 @@
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <span style="font-size: 0.85rem; color: var(--brand-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-      🛡️ AUDITORÍA CORPORATIVA & ADMINISTRACIÓN EXCLUSIVA
-    </span>
-    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+    <h1 style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
       Auditoría y Gestión de la Red MateriaX
     </h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -14,10 +11,10 @@
   </div>
   <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
     <a href="<?= site_url('admin/lotes') ?>" class="btn btn-secondary">
-      📦 Supervisar Todos los Lotes
+      Supervisar Lotes
     </a>
     <a href="<?= site_url('productos') ?>" class="btn btn-secondary">
-      🔍 Ver Inventario General
+      Inventario General
     </a>
   </div>
 </div>
@@ -28,7 +25,7 @@
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
       Auditorías Pendientes
     </span>
-    <div style="font-size: 2.2rem; font-weight: 800; color: <?= ($totalPendientes > 0) ? '#d97706' : 'var(--brand-teal)' ?>; margin-top: 0.25rem;">
+    <div style="font-size: 2.2rem; font-weight: 700; color: <?= ($totalPendientes > 0) ? '#d97706' : 'var(--color-primary)' ?>; margin-top: 0.25rem;">
       <?= $totalPendientes ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">
@@ -38,7 +35,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Empresas Habilitadas</span>
-    <div style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
       <?= $empresasActivas ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--color-success); font-weight: 600;">
@@ -48,7 +45,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Lotes Publicados</span>
-    <div style="font-size: 2rem; font-weight: 800; color: var(--brand-teal); margin-top: 0.25rem;">
+    <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary); margin-top: 0.25rem;">
       <?= $totalLotes ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Inventario circular activo</span>
@@ -56,7 +53,7 @@
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Volumen Total en Red</span>
-    <div style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+    <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
       <?= number_format($totalKg, 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 500; color: var(--text-muted);">kg</span>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Materiales reciclables</span>
@@ -67,11 +64,11 @@
 <div class="card" style="margin-bottom: 2rem; border: 1px solid <?= ($totalPendientes > 0) ? 'rgba(245, 158, 11, 0.4)' : 'var(--border-color)' ?>;">
   <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: <?= ($totalPendientes > 0) ? 'rgba(245, 158, 11, 0.05)' : 'transparent' ?>;">
     <div>
-      <h2 class="card-title" style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
-        <span>⏳ Solicitudes de Registro en Etapa de Auditoría</span>
+      <h2 class="card-title" style="margin: 0;">
+        Solicitudes de Registro en Auditoría
       </h2>
       <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0;">
-        Empresas que completaron el registro y están esperando que verifiques sus datos fiscales y apruebes su ingreso.
+        Empresas que completaron el registro y están esperando verificación de personería y datos fiscales.
       </p>
     </div>
     <span class="badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; font-size: 0.85rem; font-weight: 700;">
@@ -97,7 +94,7 @@
         <?php if (!empty($empresasPendientes)): ?>
           <?php foreach ($empresasPendientes as $ep): ?>
             <tr style="background: rgba(245, 158, 11, 0.03);">
-              <td style="color: var(--text-muted); font-family: monospace; font-size: 0.85rem;">
+              <td style="color: var(--text-muted); font-size: 0.85rem;">
                 #<?= esc($ep['id']) ?>
               </td>
               <td>
@@ -109,13 +106,13 @@
                 </div>
               </td>
               <td>
-                <span style="font-family: monospace; font-weight: 700; color: #92400e; background: #fef3c7; padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid #fde68a;">
+                <span style="font-weight: 700; color: #92400e; background: #fef3c7; padding: 0.25rem 0.5rem; border-radius: 4px; border: 1px solid #fde68a;">
                   <?= esc($ep['cuit']) ?>
                 </span>
               </td>
               <td style="font-size: 0.85rem; color: var(--text-secondary);">
-                <div>📞 <?= esc($ep['telefono']) ?></div>
-                <div style="font-size: 0.75rem; color: var(--text-muted);">📍 <?= esc($ep['direccion'] ?? 'Sin dirección') ?></div>
+                <div><?= esc($ep['telefono']) ?></div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);"><?= esc($ep['direccion'] ?? 'Sin dirección') ?></div>
               </td>
               <td style="font-size: 0.85rem;">
                 <div style="color: var(--text-primary); font-weight: 600;"><?= esc($ep['rubro'] ?? 'No especificado') ?></div>
@@ -128,8 +125,8 @@
                 <div style="font-size: 0.75rem; color: var(--text-muted);"><?= date('H:i', strtotime($ep['created_at'])) ?> hs</div>
               </td>
               <td>
-                <span class="badge badge-reservado">
-                  ⏳ En Auditoría
+                <span class="badge badge-warning">
+                  En Auditoría
                 </span>
               </td>
               <td style="text-align: right;">
@@ -142,7 +139,7 @@
                   <form action="<?= site_url('admin/empresa/aprobar/' . $ep['id']) ?>" method="POST" style="margin: 0; display: inline;">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-primary btn-sm" style="background: #059669; border-color: #10b981;" title="Aprobar empresa y permitirle ingresar">
-                      ✓ Aprobar
+                      Aprobar
                     </button>
                   </form>
 
@@ -150,7 +147,7 @@
                   <form action="<?= site_url('admin/empresa/rechazar/' . $ep['id']) ?>" method="POST" style="margin: 0; display: inline;">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-secondary btn-sm" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4);" title="Rechazar solicitud de registro">
-                      ✕ Rechazar
+                      Rechazar
                     </button>
                   </form>
                 </div>
@@ -160,7 +157,6 @@
         <?php else: ?>
           <tr>
             <td colspan="8" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary);">
-              <span style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">🎉</span>
               <strong>No hay empresas pendientes de auditoría en este momento.</strong>
               <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
                 Todas las solicitudes de registro han sido procesadas.
@@ -242,14 +238,14 @@
               </td>
               <td>
                 <?php if ($empresa['estado'] === 'activo'): ?>
-                  <span class="badge badge-success">● Habilitada / Activa</span>
+                  <span class="badge badge-success">● Habilitada</span>
                 <?php elseif ($empresa['estado'] === 'rechazado'): ?>
                   <span class="badge" style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;">
-                    ✕ Solicitud Rechazada
+                    Solicitud Rechazada
                   </span>
                 <?php else: ?>
                   <span class="badge" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;">
-                    ⏸️ Suspendida
+                    Suspendida
                   </span>
                 <?php endif; ?>
               </td>
@@ -263,21 +259,21 @@
                     <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
                       <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Pausar temporalmente acceso de la empresa">
-                        ⏸ Pausar
+                        Pausar
                       </button>
                     </form>
                   <?php elseif ($empresa['estado'] === 'inactivo'): ?>
                     <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
                       <button type="submit" class="btn btn-secondary btn-sm" style="color: #16a34a;" title="Reactivar acceso comercial de la empresa">
-                        ▶ Reactivar
+                        Reactivar
                       </button>
                     </form>
                   <?php elseif ($empresa['estado'] === 'rechazado'): ?>
                     <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
                       <button type="submit" class="btn btn-secondary btn-sm" style="color: #059669;" title="Reconsiderar y autorizar ingreso">
-                        ✓ Aprobar
+                        Aprobar
                       </button>
                     </form>
                   <?php endif; ?>
@@ -288,7 +284,6 @@
         <?php else: ?>
           <tr>
             <td colspan="9" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary);">
-              <span style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">🏢</span>
               <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">
                 No hay empresas procesadas registradas aún.
               </p>

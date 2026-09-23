@@ -9,7 +9,7 @@
   </div>
   <div>
     <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary">
-      ➕ Publicar Nuevo Lote
+      Publicar Lote
     </a>
   </div>
 </div>
@@ -107,14 +107,14 @@
               <td style="text-align: right; white-space: nowrap;">
                 <div style="display: inline-flex; gap: 0.3rem; align-items: center;">
                   <a href="<?= site_url('productos/ver/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Ver detalles y contacto">
-                    👁 Ver
+                    Ver
                   </a>
                   <?php if ($esPropio || $esAdmin): ?>
                     <a href="<?= site_url('productos/editar/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Editar lote propio">
-                      ✏ Editar
+                      Editar
                     </a>
                     <a href="<?= site_url('productos/confirmar-eliminar/' . $p['id']) ?>" class="btn btn-danger btn-sm" title="Eliminar este lote">
-                      🗑
+                      Eliminar
                     </a>
                   <?php endif; ?>
                 </div>
@@ -142,7 +142,7 @@
                   Sé el primero en circular excedentes o mermas plásticas para la industria de la red.
                 </p>
                 <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">
-                  ➕ Publicar Primer Lote
+                  Publicar Primer Lote
                 </a>
               <?php endif; ?>
             </td>

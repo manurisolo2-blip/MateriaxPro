@@ -14,10 +14,9 @@
         <?= csrf_field() ?>
 
         <!-- Aviso Informativo de la Etapa de Auditoría -->
-        <div style="background: rgba(15, 118, 110, 0.08); border: 1px solid rgba(15, 118, 110, 0.25); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.5rem; display: flex; gap: 0.75rem; align-items: flex-start;">
-          <span style="font-size: 1.25rem; line-height: 1;">🛡️</span>
-          <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.4;">
-            <strong style="color: var(--brand-teal);">Proceso de Auditoría Fiscal:</strong> Al completar el formulario, tu solicitud será revisada por el administrador para validar el CUIT y los datos de tu empresa antes de habilitar el acceso comercial a la plataforma.
+        <div style="background: rgba(15, 118, 110, 0.06); border: 1px solid rgba(15, 118, 110, 0.2); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.5rem;">
+          <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.45;">
+            <strong style="color: var(--color-primary);">Proceso de Auditoría Fiscal:</strong> Al completar el formulario, tu solicitud será revisada por el administrador para validar el CUIT y los datos de tu empresa antes de habilitar el acceso comercial a la plataforma.
           </div>
         </div>
 
@@ -182,7 +181,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-          ✓ Enviar Solicitud de Registro a Auditoría
+          Enviar Solicitud de Registro
         </button>
       </form>
     </div>

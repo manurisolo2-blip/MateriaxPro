@@ -114,10 +114,10 @@
 
         <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
           <button type="submit" class="btn btn-primary">
-            ✓ Guardar Cambios del Lote
+            Guardar Cambios
           </button>
           <a href="<?= site_url('productos') ?>" class="btn btn-secondary">
-            ← Descartar Cambios y Volver
+            Cancelar y Volver
           </a>
         </div>
       </form>

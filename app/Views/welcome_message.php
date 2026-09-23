@@ -5,10 +5,9 @@
      ========================================================================== -->
 <section class="hero-wrapper" id="inicio">
   <div class="hero-content">
-    <span class="hero-pill">Proyecto Página Web · Hito 1 · 6° B · ITRT</span>
     <h1 class="hero-heading" style="text-align: left; margin-bottom: 1rem;">
       Transformar excedentes plásticos en <br>
-      <span style="color: var(--color-accent);">recursos industriales de valor</span>
+      <span style="color: var(--color-primary);">recursos industriales de valor</span>
     </h1>
     <p class="hero-desc" style="text-align: left; max-width: 580px; margin-bottom: 1.75rem;">
       Plataforma corporativa que conecta industrias y plantas manufactureras para publicar, solicitar y reutilizar excedentes de polímeros industriales (PE, PP, PVC, ABS, Nylon) con trazabilidad verificada, sesiones seguras y arquitectura MVC en CodeIgniter 4.
@@ -17,17 +16,17 @@
     <div class="hero-actions" style="justify-content: flex-start;">
       <?php if (session()->get('isLoggedIn')): ?>
         <a href="<?= site_url('productos') ?>" class="btn btn-primary">
-          📦 Ver Inventario de Polímeros
+          Ver Inventario de Polímeros
         </a>
         <a href="<?= site_url('productos/crear') ?>" class="btn btn-secondary">
-          ➕ Publicar Lote de Material
+          Publicar Lote de Material
         </a>
       <?php else: ?>
         <a href="<?= site_url('login') ?>" class="btn btn-primary">
-          🏢 Iniciar Sesión Corporativa
+          Iniciar Sesión Corporativa
         </a>
         <a href="<?= site_url('register') ?>" class="btn btn-secondary">
-          📝 Registrar Empresa
+          Registrar Empresa
         </a>
       <?php endif; ?>
     </div>
@@ -51,12 +50,12 @@
 
   <!-- Panel Asimétrico de Destacado Industrial -->
   <div class="featured-lot-box">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-      <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: 700; letter-spacing: 0.05em;">LOTE DESTACADO #PE-904</span>
-      <span class="featured-lot-badge">✓ AUDITADO</span>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+      <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Lote #PE-904</span>
+      <span class="badge badge-success">Auditado</span>
     </div>
 
-    <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.5rem;">
+    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
       PEAD Molido Inyección & Soplado
     </h3>
     <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
@@ -66,7 +65,7 @@
     <div class="spec-grid">
       <div class="spec-item">
         <span class="spec-label">Volumen Disponible</span>
-        <span class="spec-value accent">12.500 kg</span>
+        <span class="spec-value" style="color: var(--color-primary);">12.500 kg</span>
       </div>
       <div class="spec-item">
         <span class="spec-label">Índice Fluidez (MFI)</span>
@@ -82,8 +81,8 @@
       </div>
     </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
-      <span style="font-size: 0.82rem; color: var(--text-muted);">📍 San Martín, Buenos Aires</span>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem;">
+      <span style="font-size: 0.82rem; color: var(--text-muted);">Planta San Martín, Buenos Aires</span>
       <?php if (session()->get('isLoggedIn')): ?>
         <a href="<?= site_url('productos') ?>" class="btn btn-sm btn-primary">
           Ver en Inventario &rarr;
@@ -102,7 +101,6 @@
      ========================================================================== -->
 <section class="content-section" id="ecosistema">
   <div class="section-heading">
-    <span class="section-eyebrow">SEGURIDAD & CONFIABILIDAD INDUSTRIAL</span>
     <h2 class="section-title">Ecosistema B2B de Alta Confianza</h2>
     <p class="section-subtitle">
       MateriaX garantiza transacciones institucionales seguras mediante verificación de personería jurídica, custodia de especificaciones técnicas y trazabilidad integral en cada planta participante.
@@ -113,9 +111,8 @@
     <!-- Pilar 1: Auditoría & Control Institucional -->
     <div class="role-card">
       <div class="role-header">
-        <div class="role-icon">🛡️</div>
         <div>
-          <span style="font-size: 0.75rem; color: var(--color-accent); font-weight: 700; text-transform: uppercase;">GOBERNANZA</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">GOBERNANZA</span>
           <h3 class="role-title">Auditoría & Control</h3>
         </div>
       </div>
@@ -124,15 +121,12 @@
       </p>
       <ul class="role-list">
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Homologación de Empresas:</strong> Validación estricta de CUIT ante AFIP y poderes de representación legal.</span>
         </li>
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Moderación de Calidad:</strong> Control sobre fichas técnicas para asegurar lotes de polímeros verídicos.</span>
         </li>
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Trazabilidad de Masa:</strong> Supervisión de indicadores de impacto ecológico y kilogramos valorizados.</span>
         </li>
       </ul>
@@ -141,9 +135,8 @@
     <!-- Pilar 2: Empresas Verificadas -->
     <div class="role-card">
       <div class="role-header">
-        <div class="role-icon" style="background-color: #ecfdf5; border-color: #a7f3d0;">🏭</div>
         <div>
-          <span style="font-size: 0.75rem; color: #047857; font-weight: 700; text-transform: uppercase;">RED HOMOLOGADA</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">RED HOMOLOGADA</span>
           <h3 class="role-title">Empresas & Plantas</h3>
         </div>
       </div>
@@ -152,15 +145,12 @@
       </p>
       <ul class="role-list">
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Faceta Oferente:</strong> Publicación directa de excedentes, scraps limpios, granzas y pallets con ficha técnica oficial.</span>
         </li>
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Faceta Demandante:</strong> Consulta protegida y reserva de materias primas secundarias para reinyección en procesos.</span>
         </li>
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Trato Directo B2B:</strong> Datos de contacto corporativo e intercambio directo entre plantas productivas.</span>
         </li>
       </ul>
@@ -169,9 +159,8 @@
     <!-- Pilar 3: Transparencia Total -->
     <div class="role-card">
       <div class="role-header">
-        <div class="role-icon" style="background-color: #fef3c7; border-color: #fde68a;">🌐</div>
         <div>
-          <span style="font-size: 0.75rem; color: #b45309; font-weight: 700; text-transform: uppercase;">TRANSPARENCIA</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">TRANSPARENCIA</span>
           <h3 class="role-title">Catálogo Abierto</h3>
         </div>
       </div>
@@ -180,15 +169,12 @@
       </p>
       <ul class="role-list">
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Catálogo Estandarizado:</strong> Clasificación por tipo de polímero (PE, PP, PVC, ABS, PA, PET).</span>
         </li>
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Filtros por Origen:</strong> Búsqueda por ubicación geográfica y características mecánicas del lote.</span>
         </li>
         <li>
-          <span class="status-dot" style="margin-top: 0.45rem; flex-shrink: 0; background-color: var(--color-accent); box-shadow: 0 0 6px var(--color-accent);"></span>
           <span><strong>Acceso Protegido:</strong> Datos de contacto y reserva reservados para miembros registrados con sesión iniciada.</span>
         </li>
       </ul>
@@ -201,7 +187,6 @@
      ========================================================================== -->
 <section class="content-section" id="polimeros">
   <div class="section-heading">
-    <span class="section-eyebrow">MATERIAS PRIMAS RECUPERADAS</span>
     <h2 class="section-title">Familias de Polímeros en Circulación</h2>
     <p class="section-subtitle">
       Gestión y reutilización de mermas, scraps y pellets plásticos entre plantas productivas para reducir costos de abastecimiento y la huella de carbono.
@@ -296,7 +281,6 @@
      ========================================================================== -->
 <section class="content-section" id="seguridad">
   <div class="section-heading">
-    <span class="section-eyebrow">ARQUITECTURA DE SEGURIDAD</span>
     <h2 class="section-title">Infraestructura & Protección de Datos</h2>
     <p class="section-subtitle">
       Desarrollado bajo las directrices estrictas de CodeIgniter 4, garantizando robustez institucional y validación en el servidor.
@@ -304,26 +288,23 @@
   </div>
 
   <div class="grid-3">
-    <div class="feature-box">
-      <span class="feature-icon">🔒</span>
-      <h3 class="feature-title">Cifrado Criptográfico BCrypt</h3>
-      <p class="feature-text">
+    <div class="role-card">
+      <h3 class="role-title">Cifrado Criptográfico BCrypt</h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;">
         Todas las credenciales de acceso se protegen con la función nativa <code>password_hash()</code> utilizando algoritmo bcrypt con coste adaptativo, sin almacenamiento en texto claro.
       </p>
     </div>
 
-    <div class="feature-box">
-      <span class="feature-icon">🛡️</span>
-      <h3 class="feature-title">Filtros de Sesión & CSRF</h3>
-      <p class="feature-text">
+    <div class="role-card">
+      <h3 class="role-title">Filtros de Sesión & CSRF</h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;">
         Middleware <code>AuthFilter</code> que intercepta peticiones a módulos protegidos y tokens CSRF activos en formularios para prevenir falsificación de peticiones en sitios cruzados.
       </p>
     </div>
 
-    <div class="feature-box">
-      <span class="feature-icon">📋</span>
-      <h3 class="feature-title">Validación Server-Side</h3>
-      <p class="feature-text">
+    <div class="role-card">
+      <h3 class="role-title">Validación Server-Side</h3>
+      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;">
         Saneamiento estricto de campos numéricos, correos corporativos únicos y cadenas de texto mediante el sistema de validación nativo de CodeIgniter 4 antes de persistir en MySQL.
       </p>
     </div>
@@ -335,14 +316,13 @@
      ========================================================================== -->
 <section class="content-section" id="metricas">
   <div class="section-heading">
-    <span class="section-eyebrow">IMPACTO ECOLÓGICO E INDUSTRIAL</span>
     <h2 class="section-title">Métricas de la Red MateriaX</h2>
     <p class="section-subtitle">
       Indicadores calculados sobre las operaciones y lotes canalizados hacia procesos de reciclaje y valorización.
     </p>
   </div>
 
-  <div class="impact-grid">
+  <div class="grid-4">
     <div class="impact-card">
       <div class="impact-num">+24.800</div>
       <div class="impact-label">Kilogramos Recuperados</div>
@@ -376,7 +356,7 @@
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Resumen de Entregables — Hito 1 (Primeros Pasos)</h3>
-      <span style="font-size: 0.8rem; color: var(--color-accent); font-weight: 700;">Instituto Técnico Río Tercero · 6° B</span>
+      <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Instituto Técnico Río Tercero · 6° B</span>
     </div>
     <div class="card-body">
       <div class="form-row">
@@ -413,7 +393,6 @@
      ========================================================================== -->
 <section class="content-section" id="contacto" style="border-bottom: 1px solid var(--border-color); padding-bottom: 3.5rem;">
   <div class="section-heading">
-    <span class="section-eyebrow">CANALES DE ATENCIÓN</span>
     <h2 class="section-title">Contacto & Mesa de Ayuda Institucional</h2>
     <p class="section-subtitle">
       Coordina inspecciones técnicas, consultas normativas o asistencia para la homologación de plantas en la red.
@@ -421,24 +400,21 @@
   </div>
 
   <div class="grid-3">
-    <div class="card" style="margin-bottom: 0; padding: 1.5rem; text-align: center;">
-      <div style="font-size: 2rem; margin-bottom: 0.5rem;">📧</div>
-      <h4 style="color: var(--text-primary); margin-bottom: 0.25rem;">Mesa de Operaciones</h4>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Consultas sobre lotes y registros corporativos</p>
-      <a href="mailto:contacto@materiax.com.ar" style="font-weight: 600;">contacto@materiax.com.ar</a>
+    <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: center;">
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">Mesa de Operaciones</h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">Consultas sobre lotes y registros corporativos</p>
+      <a href="mailto:contacto@materiax.com.ar" style="font-weight: 600; color: var(--color-primary);">contacto@materiax.com.ar</a>
     </div>
 
-    <div class="card" style="margin-bottom: 0; padding: 1.5rem; text-align: center;">
-      <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏢</div>
-      <h4 style="color: var(--text-primary); margin-bottom: 0.25rem;">Sede Institucional</h4>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Instituto Técnico Río Tercero</p>
-      <span style="color: var(--text-primary); font-size: 0.9rem;">Río Tercero, Córdoba, Argentina</span>
+    <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: center;">
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">Sede Institucional</h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">Instituto Técnico Río Tercero</p>
+      <span style="color: var(--text-primary); font-size: 0.9rem; font-weight: 500;">Río Tercero, Córdoba, Argentina</span>
     </div>
 
-    <div class="card" style="margin-bottom: 0; padding: 1.5rem; text-align: center;">
-      <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏱️</div>
-      <h4 style="color: var(--text-primary); margin-bottom: 0.25rem;">Horario Operativo</h4>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Atención a plantas industriales</p>
+    <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: center;">
+      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">Horario Operativo</h3>
+      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">Atención a plantas industriales</p>
       <span style="color: var(--color-success); font-weight: 600; font-size: 0.9rem;">Lunes a Viernes: 08:00 — 17:00 hs</span>
     </div>
   </div>

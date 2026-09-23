@@ -25,23 +25,23 @@
         <?php if (session()->get('isLoggedIn')): ?>
           <?php if (session()->get('rol') === 'admin'): ?>
             <li class="nav-item">
-              <a href="<?= site_url('admin') ?>" class="active">🛡️ Panel Admin</a>
+              <a href="<?= site_url('admin') ?>">Panel Admin</a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('admin/lotes') ?>">📋 Moderar Lotes</a>
+              <a href="<?= site_url('admin/lotes') ?>">Moderar Lotes</a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('productos') ?>">📦 Mercado</a>
+              <a href="<?= site_url('productos') ?>">Mercado</a>
             </li>
           <?php else: ?>
             <li class="nav-item">
-              <a href="<?= site_url('panel') ?>" class="active">📊 Mi Panel</a>
+              <a href="<?= site_url('panel') ?>">Mi Panel</a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('productos') ?>">📦 Mercado</a>
+              <a href="<?= site_url('productos') ?>">Mercado</a>
             </li>
             <li class="nav-item">
-              <a href="<?= site_url('productos/crear') ?>">➕ Publicar Lote</a>
+              <a href="<?= site_url('productos/crear') ?>">Publicar Lote</a>
             </li>
           <?php endif; ?>
         <?php else: ?>
@@ -72,7 +72,7 @@
             <span class="status-dot"></span>
             <span><?= esc(session()->get('nombre')) ?></span>
           </a>
-          <a href="<?= site_url('perfil') ?>" class="btn btn-secondary btn-sm" title="Editar datos y contraseña">👤 Perfil</a>
+          <a href="<?= site_url('perfil') ?>" class="btn btn-secondary btn-sm" title="Editar datos y contraseña">Perfil</a>
           <a href="<?= site_url('logout') ?>" class="btn btn-secondary btn-sm" title="Cerrar sesión de forma segura">Cerrar Sesión</a>
         <?php else: ?>
           <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm">Iniciar Sesión</a>

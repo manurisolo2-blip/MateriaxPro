@@ -8,15 +8,15 @@
   </div>
 
   <div class="card" style="border-color: rgba(239, 68, 68, 0.4);">
-    <div class="card-header" style="background-color: rgba(239, 68, 68, 0.12); border-bottom-color: rgba(239, 68, 68, 0.3);">
-      <h2 class="card-title" style="color: #f87171; display: flex; align-items: center; gap: 0.6rem;">
-        <span>⚠️</span> Confirmar Eliminación Definitiva de Lote
+    <div class="card-header" style="background-color: rgba(239, 68, 68, 0.08); border-bottom-color: rgba(239, 68, 68, 0.25);">
+      <h2 class="card-title" style="color: #e11d48;">
+        Confirmar Eliminación de Lote
       </h2>
     </div>
 
     <div class="card-body">
       <p style="font-size: 1.05rem; color: var(--text-primary); margin-bottom: 1.25rem;">
-        ¿Está completamente seguro de que desea eliminar el siguiente lote de material de la plataforma?
+        ¿Está seguro de que desea eliminar el siguiente lote de material de la plataforma?
       </p>
 
       <div style="background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
@@ -47,7 +47,7 @@
       </div>
 
       <div class="alert alert-error" style="margin-bottom: 1.75rem;">
-        <span class="alert-icon">🛑</span>
+        <span class="alert-icon">!</span>
         <div>
           <strong>Advertencia de Seguridad:</strong> Esta operación es irreversible. El registro será removido permanentemente de la base de datos y ya no estará disponible para cotizaciones ni trazabilidad en la red.
         </div>
@@ -58,11 +58,11 @@
         <?= csrf_field() ?>
 
         <button type="submit" class="btn btn-danger" style="flex: 1; min-width: 240px;">
-          🗑 Eliminar Lote Definitivamente de la Red
+          Eliminar Lote Definitivamente
         </button>
 
         <a href="<?= site_url('productos/ver/' . $producto['id']) ?>" class="btn btn-secondary" style="text-align: center;">
-          ← Conservar Lote y Volver
+          Cancelar y Conservar Lote
         </a>
       </form>
     </div>

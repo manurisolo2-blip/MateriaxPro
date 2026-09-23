@@ -1,10 +1,7 @@
 <?= view('templates/header', ['pageTitle' => 'Mi Cuenta Empresarial | MateriaX']) ?>
 
 <div style="margin-bottom: 2rem;">
-  <span style="font-size: 0.85rem; color: var(--color-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-    PANEL DE GESTIÓN CORPORATIVA
-  </span>
-  <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+  <h1 style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
     <?= esc($user['nombre']) ?>
   </h1>
   <p style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -16,7 +13,7 @@
 <div class="grid-3" style="margin-top: 0; margin-bottom: 2rem;">
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Lotes Publicados</span>
-    <div style="font-size: 1.8rem; font-weight: 800; color: var(--color-accent); margin-top: 0.25rem;">
+    <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
       <?= count($misProductos) ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">En inventario circular</span>
@@ -152,7 +149,7 @@
           </div>
 
           <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
-            ✓ Guardar Cambios del Perfil
+            Guardar Cambios
           </button>
         </form>
       </div>
@@ -206,7 +203,7 @@
           </div>
 
           <button type="submit" class="btn btn-secondary btn-block" style="margin-top: 0.5rem;">
-            🔒 Actualizar Contraseña
+            Actualizar Contraseña
           </button>
         </form>
       </div>
@@ -219,7 +216,7 @@
       <div class="card-header">
         <h3 class="card-title">Mis Lotes de Material</h3>
         <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">
-          ➕ Publicar Lote
+          Publicar Lote
         </a>
       </div>
       <div class="card-body" style="padding: 1rem;">
@@ -238,12 +235,12 @@
                   </div>
                 </div>
 
-                <div style="display: flex; gap: 0.4rem;">
+                <div style="display: inline-flex; gap: 0.4rem;">
                   <a href="<?= site_url('productos/editar/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Editar lote">
-                    ✏
+                    Editar
                   </a>
                   <a href="<?= site_url('productos/ver/' . $p['id']) ?>" class="btn btn-secondary btn-sm" title="Ver ficha">
-                    👁
+                    Ver
                   </a>
                 </div>
               </div>

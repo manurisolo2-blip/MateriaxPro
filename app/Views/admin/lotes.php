@@ -2,10 +2,7 @@
 
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <span style="font-size: 0.85rem; color: var(--brand-teal); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">
-      MODERACIÓN DEL MERCADO
-    </span>
-    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+    <h1 style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
       Supervisión Global de Lotes
     </h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem;">
@@ -15,7 +12,7 @@
 
   <div style="display: flex; gap: 0.75rem; align-items: center;">
     <a href="<?= site_url('admin') ?>" class="btn btn-secondary">
-      ← Panel de Administración
+      Volver al Panel
     </a>
   </div>
 </div>
@@ -104,7 +101,7 @@
                   <form action="<?= site_url('admin/lotes/eliminar/' . $lote['id']) ?>" method="POST" style="margin: 0; display: inline;">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Dar de baja lote por moderación administrativa">
-                      🗑 Dar de Baja
+                      Dar de baja
                     </button>
                   </form>
                 </div>
@@ -114,7 +111,6 @@
         <?php else: ?>
           <tr>
             <td colspan="9" style="text-align: center; padding: 2.5rem 1rem; color: var(--text-secondary);">
-              <span style="font-size: 1.5rem; display: block; margin-bottom: 0.5rem;">📦</span>
               <p style="font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem;">
                 No hay lotes de polímeros publicados en la plataforma actualmente.
               </p>

@@ -28,10 +28,10 @@
     <div style="display: flex; gap: 0.5rem; align-items: center;">
       <?php if ($esPropio || $esAdmin): ?>
         <a href="<?= site_url('productos/editar/' . $producto['id']) ?>" class="btn btn-secondary btn-sm" title="Editar ficha de lote">
-          ✏ Editar Lote
+          Editar Lote
         </a>
         <a href="<?= site_url('productos/confirmar-eliminar/' . $producto['id']) ?>" class="btn btn-danger btn-sm" title="Eliminar publicación">
-          🗑 Dar de Baja
+          Dar de baja
         </a>
       <?php endif; ?>
     </div>
@@ -41,21 +41,21 @@
   <div class="grid-3" style="margin-top: 0; margin-bottom: 1.5rem;">
     <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Volumen Total</span>
-      <div style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin-top: 0.25rem;">
+      <div style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
         <?= number_format((float)$producto['cantidad_kg'], 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 500; color: var(--text-secondary);">kg</span>
       </div>
     </div>
 
     <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Precio Unitario</span>
-      <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-success); margin-top: 0.25rem;">
+      <div style="font-size: 1.6rem; font-weight: 700; color: var(--color-success); margin-top: 0.25rem;">
         $<?= number_format((float)$producto['precio_unitario'], 2, ',', '.') ?> <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">/ kg</span>
       </div>
     </div>
 
     <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Valor Estimado Lote</span>
-      <div style="font-size: 1.6rem; font-weight: 800; color: var(--color-accent); margin-top: 0.25rem;">
+      <div style="font-size: 1.6rem; font-weight: 700; color: var(--color-primary); margin-top: 0.25rem;">
         $<?= number_format((float)$producto['cantidad_kg'] * (float)$producto['precio_unitario'], 2, ',', '.') ?>
       </div>
     </div>
@@ -69,7 +69,7 @@
     <div class="card-body">
       <div style="margin-bottom: 1.25rem;">
         <strong style="color: var(--text-secondary); font-size: 0.9rem;">Ubicación de Origen / Planta:</strong>
-        <p style="font-size: 1.05rem; color: var(--text-primary); margin-top: 0.2rem;">📍 <?= esc($producto['ubicacion']) ?></p>
+        <p style="font-size: 1.05rem; color: var(--text-primary); margin-top: 0.2rem;"><?= esc($producto['ubicacion']) ?></p>
       </div>
 
       <div>
@@ -90,19 +90,19 @@
       <div class="form-row">
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">Empresa Oferente:</span>
-          <p style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">🏢 <?= esc($producto['empresa_nombre'] ?? 'Empresa Registrada') ?></p>
+          <p style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);"><?= esc($producto['empresa_nombre'] ?? 'Empresa Registrada') ?></p>
         </div>
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">Correo Electrónico:</span>
-          <p style="font-size: 1.05rem; color: var(--color-accent);">✉ <?= esc($producto['empresa_email'] ?? 'No especificado') ?></p>
+          <p style="font-size: 1.05rem; color: var(--color-primary);"><?= esc($producto['empresa_email'] ?? 'No especificado') ?></p>
         </div>
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">Teléfono:</span>
-          <p style="font-size: 1.05rem; color: var(--text-primary);">📞 <?= esc($producto['empresa_telefono'] ?? 'No especificado') ?></p>
+          <p style="font-size: 1.05rem; color: var(--text-primary);"><?= esc($producto['empresa_telefono'] ?? 'No especificado') ?></p>
         </div>
         <div>
           <span style="font-size: 0.85rem; color: var(--text-muted);">CUIT:</span>
-          <p style="font-size: 1.05rem; color: var(--text-primary);">📄 <?= esc($producto['empresa_cuit'] ?? 'Sin CUIT') ?></p>
+          <p style="font-size: 1.05rem; color: var(--text-primary);"><?= esc($producto['empresa_cuit'] ?? 'Sin CUIT') ?></p>
         </div>
       </div>
     </div>

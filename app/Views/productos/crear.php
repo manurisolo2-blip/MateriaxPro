@@ -118,10 +118,10 @@
 
         <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
           <button type="submit" class="btn btn-primary">
-            ✓ Publicar Lote en Inventario
+            Publicar Lote
           </button>
           <a href="<?= site_url('productos') ?>" class="btn btn-secondary">
-            ← Descartar y Volver
+            Cancelar y Volver
           </a>
         </div>
       </form>
