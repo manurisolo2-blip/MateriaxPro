@@ -111,10 +111,7 @@
     <!-- Pilar 1: Auditoría & Control Institucional -->
     <div class="role-card">
       <div class="role-header">
-        <div>
-          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">GOBERNANZA</span>
-          <h3 class="role-title">Auditoría & Control</h3>
-        </div>
+        <h3 class="role-title">Auditoría & Control</h3>
       </div>
       <p style="font-size: 0.9rem; color: var(--text-secondary);">
         Velar por la integridad, legalidad técnica y cumplimiento normativo ambiental en toda la red de intercambio de recursos.
@@ -135,10 +132,7 @@
     <!-- Pilar 2: Empresas Verificadas -->
     <div class="role-card">
       <div class="role-header">
-        <div>
-          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">RED HOMOLOGADA</span>
-          <h3 class="role-title">Empresas & Plantas</h3>
-        </div>
+        <h3 class="role-title">Empresas & Plantas</h3>
       </div>
       <p style="font-size: 0.9rem; color: var(--text-secondary);">
         Operación industrial en dos facetas operativas integradas sin intermediarios innecesarios:
@@ -159,10 +153,7 @@
     <!-- Pilar 3: Transparencia Total -->
     <div class="role-card">
       <div class="role-header">
-        <div>
-          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">TRANSPARENCIA</span>
-          <h3 class="role-title">Catálogo Abierto</h3>
-        </div>
+        <h3 class="role-title">Catálogo Abierto</h3>
       </div>
       <p style="font-size: 0.9rem; color: var(--text-secondary);">
         Visualización pública de las categorías industriales y trazabilidad abierta de la red de economía circular.

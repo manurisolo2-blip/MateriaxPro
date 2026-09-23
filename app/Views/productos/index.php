@@ -2,7 +2,7 @@
 
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
   <div>
-    <h1 style="font-size: 1.8rem; font-weight: 800; color: var(--text-primary);">Inventario de Polímeros Industriales</h1>
+    <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">Inventario de Polímeros Industriales</h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem;">
       Módulo funcional protegido: visualización de lotes de excedentes disponibles en la red.
     </p>

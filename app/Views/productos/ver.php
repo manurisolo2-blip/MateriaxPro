@@ -6,7 +6,7 @@
       <a href="<?= site_url('productos') ?>" style="color: var(--text-secondary); font-size: 0.9rem;">
         &larr; Volver al inventario general
       </a>
-      <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-top: 0.35rem;">
+      <h1 style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.35rem;">
         <?= esc($producto['nombre']) ?>
       </h1>
       <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem;">
