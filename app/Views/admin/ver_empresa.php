@@ -1,10 +1,15 @@
 <?= view('templates/header', ['pageTitle' => 'Detalle de Empresa | MateriaX Admin']) ?>
 
-<div style="margin-bottom: 1.5rem;">
-  <a href="<?= site_url('admin') ?>" class="btn btn-secondary btn-sm" style="margin-bottom: 1rem; display: inline-block;">
-    &larr; Volver al Panel de Administración
-  </a>
+<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<nav aria-label="Migas de pan" class="breadcrumb">
+  <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item"><a href="<?= site_url('admin') ?>">Panel Admin</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item" aria-current="page">Auditoría: <?= esc($empresa['nombre']) ?></span>
+</nav>
 
+<div style="margin-bottom: 1.5rem;">
   <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
     <div>
       <h1 style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
@@ -189,14 +194,14 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Lote</th>
-          <th>Tipo Polímero</th>
-          <th>Volumen (kg)</th>
-          <th>Precio Unit.</th>
-          <th>Ubicación</th>
-          <th>Estado</th>
-          <th>Fecha Publicación</th>
-          <th style="text-align: right;">Acción</th>
+          <th scope="col">Lote</th>
+          <th scope="col">Tipo Polímero</th>
+          <th scope="col">Volumen (kg)</th>
+          <th scope="col">Precio Unit.</th>
+          <th scope="col">Ubicación</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Fecha Publicación</th>
+          <th scope="col" style="text-align: right;">Acción</th>
         </tr>
       </thead>
       <tbody>

@@ -1,5 +1,14 @@
 <?= view('templates/header', ['pageTitle' => 'Supervisión de Lotes | MateriaX Admin']) ?>
 
+<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<nav aria-label="Migas de pan" class="breadcrumb">
+  <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item"><a href="<?= site_url('admin') ?>">Panel Admin</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item" aria-current="page">Supervisión de Lotes</span>
+</nav>
+
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
   <div>
     <h1 style="font-size: 2.2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
@@ -34,15 +43,15 @@
     <table class="table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Lote / Denominación</th>
-          <th>Empresa Oferente</th>
-          <th>Polímero</th>
-          <th>Volumen</th>
-          <th>Precio Unit.</th>
-          <th>Ubicación</th>
-          <th>Estado</th>
-          <th style="text-align: right;">Moderación</th>
+          <th scope="col">ID</th>
+          <th scope="col">Lote / Denominación</th>
+          <th scope="col">Empresa Oferente</th>
+          <th scope="col">Polímero</th>
+          <th scope="col">Volumen</th>
+          <th scope="col">Precio Unit.</th>
+          <th scope="col">Ubicación</th>
+          <th scope="col">Estado</th>
+          <th scope="col" style="text-align: right;">Moderación</th>
         </tr>
       </thead>
       <tbody>

@@ -31,37 +31,37 @@
 </div>
 
 <!-- Tarjetas de Métricas de la Empresa -->
-<div class="grid-4" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Mis Lotes Publicados</span>
-    <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
+<div class="grid-4" style="margin-bottom: 2rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Mis Lotes Publicados</span>
+    <div class="metric-card-value">
       <?= $totalLotes ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);"><?= $lotesDisponibles ?> disponibles en la red</span>
+    <span class="metric-card-sub"><?= $lotesDisponibles ?> disponibles en la red</span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Kilos en Oferta</span>
-    <div style="font-size: 2rem; font-weight: 700; color: var(--color-cyan); margin-top: 0.25rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Kilos en Oferta</span>
+    <div class="metric-card-value" style="color: var(--color-cyan);">
       <?= number_format($totalKilos, 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 600; color: var(--text-secondary);">kg</span>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">Materia prima circular</span>
+    <span class="metric-card-sub">Materia prima circular</span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Valor en Oferta (Est.)</span>
-    <div style="font-size: 2rem; font-weight: 700; color: var(--color-success); margin-top: 0.25rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Valor en Oferta (Est.)</span>
+    <div class="metric-card-value" style="color: var(--color-success);">
       $<?= number_format($valorEstimado, 0, ',', '.') ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">Valorización total de inventario</span>
+    <span class="metric-card-sub">Valorización total de inventario</span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Estado de Cuenta</span>
-    <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-success); margin-top: 0.5rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Estado de Cuenta</span>
+    <div class="metric-card-value" style="color: var(--color-success); font-size: 1.6rem;">
       Homologada
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">Revisión fiscal aprobada</span>
+    <span class="metric-card-sub">Revisión fiscal aprobada</span>
   </div>
 </div>
 
@@ -85,14 +85,14 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Lote / Material</th>
-          <th>Polímero</th>
-          <th>Cantidad</th>
-          <th>Precio / Kg</th>
-          <th>Ubicación</th>
-          <th>Estado</th>
-          <th>Fecha</th>
-          <th style="text-align: right;">Acciones</th>
+          <th scope="col">Lote / Material</th>
+          <th scope="col">Polímero</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Precio / Kg</th>
+          <th scope="col">Ubicación</th>
+          <th scope="col">Estado</th>
+          <th scope="col">Fecha</th>
+          <th scope="col" style="text-align: right;">Acciones</th>
         </tr>
       </thead>
       <tbody>

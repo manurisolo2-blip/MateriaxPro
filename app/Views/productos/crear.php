@@ -1,11 +1,17 @@
 <?= view('templates/header', ['pageTitle' => 'Publicar Excedente Industrial | MateriaX']) ?>
 
-<div style="max-width: 760px; margin: 1rem auto;">
+<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<nav aria-label="Migas de pan" class="breadcrumb" style="max-width: 760px; margin: 0 auto 1rem;">
+  <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item"><a href="<?= site_url('productos') ?>">Mercado</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item" aria-current="page">Publicar Lote</span>
+</nav>
+
+<div style="max-width: 760px; margin: 0 auto 2rem;">
   <div style="margin-bottom: 1.25rem;">
-    <a href="<?= site_url('productos') ?>" style="color: var(--text-secondary); font-size: 0.9rem;">
-      &larr; Volver al inventario de polímeros
-    </a>
-    <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.4rem;">
+    <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.2rem;">
       Publicar Nuevo Lote de Material
     </h1>
     <p style="color: var(--text-secondary); font-size: 0.95rem;">

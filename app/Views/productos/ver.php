@@ -1,15 +1,21 @@
 <?= view('templates/header', ['pageTitle' => esc($producto['nombre']) . ' | MateriaX']) ?>
 
-<div style="max-width: 850px; margin: 1.5rem auto;">
-  <div style="margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<nav aria-label="Migas de pan" class="breadcrumb" style="max-width: 850px; margin: 0 auto 1rem;">
+  <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item"><a href="<?= site_url('productos') ?>">Mercado</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item" aria-current="page">Lote #<?= esc($producto['id']) ?></span>
+</nav>
+
+<div style="max-width: 850px; margin: 0 auto 2rem;">
+  <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
     <div>
-      <a href="<?= site_url('productos') ?>" style="color: var(--text-secondary); font-size: 0.9rem;">
-        &larr; Volver al inventario general
-      </a>
-      <h1 style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.35rem;">
+      <h1 style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.4rem 0;">
         <?= esc($producto['nombre']) ?>
       </h1>
-      <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem;">
+      <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
         <span class="badge badge-polimero <?= badge_polimero_class($producto['tipo_polimero']) ?>"><?= esc($producto['tipo_polimero']) ?></span>
         <span class="badge <?= badge_estado_class($producto['estado']) ?>"><?= esc($producto['estado']) ?></span>
         <span style="color: var(--text-muted); font-size: 0.85rem;">Publicado el <?= date('d/m/Y H:i', strtotime($producto['created_at'])) ?></span>
@@ -34,25 +40,28 @@
 
   <!-- Métricas Principales del Lote -->
   <div class="grid-3" style="margin-top: 0; margin-bottom: 1.5rem;">
-    <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-      <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Volumen Total</span>
-      <div style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
+    <div class="metric-card">
+      <span class="metric-card-label">Volumen Total</span>
+      <div class="metric-card-value">
         <?= format_kg($producto['cantidad_kg']) ?>
       </div>
+      <span class="metric-card-sub">Masa pesada en báscula</span>
     </div>
 
-    <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-      <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Precio Unitario</span>
-      <div style="font-size: 1.6rem; font-weight: 700; color: var(--color-success); margin-top: 0.25rem;">
+    <div class="metric-card">
+      <span class="metric-card-label">Precio Unitario</span>
+      <div class="metric-card-value" style="color: var(--color-success);">
         <?= format_precio($producto['precio_unitario']) ?> <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">/ kg</span>
       </div>
+      <span class="metric-card-sub">Sin flete ni IVA</span>
     </div>
 
-    <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-      <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Valor Estimado Lote</span>
-      <div style="font-size: 1.6rem; font-weight: 700; color: var(--color-primary); margin-top: 0.25rem;">
+    <div class="metric-card">
+      <span class="metric-card-label">Valor Estimado Lote</span>
+      <div class="metric-card-value" style="color: var(--color-primary);">
         <?= format_precio((float)$producto['cantidad_kg'] * (float)$producto['precio_unitario']) ?>
       </div>
+      <span class="metric-card-sub">Total lote en oferta</span>
     </div>
   </div>
 

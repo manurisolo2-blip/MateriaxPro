@@ -47,7 +47,7 @@
 ?>
 
 <!-- 1. HERO SECTION -->
-<section class="hero-wrapper" id="inicio">
+<section class="hero-wrapper" id="inicio" aria-label="Introducción a la plataforma MateriaX">
   <div class="hero-content">
     <h1 class="hero-heading" style="text-align: left; margin-bottom: 1rem;">
       Transformar excedentes plásticos en <br>
@@ -99,9 +99,9 @@
 </section>
 
 <!-- 2. ECOSISTEMA B2B -->
-<section class="content-section" id="ecosistema">
+<section class="content-section" id="ecosistema" aria-labelledby="heading-ecosistema">
   <div class="section-heading">
-    <h2 class="section-title">Ecosistema B2B de Alta Confianza</h2>
+    <h2 class="section-title" id="heading-ecosistema">Ecosistema B2B de Alta Confianza</h2>
     <p class="section-subtitle">MateriaX garantiza transacciones institucionales seguras mediante verificación de personería jurídica, custodia de especificaciones técnicas y trazabilidad integral en cada planta participante.</p>
   </div>
   <div class="grid-3">
@@ -120,9 +120,9 @@
 </section>
 
 <!-- 3. FAMILIAS DE POLÍMEROS -->
-<section class="content-section" id="polimeros">
+<section class="content-section" id="polimeros" aria-labelledby="heading-polimeros">
   <div class="section-heading">
-    <h2 class="section-title">Familias de Polímeros en Circulación</h2>
+    <h2 class="section-title" id="heading-polimeros">Familias de Polímeros en Circulación</h2>
     <p class="section-subtitle">Gestión y reutilización de mermas, scraps y pellets plásticos entre plantas productivas para reducir costos de abastecimiento y la huella de carbono.</p>
   </div>
   <div class="polymer-grid">
@@ -142,9 +142,9 @@
 </section>
 
 <!-- 4. SEGURIDAD E INFRAESTRUCTURA -->
-<section class="content-section" id="seguridad">
+<section class="content-section" id="seguridad" aria-labelledby="heading-seguridad">
   <div class="section-heading">
-    <h2 class="section-title">Infraestructura & Protección de Datos</h2>
+    <h2 class="section-title" id="heading-seguridad">Infraestructura & Protección de Datos</h2>
     <p class="section-subtitle">Desarrollado bajo las directrices estrictas de CodeIgniter 4, garantizando robustez institucional y validación en el servidor.</p>
   </div>
   <div class="grid-3">
@@ -158,9 +158,9 @@
 </section>
 
 <!-- 5. MÉTRICAS DE IMPACTO -->
-<section class="content-section" id="metricas">
+<section class="content-section" id="metricas" aria-labelledby="heading-metricas">
   <div class="section-heading">
-    <h2 class="section-title">Métricas de la Red MateriaX</h2>
+    <h2 class="section-title" id="heading-metricas">Métricas de la Red MateriaX</h2>
     <p class="section-subtitle">Indicadores calculados sobre las operaciones y lotes canalizados hacia procesos de reciclaje y valorización.</p>
   </div>
   <div class="grid-4">
@@ -175,11 +175,11 @@
 </section>
 
 <!-- 6. ENTREGABLES HITO 1 -->
-<section class="content-section" style="margin-bottom: 2rem;">
+<section class="content-section" style="margin-bottom: 2rem;" aria-label="Resumen de entregables">
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Resumen de Entregables — Hito 1 (Primeros Pasos)</h3>
-      <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Instituto Técnico Río Tercero · 6° B</span>
+      <span style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Instituto Técnico Río Tercero &middot; 6° B</span>
     </div>
     <div class="card-body">
       <div class="form-row">
@@ -209,9 +209,9 @@
 </section>
 
 <!-- 7. CONTACTO -->
-<section class="content-section" id="contacto" style="border-bottom: 1px solid var(--border-color); padding-bottom: 3.5rem;">
+<section class="content-section" id="contacto" style="border-bottom: 1px solid var(--border-color); padding-bottom: 3.5rem;" aria-labelledby="heading-contacto">
   <div class="section-heading">
-    <h2 class="section-title">Contacto & Mesa de Ayuda Institucional</h2>
+    <h2 class="section-title" id="heading-contacto">Contacto & Mesa de Ayuda Institucional</h2>
     <p class="section-subtitle">Coordina inspecciones técnicas, consultas normativas o asistencia para la homologación de plantas en la red.</p>
   </div>
   <div class="grid-3">

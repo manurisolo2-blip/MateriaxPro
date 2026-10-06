@@ -26,7 +26,7 @@
         </h3>
 
         <div class="form-group">
-          <label for="nombre" class="form-label">Razón Social o Nombre de la Empresa *</label>
+          <label for="nombre" class="form-label">Razón Social o Nombre de la Empresa <span class="required-indicator" aria-hidden="true">*</span></label>
           <input 
             type="text" 
             name="nombre" 
@@ -34,6 +34,7 @@
             class="form-control" 
             value="<?= old('nombre') ?>" 
             placeholder="Ej: Industrias Plásticas del Centro S.A." 
+            autocomplete="organization"
             required
             autofocus
           >
@@ -41,7 +42,7 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="cuit" class="form-label">CUIT de la Empresa *</label>
+            <label for="cuit" class="form-label">CUIT de la Empresa <span class="required-indicator" aria-hidden="true">*</span></label>
             <input 
               type="text" 
               name="cuit" 
@@ -54,7 +55,7 @@
           </div>
 
           <div class="form-group">
-            <label for="rubro" class="form-label">Rubro / Sector Productivo *</label>
+            <label for="rubro" class="form-label">Rubro / Sector Productivo <span class="required-indicator" aria-hidden="true">*</span></label>
             <select name="rubro" id="rubro" class="form-select" required>
               <option value="">-- Seleccionar Rubro --</option>
               <option value="Moldeo por Inyección" <?= (old('rubro') === 'Moldeo por Inyección') ? 'selected' : '' ?>>Moldeo por Inyección</option>
@@ -77,7 +78,7 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="email" class="form-label">Correo Electrónico Corporativo *</label>
+            <label for="email" class="form-label">Correo Electrónico Corporativo <span class="required-indicator" aria-hidden="true">*</span></label>
             <input 
               type="email" 
               name="email" 
@@ -85,27 +86,29 @@
               class="form-control" 
               value="<?= old('email') ?>" 
               placeholder="contacto@empresa.com" 
+              autocomplete="email"
               required
             >
             <p class="form-hint">Se utilizará para iniciar sesión en la plataforma.</p>
           </div>
 
           <div class="form-group">
-            <label for="telefono" class="form-label">Teléfono Institucional *</label>
+            <label for="telefono" class="form-label">Teléfono Institucional <span class="required-indicator" aria-hidden="true">*</span></label>
             <input 
-              type="text" 
+              type="tel" 
               name="telefono" 
               id="telefono" 
               class="form-control" 
               value="<?= old('telefono') ?>" 
               placeholder="+54 3571 XXXXXX"
+              autocomplete="tel"
               required
             >
           </div>
         </div>
 
         <div class="form-group">
-          <label for="direccion" class="form-label">Domicilio de Planta o Sede Fiscal *</label>
+          <label for="direccion" class="form-label">Domicilio de Planta o Sede Fiscal <span class="required-indicator" aria-hidden="true">*</span></label>
           <input 
             type="text" 
             name="direccion" 
@@ -113,13 +116,14 @@
             class="form-control" 
             value="<?= old('direccion') ?>" 
             placeholder="Ej: Av. Industrial 1250, Parque Industrial" 
+            autocomplete="street-address"
             required
           >
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="ciudad" class="form-label">Ciudad / Localidad *</label>
+            <label for="ciudad" class="form-label">Ciudad / Localidad <span class="required-indicator" aria-hidden="true">*</span></label>
             <input 
               type="text" 
               name="ciudad" 
@@ -127,12 +131,13 @@
               class="form-control" 
               value="<?= old('ciudad') ?>" 
               placeholder="Ej: Río Tercero" 
+              autocomplete="address-level2"
               required
             >
           </div>
 
           <div class="form-group">
-            <label for="provincia" class="form-label">Provincia *</label>
+            <label for="provincia" class="form-label">Provincia <span class="required-indicator" aria-hidden="true">*</span></label>
             <select name="provincia" id="provincia" class="form-select" required>
               <option value="">-- Seleccionar Provincia --</option>
               <option value="Córdoba" <?= (old('provincia', 'Córdoba') === 'Córdoba') ? 'selected' : '' ?>>Córdoba</option>
@@ -156,25 +161,27 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="password" class="form-label">Contraseña de Acceso *</label>
+            <label for="password" class="form-label">Contraseña de Acceso <span class="required-indicator" aria-hidden="true">*</span></label>
             <input 
               type="password" 
               name="password" 
               id="password" 
               class="form-control" 
               placeholder="Mínimo 6 caracteres" 
+              autocomplete="new-password"
               required
             >
           </div>
 
           <div class="form-group">
-            <label for="pass_confirm" class="form-label">Confirmar Contraseña *</label>
+            <label for="pass_confirm" class="form-label">Confirmar Contraseña <span class="required-indicator" aria-hidden="true">*</span></label>
             <input 
               type="password" 
               name="pass_confirm" 
               id="pass_confirm" 
               class="form-control" 
               placeholder="Repite la contraseña" 
+              autocomplete="new-password"
               required
             >
           </div>

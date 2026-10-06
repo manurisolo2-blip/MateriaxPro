@@ -1,5 +1,12 @@
 <?= view('templates/header', ['pageTitle' => $pageTitle ?? 'Inventario de Polímeros']) ?>
 
+<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<nav aria-label="Migas de pan" class="breadcrumb">
+  <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
+  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+  <span class="breadcrumb-item" aria-current="page">Mercado de Polímeros</span>
+</nav>
+
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
   <div>
     <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary);">Inventario de Polímeros Industriales</h1>
@@ -59,15 +66,15 @@
     <table class="table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Material / Lote</th>
-          <th>Polímero</th>
-          <th>Cantidad</th>
-          <th>Precio / Kg</th>
-          <th>Ubicación</th>
-          <th>Empresa Oferente</th>
-          <th>Estado</th>
-          <th style="text-align: right;">Acciones</th>
+          <th scope="col">ID</th>
+          <th scope="col">Material / Lote</th>
+          <th scope="col">Polímero</th>
+          <th scope="col">Cantidad</th>
+          <th scope="col">Precio / Kg</th>
+          <th scope="col">Ubicación</th>
+          <th scope="col">Empresa Oferente</th>
+          <th scope="col">Estado</th>
+          <th scope="col" style="text-align: right;">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -118,28 +125,30 @@
           <?php endforeach; ?>
         <?php else: ?>
           <tr>
-            <td colspan="9" style="text-align: center; padding: 3rem 1.5rem; color: var(--text-secondary);">
-              <?php if (!empty($busqueda) || !empty($filtroActual)): ?>
-                <p style="font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">
-                  No se encontraron lotes de polímeros que coincidan con los filtros aplicados.
-                </p>
-                <p style="font-size: 0.92rem; margin-bottom: 1.25rem;">
-                  Intenta modificando los términos de búsqueda o restableciendo los filtros de polímero.
-                </p>
-                <a href="<?= site_url('productos') ?>" class="btn btn-secondary btn-sm">
-                  Limpiar Filtros de Búsqueda
-                </a>
-              <?php else: ?>
-                <p style="font-size: 1.1rem; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-primary);">
-                  No hay lotes de polímeros disponibles en el inventario actualmente.
-                </p>
-                <p style="font-size: 0.92rem; margin-bottom: 1.25rem;">
-                  Sé el primero en circular excedentes o mermas plásticas para la industria de la red.
-                </p>
-                <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">
-                  Publicar Primer Lote
-                </a>
-              <?php endif; ?>
+            <td colspan="9" style="padding: 0;">
+              <div class="empty-state">
+                <?php if (!empty($busqueda) || !empty($filtroActual)): ?>
+                  <h3 class="empty-state-title">
+                    No se encontraron lotes con los filtros aplicados
+                  </h3>
+                  <p class="empty-state-desc">
+                    Intenta modificando los términos de búsqueda o restableciendo los filtros de polímero para ver todo el inventario circular.
+                  </p>
+                  <a href="<?= site_url('productos') ?>" class="btn btn-secondary btn-sm">
+                    Limpiar Filtros de Búsqueda
+                  </a>
+                <?php else: ?>
+                  <h3 class="empty-state-title">
+                    No hay lotes de polímeros registrados actualmente
+                  </h3>
+                  <p class="empty-state-desc">
+                    Sé el primero en circular excedentes o mermas plásticas para la red industrial.
+                  </p>
+                  <a href="<?= site_url('productos/crear') ?>" class="btn btn-primary btn-sm">
+                    Publicar Primer Lote
+                  </a>
+                <?php endif; ?>
+              </div>
             </td>
           </tr>
         <?php endif; ?>

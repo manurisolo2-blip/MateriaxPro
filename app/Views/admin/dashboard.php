@@ -21,43 +21,41 @@
 
 <!-- Tarjetas de Métricas Globales del Administrador -->
 <div class="grid-4" style="margin-bottom: 2rem;">
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">
-      Auditorías Pendientes
-    </span>
-    <div style="font-size: 2.2rem; font-weight: 700; color: <?= ($totalPendientes > 0) ? '#d97706' : 'var(--color-primary)' ?>; margin-top: 0.25rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Auditorías Pendientes</span>
+    <div class="metric-card-value" style="color: <?= ($totalPendientes > 0) ? '#d97706' : 'var(--color-primary)' ?>;">
       <?= $totalPendientes ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">
+    <span class="metric-card-sub">
       <?= ($totalPendientes > 0) ? 'Requieren tu aprobación' : 'Al día, sin solicitudes pendientes' ?>
     </span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Empresas Habilitadas</span>
-    <div style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Empresas Habilitadas</span>
+    <div class="metric-card-value">
       <?= $empresasActivas ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--color-success); font-weight: 600;">
+    <span class="metric-card-sub" style="color: var(--color-success); font-weight: 600;">
       Cuentas operando en la red
     </span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Lotes Publicados</span>
-    <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary); margin-top: 0.25rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Lotes Publicados</span>
+    <div class="metric-card-value" style="color: var(--color-primary);">
       <?= $totalLotes ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">Inventario circular activo</span>
+    <span class="metric-card-sub">Inventario circular activo</span>
   </div>
 
-    <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Volumen Total en Red</span>
-      <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
-        <?= format_kg($totalKg) ?>
-      </div>
-      <span style="font-size: 0.8rem; color: var(--text-secondary);">Materiales reciclables</span>
+  <div class="metric-card">
+    <span class="metric-card-label">Volumen Total en Red</span>
+    <div class="metric-card-value">
+      <?= format_kg($totalKg) ?>
     </div>
+    <span class="metric-card-sub">Materiales reciclables</span>
+  </div>
 </div>
 
 <!-- BANDEJA DE AUDITORÍA: EMPRESAS PENDIENTES DE APROBACIÓN -->
@@ -80,14 +78,14 @@
     <table class="table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Empresa Solicitante</th>
-          <th>CUIT</th>
-          <th>Contacto Institucional</th>
-          <th>Rubro & Ubicación</th>
-          <th>Fecha de Solicitud</th>
-          <th>Estado</th>
-          <th style="text-align: right;">Decisión de Auditoría</th>
+          <th scope="col">ID</th>
+          <th scope="col">Empresa Solicitante</th>
+          <th scope="col">CUIT</th>
+          <th scope="col">Contacto Institucional</th>
+          <th scope="col">Rubro & Ubicación</th>
+          <th scope="col">Fecha de Solicitud</th>
+          <th scope="col">Estado</th>
+          <th scope="col" style="text-align: right;">Decisión de Auditoría</th>
         </tr>
       </thead>
       <tbody>
@@ -187,15 +185,15 @@
     <table class="table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Empresa / Razón Social</th>
-          <th>CUIT</th>
-          <th>Contacto</th>
-          <th>Rubro & Ubicación</th>
-          <th>Lotes</th>
-          <th>Último Login</th>
-          <th>Estado</th>
-          <th style="text-align: right;">Moderación</th>
+          <th scope="col">ID</th>
+          <th scope="col">Empresa / Razón Social</th>
+          <th scope="col">CUIT</th>
+          <th scope="col">Contacto</th>
+          <th scope="col">Rubro & Ubicación</th>
+          <th scope="col">Lotes</th>
+          <th scope="col">Último Login</th>
+          <th scope="col">Estado</th>
+          <th scope="col" style="text-align: right;">Moderación</th>
         </tr>
       </thead>
       <tbody>

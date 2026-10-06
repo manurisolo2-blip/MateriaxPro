@@ -22,6 +22,7 @@
             class="form-control" 
             value="<?= old('email') ?>" 
             placeholder="contacto@empresa.com" 
+            autocomplete="email"
             required 
             autofocus
           >
@@ -35,6 +36,7 @@
             id="password" 
             class="form-control" 
             placeholder="Tu contraseña de acceso" 
+            autocomplete="current-password"
             required
           >
         </div>

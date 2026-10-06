@@ -11,28 +11,28 @@
 
 <!-- Tarjetas de Estadísticas de Cuenta -->
 <div class="grid-3" style="margin-top: 0; margin-bottom: 2rem;">
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Lotes Publicados</span>
-    <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Lotes Publicados</span>
+    <div class="metric-card-value">
       <?= count($misProductos) ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">En inventario circular</span>
+    <span class="metric-card-sub">En inventario circular</span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Miembro Desde</span>
-    <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-top: 0.4rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Miembro Desde</span>
+    <div class="metric-card-value" style="font-size: 1.5rem;">
       <?= date('d/m/Y', strtotime($user['created_at'])) ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--color-success);">Cuenta Homologada</span>
+    <span class="metric-card-sub" style="color: var(--color-success); font-weight: 600;">Cuenta Homologada</span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Último Acceso Registrado</span>
-    <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-top: 0.4rem;">
+  <div class="metric-card">
+    <span class="metric-card-label">Último Acceso Registrado</span>
+    <div class="metric-card-value" style="font-size: 1.4rem;">
       <?= !empty($user['ultimo_login']) ? date('d/m/Y H:i', strtotime($user['ultimo_login'])) : 'Sesión actual' ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">IP / Conexión Segura</span>
+    <span class="metric-card-sub">IP / Conexión Segura</span>
   </div>
 </div>
 

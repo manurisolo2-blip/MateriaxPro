@@ -15,14 +15,14 @@
   <?= csrf_field() ?>
 
   <div class="form-group">
-    <label for="nombre" class="form-label">Denominación del Material o Lote *</label>
+    <label for="nombre" class="form-label">Denominación del Material o Lote <span class="required-indicator" aria-hidden="true">*</span></label>
     <input type="text" name="nombre" id="nombre" class="form-control" value="<?= old('nombre', $p['nombre'] ?? '') ?>" placeholder="Ej: Pellet Polietileno Alta Densidad (HDPE) Recuperado" required>
     <span class="form-hint">Nombre técnico descriptivo del polímero o excedente (ej: pellet, scrap de inyección, granza reciclada).</span>
   </div>
 
   <div class="form-row">
     <div class="form-group">
-      <label for="tipo_polimero" class="form-label">Tipo de Polímero *</label>
+      <label for="tipo_polimero" class="form-label">Tipo de Polímero <span class="required-indicator" aria-hidden="true">*</span></label>
       <select name="tipo_polimero" id="tipo_polimero" class="form-select" required>
         <option value="">-- Seleccionar Polímero --</option>
         <?php foreach ($polimeros as $val => $lbl): ?>
@@ -33,7 +33,7 @@
     </div>
 
     <div class="form-group">
-      <label for="estado" class="form-label">Estado Comercial *</label>
+      <label for="estado" class="form-label">Estado Comercial <span class="required-indicator" aria-hidden="true">*</span></label>
       <select name="estado" id="estado" class="form-select" required>
         <?php foreach (['Disponible', 'Reservado', 'Vendido'] as $st): ?>
           <option value="<?= $st ?>" <?= ($selEst === $st) ? 'selected' : '' ?>><?= $st ?></option>
@@ -45,20 +45,20 @@
 
   <div class="form-row">
     <div class="form-group">
-      <label for="cantidad_kg" class="form-label">Volumen Disponible (en Kilogramos) *</label>
-      <input type="number" step="0.01" name="cantidad_kg" id="cantidad_kg" class="form-control" value="<?= old('cantidad_kg', $p['cantidad_kg'] ?? '') ?>" placeholder="Ej: 1500" required>
+      <label for="cantidad_kg" class="form-label">Volumen Disponible (en Kilogramos) <span class="required-indicator" aria-hidden="true">*</span></label>
+      <input type="number" step="0.01" inputmode="decimal" name="cantidad_kg" id="cantidad_kg" class="form-control" value="<?= old('cantidad_kg', $p['cantidad_kg'] ?? '') ?>" placeholder="Ej: 1500" required>
       <span class="form-hint">Peso neto total en kg listo para pesaje en báscula y despacho logístico.</span>
     </div>
 
     <div class="form-group">
-      <label for="precio_unitario" class="form-label">Precio Unitario ($ ARS por Kilogramo) *</label>
-      <input type="number" step="0.01" name="precio_unitario" id="precio_unitario" class="form-control" value="<?= old('precio_unitario', $p['precio_unitario'] ?? '') ?>" placeholder="Ej: 1450.00" required>
+      <label for="precio_unitario" class="form-label">Precio Unitario ($ ARS por Kilogramo) <span class="required-indicator" aria-hidden="true">*</span></label>
+      <input type="number" step="0.01" inputmode="decimal" name="precio_unitario" id="precio_unitario" class="form-control" value="<?= old('precio_unitario', $p['precio_unitario'] ?? '') ?>" placeholder="Ej: 1450.00" required>
       <span class="form-hint">Valor neto en pesos argentinos ($ ARS) por kilogramo, sin flete ni IVA.</span>
     </div>
   </div>
 
   <div class="form-group">
-    <label for="ubicacion" class="form-label">Ubicación de Origen / Planta de Retiro *</label>
+    <label for="ubicacion" class="form-label">Ubicación de Origen / Planta de Retiro <span class="required-indicator" aria-hidden="true">*</span></label>
     <input type="text" name="ubicacion" id="ubicacion" class="form-control" value="<?= old('ubicacion', $p['ubicacion'] ?? '') ?>" placeholder="Ej: Parque Industrial Río Tercero, Córdoba" required>
     <span class="form-hint">Planta fabril, parque industrial o depósito habilitado para la carga.</span>
   </div>
