@@ -11,12 +11,7 @@
       </h1>
       <div style="display: flex; gap: 0.75rem; align-items: center; margin-top: 0.5rem;">
         <span class="badge badge-polimero <?= badge_polimero_class($producto['tipo_polimero']) ?>"><?= esc($producto['tipo_polimero']) ?></span>
-        <?php 
-          $badgeClass = 'badge-disponible';
-          if ($producto['estado'] === 'Reservado') $badgeClass = 'badge-reservado';
-          if ($producto['estado'] === 'Vendido') $badgeClass = 'badge-vendido';
-        ?>
-        <span class="badge <?= $badgeClass ?>"><?= esc($producto['estado']) ?></span>
+        <span class="badge <?= badge_estado_class($producto['estado']) ?>"><?= esc($producto['estado']) ?></span>
         <span style="color: var(--text-muted); font-size: 0.85rem;">Publicado el <?= date('d/m/Y H:i', strtotime($producto['created_at'])) ?></span>
       </div>
     </div>
@@ -42,21 +37,21 @@
     <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Volumen Total</span>
       <div style="font-size: 1.6rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
-        <?= number_format((float)$producto['cantidad_kg'], 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 500; color: var(--text-secondary);">kg</span>
+        <?= format_kg($producto['cantidad_kg']) ?>
       </div>
     </div>
 
     <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Precio Unitario</span>
       <div style="font-size: 1.6rem; font-weight: 700; color: var(--color-success); margin-top: 0.25rem;">
-        $<?= number_format((float)$producto['precio_unitario'], 2, ',', '.') ?> <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">/ kg</span>
+        <?= format_precio($producto['precio_unitario']) ?> <span style="font-size: 0.9rem; font-weight: 500; color: var(--text-secondary);">/ kg</span>
       </div>
     </div>
 
     <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;">Valor Estimado Lote</span>
       <div style="font-size: 1.6rem; font-weight: 700; color: var(--color-primary); margin-top: 0.25rem;">
-        $<?= number_format((float)$producto['cantidad_kg'] * (float)$producto['precio_unitario'], 2, ',', '.') ?>
+        <?= format_precio((float)$producto['cantidad_kg'] * (float)$producto['precio_unitario']) ?>
       </div>
     </div>
   </div>

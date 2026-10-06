@@ -1,8 +1,52 @@
 <?= view('templates/header', ['pageTitle' => 'MateriaX | Red Industrial de Reutilización Circular']) ?>
+<?php
+  $isAuth = (bool) session()->get('isLoggedIn');
+  $familias = [
+    ['badge' => 'Polietileno (PE)', 'cls' => 'badge-polimero-pe', 'title' => 'PEAD, PEBD & Film', 'desc' => 'Sobrantes de inyección y soplado, baldes industriales, bidones descontaminados y film termocontraíble limpio para extrusión.', 'param' => 'polimero=' . urlencode('Polietileno (PE)'), 'cta' => 'Explorar Lotes de PE'],
+    ['badge' => 'Polipropileno (PP)', 'cls' => 'badge-polimero-pp', 'title' => 'PP Homopolímero & Copolímero', 'desc' => 'Scrap de recortes de prensa, carcasas de electrodomésticos, tapas y baldes con índices de fluidez verificados (MFI 8-15).', 'param' => 'polimero=' . urlencode('Polipropileno (PP)'), 'cta' => 'Explorar Lotes de PP'],
+    ['badge' => 'Materiales Técnicos', 'cls' => 'badge-polimero-abs', 'title' => 'ABS, PVC & Nylon (PA)', 'desc' => 'Descarte de perfilería rígida de PVC, piezas de ABS y poliamida PA6 molida con fibra de vidrio procedente del sector automotriz.', 'param' => 'polimero=ABS', 'cta' => 'Explorar Materiales Técnicos'],
+    ['badge' => 'Equipamiento', 'cls' => 'badge-polimero-equipamiento', 'title' => 'Pallets & Logística Reusable', 'desc' => 'Pallets plásticos reforzados (1200x1000mm) para rack y piso, cajas plásticas industriales, tolvas y tambores homologados.', 'param' => '', 'cta' => 'Ver Equipamiento'],
+  ];
 
-<!-- ==========================================================================
-     SECCIÓN 1: HERO SECTION ASIMÉTRICO (100% PHP & CSS PURO)
-     ========================================================================== -->
+  $ecosistema = [
+    ['title' => 'Auditoría & Control', 'desc' => 'Velar por la integridad, legalidad técnica y cumplimiento normativo ambiental en toda la red de intercambio de recursos.', 'items' => [
+      ['Homologación de Empresas:', 'Validación estricta de CUIT ante AFIP y poderes de representación legal.'],
+      ['Moderación de Calidad:', 'Control sobre fichas técnicas para asegurar lotes de polímeros verídicos.'],
+      ['Trazabilidad de Masa:', 'Supervisión de indicadores de impacto ecológico y kilogramos valorizados.'],
+    ]],
+    ['title' => 'Empresas & Plantas', 'desc' => 'Operación industrial en dos facetas operativas integradas sin intermediarios innecesarios:', 'items' => [
+      ['Faceta Oferente:', 'Publicación directa de excedentes, scraps limpios, granzas y pallets con ficha técnica oficial.'],
+      ['Faceta Demandante:', 'Consulta protegida y reserva de materias primas secundarias para reinyección en procesos.'],
+      ['Trato Directo B2B:', 'Datos de contacto corporativo e intercambio directo entre plantas productivas.'],
+    ]],
+    ['title' => 'Catálogo Abierto', 'desc' => 'Visualización pública de las categorías industriales y trazabilidad abierta de la red de economía circular.', 'items' => [
+      ['Catálogo Estandarizado:', 'Clasificación por tipo de polímero (PE, PP, PVC, ABS, PA, PET).'],
+      ['Filtros por Origen:', 'Búsqueda por ubicación geográfica y características mecánicas del lote.'],
+      ['Acceso Protegido:', 'Datos de contacto y reserva reservados para miembros registrados con sesión iniciada.'],
+    ]],
+  ];
+
+  $seguridad = [
+    ['title' => 'Cifrado Criptográfico BCrypt', 'desc' => 'Todas las credenciales de acceso se protegen con la función nativa password_hash() utilizando algoritmo bcrypt con coste adaptativo, sin almacenamiento en texto claro.'],
+    ['title' => 'Filtros de Sesión & CSRF', 'desc' => 'Middleware AuthFilter que intercepta peticiones a módulos protegidos y tokens CSRF activos en formularios para prevenir falsificación de peticiones en sitios cruzados.'],
+    ['title' => 'Validación Server-Side', 'desc' => 'Saneamiento estricto de campos numéricos, correos corporativos únicos y cadenas de texto mediante el sistema de validación nativo de CodeIgniter 4 antes de persistir en MySQL.'],
+  ];
+
+  $impacto = [
+    ['num' => '+24.800', 'lbl' => 'Kilogramos Recuperados', 'sub' => 'Polímeros reinyectados a manufactura'],
+    ['num' => '42', 'lbl' => 'Empresas Homologadas', 'sub' => 'Plantas con personería jurídica activa'],
+    ['num' => '-52.4 tn', 'lbl' => 'CO₂ Mitigado', 'sub' => 'Ahorro en producción de plástico virgen'],
+    ['num' => '100%', 'lbl' => 'Trazabilidad Documental', 'sub' => 'Origen y destino fiscal registrado'],
+  ];
+
+  $contacto = [
+    ['title' => 'Mesa de Operaciones', 'desc' => 'Consultas sobre lotes y registros corporativos', 'link' => 'mailto:contacto@materiax.com.ar', 'text' => 'contacto@materiax.com.ar'],
+    ['title' => 'Sede Institucional', 'desc' => 'Instituto Técnico Río Tercero', 'sub' => 'Río Tercero, Córdoba, Argentina'],
+    ['title' => 'Horario Operativo', 'desc' => 'Atención a plantas industriales', 'sub' => 'Lunes a Viernes: 08:00 — 17:00 hs', 'subClass' => 'color: var(--color-success); font-weight: 600;'],
+  ];
+?>
+
+<!-- 1. HERO SECTION -->
 <section class="hero-wrapper" id="inicio">
   <div class="hero-content">
     <h1 class="hero-heading" style="text-align: left; margin-bottom: 1rem;">
@@ -14,335 +58,123 @@
     </p>
 
     <div class="hero-actions" style="justify-content: flex-start;">
-      <?php if (session()->get('isLoggedIn')): ?>
-        <a href="<?= site_url('productos') ?>" class="btn btn-primary">
-          Ver Inventario de Polímeros
-        </a>
-        <a href="<?= site_url('productos/crear') ?>" class="btn btn-secondary">
-          Publicar Lote de Material
-        </a>
+      <?php if ($isAuth): ?>
+        <a href="<?= site_url('productos') ?>" class="btn btn-primary">Ver Inventario de Polímeros</a>
+        <a href="<?= site_url('productos/crear') ?>" class="btn btn-secondary">Publicar Lote de Material</a>
       <?php else: ?>
-        <a href="<?= site_url('login') ?>" class="btn btn-primary">
-          Iniciar Sesión Corporativa
-        </a>
-        <a href="<?= site_url('register') ?>" class="btn btn-secondary">
-          Registrar Empresa
-        </a>
+        <a href="<?= site_url('login') ?>" class="btn btn-primary">Iniciar Sesión Corporativa</a>
+        <a href="<?= site_url('register') ?>" class="btn btn-secondary">Registrar Empresa</a>
       <?php endif; ?>
     </div>
 
-    <!-- Ticker de Métricas Rápidas -->
     <div class="hero-stats-row">
-      <div class="hero-stat-card">
-        <span class="hero-stat-num">2.480 kg</span>
-        <span class="hero-stat-lbl">Plástico Recuperado</span>
-      </div>
-      <div class="hero-stat-card">
-        <span class="hero-stat-num">36</span>
-        <span class="hero-stat-lbl">Operaciones Activas</span>
-      </div>
-      <div class="hero-stat-card">
-        <span class="hero-stat-num" style="color: var(--color-success);">99.4%</span>
-        <span class="hero-stat-lbl">Validación B2B</span>
-      </div>
+      <div class="hero-stat-card"><span class="hero-stat-num">2.480 kg</span><span class="hero-stat-lbl">Plástico Recuperado</span></div>
+      <div class="hero-stat-card"><span class="hero-stat-num">36</span><span class="hero-stat-lbl">Operaciones Activas</span></div>
+      <div class="hero-stat-card"><span class="hero-stat-num" style="color: var(--color-success);">99.4%</span><span class="hero-stat-lbl">Validación B2B</span></div>
     </div>
   </div>
 
-  <!-- Panel Asimétrico de Destacado Industrial -->
   <div class="featured-lot-box">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
       <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 600;">Lote #PE-904</span>
       <span class="badge badge-success">Auditado</span>
     </div>
-
-    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
-      PEAD Molido Inyección & Soplado
-    </h3>
+    <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">PEAD Molido Inyección & Soplado</h3>
     <p style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem;">
       Sobrante industrial homogéneo de baldes y bidones. Descontaminado, libre de metales y con fluidez controlada para extrusión directa.
     </p>
-
     <div class="spec-grid">
-      <div class="spec-item">
-        <span class="spec-label">Volumen Disponible</span>
-        <span class="spec-value" style="color: var(--color-primary);">12.500 kg</span>
-      </div>
-      <div class="spec-item">
-        <span class="spec-label">Índice Fluidez (MFI)</span>
-        <span class="spec-value">0.35 g/10min</span>
-      </div>
-      <div class="spec-item">
-        <span class="spec-label">Densidad Específica</span>
-        <span class="spec-value">0.954 g/cm³</span>
-      </div>
-      <div class="spec-item">
-        <span class="spec-label">Pureza / Filtrado</span>
-        <span class="spec-value">99.8% Granza</span>
-      </div>
+      <div class="spec-item"><span class="spec-label">Volumen Disponible</span><span class="spec-value" style="color: var(--color-primary);">12.500 kg</span></div>
+      <div class="spec-item"><span class="spec-label">Índice Fluidez (MFI)</span><span class="spec-value">0.35 g/10min</span></div>
+      <div class="spec-item"><span class="spec-label">Densidad Específica</span><span class="spec-value">0.954 g/cm³</span></div>
+      <div class="spec-item"><span class="spec-label">Pureza / Filtrado</span><span class="spec-value">99.8% Granza</span></div>
     </div>
-
     <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem;">
       <span style="font-size: 0.82rem; color: var(--text-muted);">Planta San Martín, Buenos Aires</span>
-      <?php if (session()->get('isLoggedIn')): ?>
-        <a href="<?= site_url('productos') ?>" class="btn btn-sm btn-primary">
-          Ver en Inventario &rarr;
-        </a>
-      <?php else: ?>
-        <a href="<?= site_url('login') ?>" class="btn btn-sm btn-primary">
-          Acceder para Cotizar &rarr;
-        </a>
-      <?php endif; ?>
+      <a href="<?= site_url($isAuth ? 'productos' : 'login') ?>" class="btn btn-sm btn-primary">
+        <?= $isAuth ? 'Ver en Inventario &rarr;' : 'Acceder para Cotizar &rarr;' ?>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ==========================================================================
-     SECCIÓN 2: ECOSISTEMA & SEGURIDAD INDUSTRIAL B2B
-     ========================================================================== -->
+<!-- 2. ECOSISTEMA B2B -->
 <section class="content-section" id="ecosistema">
   <div class="section-heading">
     <h2 class="section-title">Ecosistema B2B de Alta Confianza</h2>
-    <p class="section-subtitle">
-      MateriaX garantiza transacciones institucionales seguras mediante verificación de personería jurídica, custodia de especificaciones técnicas y trazabilidad integral en cada planta participante.
-    </p>
+    <p class="section-subtitle">MateriaX garantiza transacciones institucionales seguras mediante verificación de personería jurídica, custodia de especificaciones técnicas y trazabilidad integral en cada planta participante.</p>
   </div>
-
   <div class="grid-3">
-    <!-- Pilar 1: Auditoría & Control Institucional -->
-    <div class="role-card">
-      <div class="role-header">
-        <h3 class="role-title">Auditoría & Control</h3>
+    <?php foreach ($ecosistema as $eco): ?>
+      <div class="role-card">
+        <div class="role-header"><h3 class="role-title"><?= $eco['title'] ?></h3></div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary);"><?= $eco['desc'] ?></p>
+        <ul class="role-list">
+          <?php foreach ($eco['items'] as $it): ?>
+            <li><span><strong><?= $it[0] ?></strong> <?= $it[1] ?></span></li>
+          <?php endforeach; ?>
+        </ul>
       </div>
-      <p style="font-size: 0.9rem; color: var(--text-secondary);">
-        Velar por la integridad, legalidad técnica y cumplimiento normativo ambiental en toda la red de intercambio de recursos.
-      </p>
-      <ul class="role-list">
-        <li>
-          <span><strong>Homologación de Empresas:</strong> Validación estricta de CUIT ante AFIP y poderes de representación legal.</span>
-        </li>
-        <li>
-          <span><strong>Moderación de Calidad:</strong> Control sobre fichas técnicas para asegurar lotes de polímeros verídicos.</span>
-        </li>
-        <li>
-          <span><strong>Trazabilidad de Masa:</strong> Supervisión de indicadores de impacto ecológico y kilogramos valorizados.</span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Pilar 2: Empresas Verificadas -->
-    <div class="role-card">
-      <div class="role-header">
-        <h3 class="role-title">Empresas & Plantas</h3>
-      </div>
-      <p style="font-size: 0.9rem; color: var(--text-secondary);">
-        Operación industrial en dos facetas operativas integradas sin intermediarios innecesarios:
-      </p>
-      <ul class="role-list">
-        <li>
-          <span><strong>Faceta Oferente:</strong> Publicación directa de excedentes, scraps limpios, granzas y pallets con ficha técnica oficial.</span>
-        </li>
-        <li>
-          <span><strong>Faceta Demandante:</strong> Consulta protegida y reserva de materias primas secundarias para reinyección en procesos.</span>
-        </li>
-        <li>
-          <span><strong>Trato Directo B2B:</strong> Datos de contacto corporativo e intercambio directo entre plantas productivas.</span>
-        </li>
-      </ul>
-    </div>
-
-    <!-- Pilar 3: Transparencia Total -->
-    <div class="role-card">
-      <div class="role-header">
-        <h3 class="role-title">Catálogo Abierto</h3>
-      </div>
-      <p style="font-size: 0.9rem; color: var(--text-secondary);">
-        Visualización pública de las categorías industriales y trazabilidad abierta de la red de economía circular.
-      </p>
-      <ul class="role-list">
-        <li>
-          <span><strong>Catálogo Estandarizado:</strong> Clasificación por tipo de polímero (PE, PP, PVC, ABS, PA, PET).</span>
-        </li>
-        <li>
-          <span><strong>Filtros por Origen:</strong> Búsqueda por ubicación geográfica y características mecánicas del lote.</span>
-        </li>
-        <li>
-          <span><strong>Acceso Protegido:</strong> Datos de contacto y reserva reservados para miembros registrados con sesión iniciada.</span>
-        </li>
-      </ul>
-    </div>
+    <?php endforeach; ?>
   </div>
 </section>
 
-<!-- ==========================================================================
-     SECCIÓN 3: FAMILIAS DE POLÍMEROS INDUSTRIALES
-     ========================================================================== -->
+<!-- 3. FAMILIAS DE POLÍMEROS -->
 <section class="content-section" id="polimeros">
   <div class="section-heading">
     <h2 class="section-title">Familias de Polímeros en Circulación</h2>
-    <p class="section-subtitle">
-      Gestión y reutilización de mermas, scraps y pellets plásticos entre plantas productivas para reducir costos de abastecimiento y la huella de carbono.
-    </p>
+    <p class="section-subtitle">Gestión y reutilización de mermas, scraps y pellets plásticos entre plantas productivas para reducir costos de abastecimiento y la huella de carbono.</p>
   </div>
-
   <div class="polymer-grid">
-    <!-- Familia 1: Polietileno -->
-    <div class="polymer-card">
-      <div>
-        <span class="polymer-badge badge-polimero-pe">Polietileno (PE)</span>
-        <h4 class="polymer-title">PEAD, PEBD & Film</h4>
-        <p class="polymer-desc">
-          Sobrantes de inyección y soplado, baldes industriales, bidones descontaminados y film termocontraíble limpio para extrusión.
-        </p>
+    <?php foreach ($familias as $f): ?>
+      <div class="polymer-card">
+        <div>
+          <span class="polymer-badge <?= $f['cls'] ?>"><?= $f['badge'] ?></span>
+          <h4 class="polymer-title"><?= $f['title'] ?></h4>
+          <p class="polymer-desc"><?= $f['desc'] ?></p>
+        </div>
+        <a href="<?= $isAuth ? site_url('productos' . ($f['param'] ? '?' . $f['param'] : '')) : site_url('login') ?>" class="btn btn-secondary btn-sm btn-block">
+          <?= $isAuth ? $f['cta'] . ' &rarr;' : 'Iniciar Sesión para Ver &rarr;' ?>
+        </a>
       </div>
-      <?php if (session()->get('isLoggedIn')): ?>
-        <a href="<?= site_url('productos?polimero=Polietileno (PE)') ?>" class="btn btn-secondary btn-sm btn-block">
-          Explorar Lotes de PE &rarr;
-        </a>
-      <?php else: ?>
-        <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm btn-block">
-          Iniciar Sesión para Ver &rarr;
-        </a>
-      <?php endif; ?>
-    </div>
-
-    <!-- Familia 2: Polipropileno -->
-    <div class="polymer-card">
-      <div>
-        <span class="polymer-badge badge-polimero-pp">Polipropileno (PP)</span>
-        <h4 class="polymer-title">PP Homopolímero & Copolímero</h4>
-        <p class="polymer-desc">
-          Scrap de recortes de prensa, carcasas de electrodomésticos, tapas y baldes con índices de fluidez verificados (MFI 8-15).
-        </p>
-      </div>
-      <?php if (session()->get('isLoggedIn')): ?>
-        <a href="<?= site_url('productos?polimero=Polipropileno (PP)') ?>" class="btn btn-secondary btn-sm btn-block">
-          Explorar Lotes de PP &rarr;
-        </a>
-      <?php else: ?>
-        <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm btn-block">
-          Iniciar Sesión para Ver &rarr;
-        </a>
-      <?php endif; ?>
-    </div>
-
-    <!-- Familia 3: Materiales Técnicos -->
-    <div class="polymer-card">
-      <div>
-        <span class="polymer-badge badge-polimero-abs">Materiales Técnicos</span>
-        <h4 class="polymer-title">ABS, PVC & Nylon (PA)</h4>
-        <p class="polymer-desc">
-          Descarte de perfilería rígida de PVC, piezas de ABS y poliamida PA6 molida con fibra de vidrio procedente del sector automotriz.
-        </p>
-      </div>
-      <?php if (session()->get('isLoggedIn')): ?>
-        <a href="<?= site_url('productos?polimero=ABS') ?>" class="btn btn-secondary btn-sm btn-block">
-          Explorar Materiales Técnicos &rarr;
-        </a>
-      <?php else: ?>
-        <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm btn-block">
-          Iniciar Sesión para Ver &rarr;
-        </a>
-      <?php endif; ?>
-    </div>
-
-    <!-- Familia 4: Equipamiento & Logística -->
-    <div class="polymer-card">
-      <div>
-        <span class="polymer-badge badge-polimero-equipamiento">Equipamiento</span>
-        <h4 class="polymer-title">Pallets & Logística Reusable</h4>
-        <p class="polymer-desc">
-          Pallets plásticos reforzados (1200x1000mm) para rack y piso, cajas plásticas industriales, tolvas y tambores homologados.
-        </p>
-      </div>
-      <?php if (session()->get('isLoggedIn')): ?>
-        <a href="<?= site_url('productos') ?>" class="btn btn-secondary btn-sm btn-block">
-          Ver Equipamiento &rarr;
-        </a>
-      <?php else: ?>
-        <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm btn-block">
-          Iniciar Sesión para Ver &rarr;
-        </a>
-      <?php endif; ?>
-    </div>
+    <?php endforeach; ?>
   </div>
 </section>
 
-<!-- ==========================================================================
-     SECCIÓN 4: INFRAESTRUCTURA Y SEGURIDAD TÉCNICA
-     ========================================================================== -->
+<!-- 4. SEGURIDAD E INFRAESTRUCTURA -->
 <section class="content-section" id="seguridad">
   <div class="section-heading">
     <h2 class="section-title">Infraestructura & Protección de Datos</h2>
-    <p class="section-subtitle">
-      Desarrollado bajo las directrices estrictas de CodeIgniter 4, garantizando robustez institucional y validación en el servidor.
-    </p>
+    <p class="section-subtitle">Desarrollado bajo las directrices estrictas de CodeIgniter 4, garantizando robustez institucional y validación en el servidor.</p>
   </div>
-
   <div class="grid-3">
-    <div class="role-card">
-      <h3 class="role-title">Cifrado Criptográfico BCrypt</h3>
-      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;">
-        Todas las credenciales de acceso se protegen con la función nativa <code>password_hash()</code> utilizando algoritmo bcrypt con coste adaptativo, sin almacenamiento en texto claro.
-      </p>
-    </div>
-
-    <div class="role-card">
-      <h3 class="role-title">Filtros de Sesión & CSRF</h3>
-      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;">
-        Middleware <code>AuthFilter</code> que intercepta peticiones a módulos protegidos y tokens CSRF activos en formularios para prevenir falsificación de peticiones en sitios cruzados.
-      </p>
-    </div>
-
-    <div class="role-card">
-      <h3 class="role-title">Validación Server-Side</h3>
-      <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;">
-        Saneamiento estricto de campos numéricos, correos corporativos únicos y cadenas de texto mediante el sistema de validación nativo de CodeIgniter 4 antes de persistir en MySQL.
-      </p>
-    </div>
+    <?php foreach ($seguridad as $s): ?>
+      <div class="role-card">
+        <h3 class="role-title"><?= $s['title'] ?></h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.55;"><?= $s['desc'] ?></p>
+      </div>
+    <?php endforeach; ?>
   </div>
 </section>
 
-<!-- ==========================================================================
-     SECCIÓN 5: MÉTRICAS DE IMPACTO CIRCULAR
-     ========================================================================== -->
+<!-- 5. MÉTRICAS DE IMPACTO -->
 <section class="content-section" id="metricas">
   <div class="section-heading">
     <h2 class="section-title">Métricas de la Red MateriaX</h2>
-    <p class="section-subtitle">
-      Indicadores calculados sobre las operaciones y lotes canalizados hacia procesos de reciclaje y valorización.
-    </p>
+    <p class="section-subtitle">Indicadores calculados sobre las operaciones y lotes canalizados hacia procesos de reciclaje y valorización.</p>
   </div>
-
   <div class="grid-4">
-    <div class="impact-card">
-      <div class="impact-num">+24.800</div>
-      <div class="impact-label">Kilogramos Recuperados</div>
-      <div class="impact-sub">Polímeros reinyectados a manufactura</div>
-    </div>
-
-    <div class="impact-card">
-      <div class="impact-num">42</div>
-      <div class="impact-label">Empresas Homologadas</div>
-      <div class="impact-sub">Plantas con personería jurídica activa</div>
-    </div>
-
-    <div class="impact-card">
-      <div class="impact-num">-52.4 tn</div>
-      <div class="impact-label">CO₂ Mitigado</div>
-      <div class="impact-sub">Ahorro en producción de plástico virgen</div>
-    </div>
-
-    <div class="impact-card">
-      <div class="impact-num">100%</div>
-      <div class="impact-label">Trazabilidad Documental</div>
-      <div class="impact-sub">Origen y destino fiscal registrado</div>
-    </div>
+    <?php foreach ($impacto as $imp): ?>
+      <div class="impact-card">
+        <div class="impact-num"><?= $imp['num'] ?></div>
+        <div class="impact-label"><?= $imp['lbl'] ?></div>
+        <div class="impact-sub"><?= $imp['sub'] ?></div>
+      </div>
+    <?php endforeach; ?>
   </div>
 </section>
 
-<!-- ==========================================================================
-     SECCIÓN 6: RESUMEN DE ENTREGABLES ACADÉMICOS (HITO 1)
-     ========================================================================== -->
+<!-- 6. ENTREGABLES HITO 1 -->
 <section class="content-section" style="margin-bottom: 2rem;">
   <div class="card">
     <div class="card-header">
@@ -356,19 +188,16 @@
           <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
             Documentado formalmente en <a href="<?= site_url('../docs/DER.md') ?>">docs/DER.md</a> y editable en Draw.io con <a href="<?= site_url('../docs/DER_drawio.xml') ?>">docs/DER_drawio.xml</a>.
           </p>
-
           <p><strong style="color: var(--text-primary);">2. Modelo Relacional:</strong></p>
           <p style="font-size: 0.9rem; color: var(--text-secondary);">
             Normalizado rigurosamente en 1FN, 2FN y 3FN en <a href="<?= site_url('../docs/MODELO_RELACIONAL.md') ?>">docs/MODELO_RELACIONAL.md</a> y script ejecutable en <code>database.sql</code>.
           </p>
         </div>
-
         <div>
           <p><strong style="color: var(--text-primary);">3. Login y Registro Seguro:</strong></p>
           <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
             Autenticación MVC funcionando con sesiones de CodeIgniter 4 y hash seguro <code>password_hash()</code>.
           </p>
-
           <p><strong style="color: var(--text-primary);">4. Primer Módulo Funcional (CRUD de Productos):</strong></p>
           <p style="font-size: 0.9rem; color: var(--text-secondary);">
             CRUD de la entidad secundaria <strong>productos</strong> (lotes de polímeros), con listado protegido sólo para usuarios con sesión activa y confirmación de borrado server-side.
@@ -379,35 +208,24 @@
   </div>
 </section>
 
-<!-- ==========================================================================
-     SECCIÓN 7: CONTACTO INSTITUCIONAL
-     ========================================================================== -->
+<!-- 7. CONTACTO -->
 <section class="content-section" id="contacto" style="border-bottom: 1px solid var(--border-color); padding-bottom: 3.5rem;">
   <div class="section-heading">
     <h2 class="section-title">Contacto & Mesa de Ayuda Institucional</h2>
-    <p class="section-subtitle">
-      Coordina inspecciones técnicas, consultas normativas o asistencia para la homologación de plantas en la red.
-    </p>
+    <p class="section-subtitle">Coordina inspecciones técnicas, consultas normativas o asistencia para la homologación de plantas en la red.</p>
   </div>
-
   <div class="grid-3">
-    <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: center;">
-      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">Mesa de Operaciones</h3>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">Consultas sobre lotes y registros corporativos</p>
-      <a href="mailto:contacto@materiax.com.ar" style="font-weight: 600; color: var(--color-primary);">contacto@materiax.com.ar</a>
-    </div>
-
-    <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: center;">
-      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">Sede Institucional</h3>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">Instituto Técnico Río Tercero</p>
-      <span style="color: var(--text-primary); font-size: 0.9rem; font-weight: 500;">Río Tercero, Córdoba, Argentina</span>
-    </div>
-
-    <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: center;">
-      <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;">Horario Operativo</h3>
-      <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;">Atención a plantas industriales</p>
-      <span style="color: var(--color-success); font-weight: 600; font-size: 0.9rem;">Lunes a Viernes: 08:00 — 17:00 hs</span>
-    </div>
+    <?php foreach ($contacto as $c): ?>
+      <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: center;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.4rem;"><?= $c['title'] ?></h3>
+        <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.85rem;"><?= $c['desc'] ?></p>
+        <?php if (!empty($c['link'])): ?>
+          <a href="<?= $c['link'] ?>" style="font-weight: 600; color: var(--color-primary);"><?= $c['text'] ?></a>
+        <?php else: ?>
+          <span style="<?= $c['subClass'] ?? 'color: var(--text-primary); font-size: 0.9rem; font-weight: 500;' ?>"><?= $c['sub'] ?></span>
+        <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
   </div>
 </section>
 

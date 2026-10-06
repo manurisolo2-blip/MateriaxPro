@@ -4,162 +4,91 @@ namespace App\Controllers;
 
 use App\Models\UserModel;
 use App\Models\ProductoModel;
+use CodeIgniter\HTTP\RedirectResponse;
 
 class Perfil extends BaseController
 {
     protected $helpers = ['form', 'url'];
+    protected UserModel $userModel;
+    protected ProductoModel $productoModel;
 
-    /**
-     * Muestra la información de la cuenta y publicaciones de la empresa
-     */
-    public function index()
+    public function __construct()
+    {
+        $this->userModel     = new UserModel();
+        $this->productoModel = new ProductoModel();
+    }
+
+    protected function getAuthUser(): array|RedirectResponse
     {
         $userId = (int) session()->get('user_id');
-        $userModel = new UserModel();
-        $user = $userModel->find($userId);
+        $user   = $this->userModel->find($userId);
+        return $user ?: redirect()->to(site_url('logout'));
+    }
 
-        if (!$user) {
-            return redirect()->to(site_url('logout'));
-        }
-
-        $productoModel = new ProductoModel();
-        $misProductos = $productoModel->where('user_id', $userId)
-                                     ->orderBy('created_at', 'DESC')
-                                     ->findAll();
+    public function index()
+    {
+        $user = $this->getAuthUser();
+        if ($user instanceof RedirectResponse) return $user;
 
         return view('perfil/index', [
             'pageTitle'    => 'Mi Cuenta Empresarial | MateriaX',
             'user'         => $user,
-            'misProductos' => $misProductos,
+            'misProductos' => $this->productoModel->where('user_id', $user['id'])->orderBy('created_at', 'DESC')->findAll(),
         ]);
     }
 
-    /**
-     * Actualiza los datos de contacto y radicación de la empresa
-     */
     public function actualizar()
     {
-        $userId = (int) session()->get('user_id');
-        $userModel = new UserModel();
-        $user = $userModel->find($userId);
-
-        if (!$user) {
-            return redirect()->to(site_url('logout'));
-        }
+        $user = $this->getAuthUser();
+        if ($user instanceof RedirectResponse) return $user;
 
         $rules = [
-            'nombre'    => 'required|min_length[3]|max_length[100]',
-            'cuit'      => 'required|min_length[10]|max_length[20]',
-            'telefono'  => 'required|min_length[6]|max_length[30]',
-            'rubro'     => 'required|max_length[100]',
-            'ciudad'    => 'required|max_length[100]',
-            'provincia' => 'required|max_length[100]',
-            'direccion' => 'required|max_length[150]',
+            'nombre'    => ['rules' => 'required|min_length[3]|max_length[100]', 'errors' => ['required' => 'La razón social es obligatoria.', 'min_length' => 'El nombre debe tener al menos 3 caracteres.']],
+            'cuit'      => ['rules' => 'required|min_length[10]|max_length[20]', 'errors' => ['required' => 'El CUIT es obligatorio.', 'min_length' => 'El CUIT debe tener al menos 10 caracteres.']],
+            'telefono'  => ['rules' => 'required|min_length[6]|max_length[30]', 'errors' => ['required' => 'El teléfono de contacto es obligatorio.', 'min_length' => 'El teléfono debe tener al menos 6 caracteres.']],
+            'rubro'     => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'El rubro industrial es obligatorio.']],
+            'ciudad'    => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'La ciudad es obligatoria.']],
+            'provincia' => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'La provincia es obligatoria.']],
+            'direccion' => ['rules' => 'required|max_length[150]', 'errors' => ['required' => 'El domicilio de planta es obligatorio.']],
         ];
 
-        $messages = [
-            'nombre' => [
-                'required'   => 'La razón social es obligatoria.',
-                'min_length' => 'El nombre debe tener al menos 3 caracteres.',
-            ],
-            'cuit' => [
-                'required'   => 'El CUIT es obligatorio.',
-                'min_length' => 'El CUIT debe tener al menos 10 caracteres.',
-            ],
-            'telefono' => [
-                'required'   => 'El teléfono de contacto es obligatorio.',
-                'min_length' => 'El teléfono debe tener al menos 6 caracteres.',
-            ],
-            'rubro' => [
-                'required' => 'El rubro industrial es obligatorio.',
-            ],
-            'ciudad' => [
-                'required' => 'La ciudad es obligatoria.',
-            ],
-            'provincia' => [
-                'required' => 'La provincia es obligatoria.',
-            ],
-            'direccion' => [
-                'required' => 'El domicilio de planta es obligatorio.',
-            ],
-        ];
-
-        if (!$this->validate($rules, $messages)) {
+        if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $data = [
-            'nombre'    => trim((string) $this->request->getPost('nombre')),
-            'cuit'      => trim((string) $this->request->getPost('cuit')),
-            'telefono'  => trim((string) $this->request->getPost('telefono')),
-            'rubro'     => trim((string) $this->request->getPost('rubro')),
-            'ciudad'    => trim((string) $this->request->getPost('ciudad')),
-            'provincia' => trim((string) $this->request->getPost('provincia')),
-            'direccion' => trim((string) $this->request->getPost('direccion')),
-        ];
+        $fields = ['nombre', 'cuit', 'telefono', 'rubro', 'ciudad', 'provincia', 'direccion'];
+        $data = [];
+        foreach ($fields as $f) {
+            $data[$f] = trim((string) $this->request->getPost($f));
+        }
 
-        $userModel->update($userId, $data);
-
-        // Actualizar datos de sesión activa
-        session()->set([
-            'nombre'    => $data['nombre'],
-            'cuit'      => $data['cuit'],
-            'telefono'  => $data['telefono'],
-            'rubro'     => $data['rubro'],
-            'ciudad'    => $data['ciudad'],
-            'provincia' => $data['provincia'],
-            'direccion' => $data['direccion'],
-        ]);
+        $this->userModel->update($user['id'], $data);
+        session()->set($data);
 
         return redirect()->to(site_url('perfil'))->with('success', '¡Datos empresariales actualizados correctamente!');
     }
 
-    /**
-     * Permite cambiar la contraseña verificando la actual
-     */
     public function cambiarPassword()
     {
-        $userId = (int) session()->get('user_id');
-        $userModel = new UserModel();
-        $user = $userModel->find($userId);
-
-        if (!$user) {
-            return redirect()->to(site_url('logout'));
-        }
+        $user = $this->getAuthUser();
+        if ($user instanceof RedirectResponse) return $user;
 
         $rules = [
-            'current_password' => 'required',
-            'new_password'     => 'required|min_length[6]',
-            'confirm_password' => 'required|matches[new_password]',
+            'current_password' => ['rules' => 'required', 'errors' => ['required' => 'Debes ingresar tu contraseña actual.']],
+            'new_password'     => ['rules' => 'required|min_length[6]', 'errors' => ['required' => 'La nueva contraseña es requerida.', 'min_length' => 'La nueva contraseña debe tener al menos 6 caracteres.']],
+            'confirm_password' => ['rules' => 'required|matches[new_password]', 'errors' => ['required' => 'Debes confirmar la nueva contraseña.', 'matches' => 'La confirmación no coincide con la nueva contraseña.']],
         ];
 
-        $messages = [
-            'current_password' => [
-                'required' => 'Debes ingresar tu contraseña actual.',
-            ],
-            'new_password' => [
-                'required'   => 'La nueva contraseña es requerida.',
-                'min_length' => 'La nueva contraseña debe tener al menos 6 caracteres.',
-            ],
-            'confirm_password' => [
-                'required' => 'Debes confirmar la nueva contraseña.',
-                'matches'  => 'La confirmación no coincide con la nueva contraseña.',
-            ],
-        ];
-
-        if (!$this->validate($rules, $messages)) {
+        if (!$this->validate($rules)) {
             return redirect()->back()->with('errors', $this->validator->getErrors());
         }
 
-        $currentPass = (string) $this->request->getPost('current_password');
-        $newPass     = (string) $this->request->getPost('new_password');
-
-        if (!password_verify($currentPass, $user['password'])) {
+        if (!password_verify((string) $this->request->getPost('current_password'), $user['password'])) {
             return redirect()->back()->with('error', 'La contraseña actual ingresada es incorrecta.');
         }
 
-        $userModel->update($userId, [
-            'password' => password_hash($newPass, PASSWORD_DEFAULT),
+        $this->userModel->update($user['id'], [
+            'password' => password_hash((string) $this->request->getPost('new_password'), PASSWORD_DEFAULT),
         ]);
 
         return redirect()->to(site_url('perfil'))->with('success', '¡Contraseña actualizada exitosamente!');

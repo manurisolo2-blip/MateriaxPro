@@ -39,7 +39,7 @@
       <?= $empresasActivas ?>
     </div>
     <span style="font-size: 0.8rem; color: var(--color-success); font-weight: 600;">
-      ● Cuentas operando en la red
+      Cuentas operando en la red
     </span>
   </div>
 
@@ -51,13 +51,13 @@
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Inventario circular activo</span>
   </div>
 
-  <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
-    <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Volumen Total en Red</span>
-    <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
-      <?= number_format($totalKg, 0, ',', '.') ?> <span style="font-size: 1rem; font-weight: 500; color: var(--text-muted);">kg</span>
+    <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Volumen Total en Red</span>
+      <div style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
+        <?= format_kg($totalKg) ?>
+      </div>
+      <span style="font-size: 0.8rem; color: var(--text-secondary);">Materiales reciclables</span>
     </div>
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">Materiales reciclables</span>
-  </div>
 </div>
 
 <!-- BANDEJA DE AUDITORÍA: EMPRESAS PENDIENTES DE APROBACIÓN -->
@@ -238,7 +238,7 @@
               </td>
               <td>
                 <?php if ($empresa['estado'] === 'activo'): ?>
-                  <span class="badge badge-success">● Habilitada</span>
+                  <span class="badge badge-success">Habilitada</span>
                 <?php elseif ($empresa['estado'] === 'rechazado'): ?>
                   <span class="badge" style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;">
                     Solicitud Rechazada

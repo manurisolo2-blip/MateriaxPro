@@ -2,7 +2,7 @@
 
 <div style="margin-bottom: 1.5rem;">
   <a href="<?= site_url('admin') ?>" class="btn btn-secondary btn-sm" style="margin-bottom: 1rem; display: inline-block;">
-    ← Volver al Panel de Administración
+    &larr; Volver al Panel de Administración
   </a>
 
   <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
@@ -137,7 +137,7 @@
               En Auditoría (Pendiente)
             </span>
           <?php elseif ($empresa['estado'] === 'activo'): ?>
-            <span class="badge badge-success">● Cuenta Habilitada</span>
+            <span class="badge badge-success">Cuenta Habilitada</span>
           <?php elseif ($empresa['estado'] === 'rechazado'): ?>
             <span class="badge" style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;">
               Solicitud Rechazada
@@ -211,17 +211,11 @@
                   <?= esc($lote['tipo_polimero']) ?>
                 </span>
               </td>
-              <td><?= number_format($lote['cantidad_kg'], 2, ',', '.') ?> kg</td>
-              <td>$<?= number_format($lote['precio_unitario'], 2, ',', '.') ?> /kg</td>
+              <td><?= format_kg($lote['cantidad_kg']) ?></td>
+              <td><?= format_precio($lote['precio_unitario']) ?> /kg</td>
               <td><?= esc($lote['ubicacion']) ?></td>
               <td>
-                <?php if ($lote['estado'] === 'Disponible'): ?>
-                  <span class="badge badge-success">● Disponible</span>
-                <?php elseif ($lote['estado'] === 'Reservado'): ?>
-                  <span class="badge badge-warning">● Reservado</span>
-                <?php else: ?>
-                  <span class="badge badge-vendido">● Vendido</span>
-                <?php endif; ?>
+                <span class="badge <?= badge_estado_class($lote['estado']) ?>"><?= esc($lote['estado']) ?></span>
               </td>
               <td style="font-size: 0.85rem; color: var(--text-secondary);">
                 <?= date('d/m/Y', strtotime($lote['created_at'])) ?>

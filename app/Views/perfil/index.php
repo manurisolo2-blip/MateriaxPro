@@ -24,7 +24,7 @@
     <div style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-top: 0.4rem;">
       <?= date('d/m/Y', strtotime($user['created_at'])) ?>
     </div>
-    <span style="font-size: 0.8rem; color: var(--color-success);">● Cuenta Homologada</span>
+    <span style="font-size: 0.8rem; color: var(--color-success);">Cuenta Homologada</span>
   </div>
 
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
@@ -230,8 +230,8 @@
                   </div>
                   <div style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
                     <span class="badge badge-polimero <?= badge_polimero_class($p['tipo_polimero']) ?>"><?= esc($p['tipo_polimero']) ?></span>
-                    &nbsp;•&nbsp; <strong><?= number_format((float)$p['cantidad_kg'], 0, ',', '.') ?> kg</strong>
-                    &nbsp;•&nbsp; $<?= number_format((float)$p['precio_unitario'], 2, ',', '.') ?> / kg
+                    &nbsp;&bull;&nbsp; <strong><?= format_kg($p['cantidad_kg']) ?></strong>
+                    &nbsp;&bull;&nbsp; <?= format_precio($p['precio_unitario']) ?> / kg
                   </div>
                 </div>
 

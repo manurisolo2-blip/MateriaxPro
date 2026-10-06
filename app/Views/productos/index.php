@@ -92,17 +92,12 @@
               <td>
                 <span class="badge badge-polimero <?= badge_polimero_class($p['tipo_polimero']) ?>"><?= esc($p['tipo_polimero']) ?></span>
               </td>
-              <td><strong><?= number_format((float)$p['cantidad_kg'], 0, ',', '.') ?></strong> kg</td>
-              <td>$<?= number_format((float)$p['precio_unitario'], 2, ',', '.') ?></td>
+              <td><strong><?= format_kg($p['cantidad_kg']) ?></strong></td>
+              <td><?= format_precio($p['precio_unitario']) ?></td>
               <td><?= esc($p['ubicacion']) ?></td>
               <td><?= esc($p['empresa_nombre'] ?? 'Empresa Registrada') ?></td>
               <td>
-                <?php 
-                  $badgeClass = 'badge-disponible';
-                  if ($p['estado'] === 'Reservado') $badgeClass = 'badge-reservado';
-                  if ($p['estado'] === 'Vendido') $badgeClass = 'badge-vendido';
-                ?>
-                <span class="badge <?= $badgeClass ?>"><?= esc($p['estado']) ?></span>
+                <span class="badge <?= badge_estado_class($p['estado']) ?>"><?= esc($p['estado']) ?></span>
               </td>
               <td style="text-align: right; white-space: nowrap;">
                 <div style="display: inline-flex; gap: 0.3rem; align-items: center;">

@@ -88,7 +88,6 @@
     <!-- Mensaje Flash: Éxito -->
     <?php if (session()->getFlashdata('success')): ?>
       <div class="alert alert-success">
-        <span class="alert-icon">✓</span>
         <div><?= esc(session()->getFlashdata('success')) ?></div>
       </div>
     <?php endif; ?>
@@ -96,7 +95,6 @@
     <!-- Mensaje Flash: Error General -->
     <?php if (session()->getFlashdata('error')): ?>
       <div class="alert alert-error">
-        <span class="alert-icon">⚠</span>
         <div><?= esc(session()->getFlashdata('error')) ?></div>
       </div>
     <?php endif; ?>
@@ -104,7 +102,6 @@
     <!-- Mensaje Flash: Errores de Validación -->
     <?php if (session()->getFlashdata('errors')): ?>
       <div class="alert alert-error">
-        <span class="alert-icon">⚠</span>
         <div>
           <strong>Por favor corrige los siguientes errores:</strong>
           <ul>

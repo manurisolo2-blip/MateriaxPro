@@ -73,23 +73,13 @@
                   <?= esc($lote['tipo_polimero']) ?>
                 </span>
               </td>
-              <td>
-                <strong><?= number_format($lote['cantidad_kg'], 2, ',', '.') ?></strong> kg
-              </td>
-              <td>
-                $<?= number_format($lote['precio_unitario'], 2, ',', '.') ?> /kg
-              </td>
+              <td><strong><?= format_kg($lote['cantidad_kg']) ?></strong></td>
+              <td><?= format_precio($lote['precio_unitario']) ?> /kg</td>
               <td style="font-size: 0.85rem; color: var(--text-secondary);">
                 <?= esc($lote['ubicacion']) ?>
               </td>
               <td>
-                <?php if ($lote['estado'] === 'Disponible'): ?>
-                  <span class="badge badge-success">● Disponible</span>
-                <?php elseif ($lote['estado'] === 'Reservado'): ?>
-                  <span class="badge badge-warning">● Reservado</span>
-                <?php else: ?>
-                  <span class="badge badge-vendido">● Vendido</span>
-                <?php endif; ?>
+                <span class="badge <?= badge_estado_class($lote['estado']) ?>"><?= esc($lote['estado']) ?></span>
               </td>
               <td style="text-align: right;">
                 <div style="display: inline-flex; gap: 0.4rem; align-items: center;">

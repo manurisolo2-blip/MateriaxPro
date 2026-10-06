@@ -87,4 +87,16 @@ class ProductoModel extends Model
 
         return $builder->orderBy('productos.created_at', 'DESC')->findAll();
     }
+
+    public function getTotalKg(): float
+    {
+        $row = $this->selectSum('cantidad_kg', 'total_kg')->first();
+        return (float) ($row['total_kg'] ?? 0);
+    }
+
+    public function getCountsByUser(): array
+    {
+        $rows = $this->select('user_id, COUNT(*) as total')->groupBy('user_id')->findAll();
+        return array_column($rows, 'total', 'user_id');
+    }
 }

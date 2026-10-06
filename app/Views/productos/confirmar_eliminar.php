@@ -33,11 +33,11 @@
         <div class="form-row" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
           <div>
             <span style="font-size: 0.82rem; color: var(--text-muted);">Volumen:</span>
-            <p style="font-weight: 700; color: var(--text-primary);"><?= number_format((float)$producto['cantidad_kg'], 0, ',', '.') ?> kg</p>
+            <p style="font-weight: 700; color: var(--text-primary);"><?= format_kg($producto['cantidad_kg']) ?></p>
           </div>
           <div>
             <span style="font-size: 0.82rem; color: var(--text-muted);">Precio Unitario:</span>
-            <p style="font-weight: 700; color: var(--color-success);">$<?= number_format((float)$producto['precio_unitario'], 2, ',', '.') ?> / kg</p>
+            <p style="font-weight: 700; color: var(--color-success);"><?= format_precio($producto['precio_unitario']) ?> / kg</p>
           </div>
           <div>
             <span style="font-size: 0.82rem; color: var(--text-muted);">Planta de Origen:</span>

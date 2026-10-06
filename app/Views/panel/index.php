@@ -7,7 +7,7 @@
         <?= esc($user['nombre']) ?>
       </h1>
       <span class="badge badge-success">
-        ● Cuenta Habilitada
+        Cuenta Habilitada
       </span>
     </div>
     <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
@@ -59,7 +59,7 @@
   <div class="card" style="margin-bottom: 0; padding: 1.25rem;">
     <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Estado de Cuenta</span>
     <div style="font-size: 1.25rem; font-weight: 700; color: var(--color-success); margin-top: 0.5rem;">
-      ● Homologada
+      Homologada
     </div>
     <span style="font-size: 0.8rem; color: var(--text-secondary);">Revisión fiscal aprobada</span>
   </div>
@@ -110,16 +110,11 @@
               <td>
                 <span class="badge badge-polimero <?= badge_polimero_class($p['tipo_polimero']) ?>"><?= esc($p['tipo_polimero']) ?></span>
               </td>
-              <td><strong><?= number_format((float)$p['cantidad_kg'], 0, ',', '.') ?></strong> kg</td>
-              <td>$<?= number_format((float)$p['precio_unitario'], 2, ',', '.') ?></td>
+              <td><strong><?= format_kg($p['cantidad_kg']) ?></strong></td>
+              <td><?= format_precio($p['precio_unitario']) ?></td>
               <td><?= esc($p['ubicacion']) ?></td>
               <td>
-                <?php 
-                  $badgeClass = 'badge-disponible';
-                  if ($p['estado'] === 'Reservado') $badgeClass = 'badge-reservado';
-                  if ($p['estado'] === 'Vendido') $badgeClass = 'badge-vendido';
-                ?>
-                <span class="badge <?= $badgeClass ?>"><?= esc($p['estado']) ?></span>
+                <span class="badge <?= badge_estado_class($p['estado']) ?>"><?= esc($p['estado']) ?></span>
               </td>
               <td style="color: var(--text-secondary); font-size: 0.85rem;">
                 <?= date('d/m/Y', strtotime($p['created_at'])) ?>
@@ -201,8 +196,8 @@
           <div>
             <div style="font-size: 0.8rem; color: var(--text-muted);">Volumen / Precio</div>
             <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">
-              <?= number_format((float)$lm['cantidad_kg'], 0, ',', '.') ?> kg &nbsp;|&nbsp; 
-              <span style="color: var(--color-success);">$<?= number_format((float)$lm['precio_unitario'], 2, ',', '.') ?>/kg</span>
+              <?= format_kg($lm['cantidad_kg']) ?> &nbsp;|&nbsp; 
+              <span style="color: var(--color-success);"><?= format_precio($lm['precio_unitario']) ?>/kg</span>
             </div>
           </div>
           <div>
