@@ -1,88 +1,51 @@
 /* ==============================================================================
    MATERIAX PRO - SISTEMA DE DISEÑO INDUSTRIAL CIRCULAR
-   Hoja de Estilos Oficial (100% HTML5 Semántico & CSS3 Puro - Zero JavaScript)
-   MODO CLARO POR DEFECTO (LIGHT MODE HIGH-CONTRAST CRAFT)
+   Hoja de Estilos Oficial (HTML5 Semántico & CSS3 Puro - Zero JavaScript)
    Instituto Técnico Río Tercero - 6° B (Hito 1)
    ============================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@500;600;700;800;900&family=Red+Hat+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:wght@600;700;800&family=Red+Hat+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap');
 
-/* ==============================================================================
-   VARIABLES DE DISEÑO Y TOKENS (LIGHT MODE PRIMARIO)
-   ============================================================================== */
+/* --- TOKENS Y VARIABLES --- */
 :root {
-  /* Lienzo y Superficies de Fondo */
   --bg-main: #f8fafc;
   --bg-surface: #ffffff;
-  --bg-card: #ffffff;
-  --bg-card-hover: #f8fafc;
-  --bg-card-active: #f1f5f9;
   --bg-subtle: #f1f5f9;
-
-  /* Sistema de Bordes y Separadores */
-  --border-subtle: #f1f5f9;
   --border-color: #e2e8f0;
+  --border-subtle: #f1f5f9;
   --border-bright: #cbd5e1;
-  --border-accent: rgba(15, 118, 110, 0.25);
-
-  /* Jerarquía Tipográfica de Textos (Alto Contraste ≥ 4.5:1) */
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #64748b;
   --text-dim: #94a3b8;
-
-  /* Paleta Cromática Primaria (MateriaX Clean-Tech - Quieter Restrained Tones) */
   --color-primary: #0f766e;
   --color-primary-hover: #115e59;
   --color-accent: #0f766e;
   --color-accent-hover: #115e59;
   --color-cyan: #0369a1;
-  --color-blue: #1d4ed8;
-
-  /* Estados Semánticos (Fondo Suave / Borde Definido / Texto Rico) */
   --color-success: #059669;
   --color-success-bg: #ecfdf5;
   --color-success-border: #a7f3d0;
   --color-success-text: #065f46;
-
   --color-warning: #d97706;
   --color-warning-bg: #fffbeb;
   --color-warning-border: #fde68a;
   --color-warning-text: #92400e;
-
   --color-danger: #e11d48;
   --color-danger-bg: #fff1f2;
   --color-danger-border: #fecdd3;
   --color-danger-text: #9f1239;
-
-  --color-info: #0284c7;
-  --color-info-bg: #f0f9ff;
-  --color-info-border: #bae6fd;
-  --color-info-text: #075985;
-
-  /* Familias Tipográficas */
   --font-display: 'Red Hat Display', var(--font-sans);
-  --font-sans: 'Red Hat Text', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-
-  /* Radios de Curvatura (Más sobrios y refinados) */
+  --font-sans: 'Red Hat Text', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Monaco, Consolas, monospace;
   --radius-xs: 4px;
   --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 10px;
-  --radius-xl: 12px;
-  --radius-full: 4px;
-
-  /* Sombras y Profundidad Óptica (Sutiles, limpias, sin halos de color) */
   --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
-  --shadow-lg: 0 3px 8px -1px rgba(15, 23, 42, 0.05);
-  --shadow-glow: none;
 }
 
-/* ==============================================================================
-   REINICIO Y FUNDAMENTOS DE RENDERIZADO
-   ============================================================================== */
+/* --- REINICIO Y FUNDAMENTOS --- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -105,16 +68,13 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Selección de Texto Tipográfica */
 ::selection {
   background: rgba(13, 148, 136, 0.18);
   color: #0f172a;
 }
 
-/* Scrollbar Personalizada */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -131,7 +91,6 @@ body {
   background: #94a3b8;
 }
 
-/* Tipografía de Encabezados */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
   font-weight: 700;
@@ -139,20 +98,31 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
 }
 
-/* Enlaces y Anclas */
 a {
   color: var(--color-accent);
   text-decoration: none;
   text-underline-offset: 3px;
-  transition: color 0.18s ease, text-decoration 0.18s ease;
+  transition: color 0.15s ease, text-decoration 0.15s ease;
 }
-
 a:hover {
   color: var(--color-accent-hover);
   text-decoration: underline;
 }
 
-/* Enlace Accesible para Navegación por Teclado (WCAG 2.2 AA) */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+button, .btn, a, input, select, textarea {
+  touch-action: manipulation;
+}
+
+.num-tabular, .tabular-nums, table td, .metric-num, .hero-stat-num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- ACCESIBILIDAD SKIP-LINK (WCAG 2.2 AA) --- */
 .skip-link {
   position: absolute;
   top: -120px;
@@ -166,48 +136,22 @@ a:hover {
   z-index: 9999;
   text-decoration: none;
   transition: top 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
 }
-
 .skip-link:focus {
   top: 1rem;
   outline: 2px solid #ffffff;
   outline-offset: 2px;
 }
 
-/* Foco Accesible Teclado (:focus-visible) */
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-/* Eliminación de Retardo Táctil 300ms (Touch Interaction) */
-button,
-.btn,
-a,
-input,
-select,
-textarea {
-  touch-action: manipulation;
-}
-
-/* Números y Cifras Tabulares */
-.num-tabular, .tabular-nums, table td, .metric-num, .hero-stat-num {
-  font-variant-numeric: tabular-nums;
-}
-
-/* ==============================================================================
-   CABECERA Y NAVEGACIÓN PRINCIPAL
-   ============================================================================== */
+/* --- CABECERA Y NAVEGACIÓN --- */
 .site-header {
-  background-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04);
 }
 
 .nav-container {
@@ -227,24 +171,11 @@ textarea {
   font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-primary);
-  text-decoration: none;
   letter-spacing: -0.03em;
 }
-
-.brand-link:hover {
-  text-decoration: none;
-}
-
-.brand-logo-img {
-  height: 32px;
-  width: auto;
-  display: block;
-}
-
-.brand-accent {
-  color: var(--color-accent);
-  margin-left: 1px;
-}
+.brand-link:hover { text-decoration: none; }
+.brand-logo-img { height: 32px; width: auto; display: block; }
+.brand-accent { color: var(--color-accent); margin-left: 1px; }
 
 .nav-menu {
   display: flex;
@@ -266,13 +197,11 @@ textarea {
   align-items: center;
   gap: 0.4rem;
 }
-
 .nav-item a:hover {
   color: var(--text-primary);
   background-color: rgba(15, 23, 42, 0.05);
   text-decoration: none;
 }
-
 .nav-item a.active {
   color: var(--color-accent);
   background-color: rgba(13, 148, 136, 0.08);
@@ -297,7 +226,6 @@ textarea {
   font-size: 0.84rem;
   color: var(--text-primary);
   font-weight: 600;
-  box-shadow: none;
 }
 
 .status-dot {
@@ -309,9 +237,7 @@ textarea {
   flex-shrink: 0;
 }
 
-/* ==============================================================================
-   CONTENEDOR PRINCIPAL
-   ============================================================================== */
+/* --- CONTENEDOR PRINCIPAL --- */
 .main-wrapper {
   flex: 1;
   max-width: 1240px;
@@ -320,9 +246,7 @@ textarea {
   padding: 2.25rem 1.5rem 3.5rem;
 }
 
-/* ==============================================================================
-   ALERTAS FLASH & MENSAJES DE ESTADO
-   ============================================================================== */
+/* --- ALERTAS FLASH --- */
 .alert {
   padding: 0.9rem 1.25rem;
   border-radius: var(--radius-md);
@@ -333,18 +257,12 @@ textarea {
   gap: 0.75rem;
   line-height: 1.5;
   border: 1px solid transparent;
-  animation: slideInAlert 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: slideInAlert 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes slideInAlert {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .alert-success {
@@ -352,35 +270,28 @@ textarea {
   border-color: var(--color-success-border);
   color: var(--color-success-text);
 }
-
-.alert-error,
-.alert-danger {
+.alert-error, .alert-danger {
   background-color: var(--color-danger-bg);
   border-color: var(--color-danger-border);
   color: var(--color-danger-text);
 }
-
 .alert-warning {
   background-color: var(--color-warning-bg);
   border-color: var(--color-warning-border);
   color: var(--color-warning-text);
 }
-
 .alert-icon {
   font-weight: 600;
   font-size: 1.1rem;
   line-height: 1;
   flex-shrink: 0;
 }
-
 .alert ul {
   margin-left: 1.2rem;
   margin-top: 0.35rem;
 }
 
-/* ==============================================================================
-   BOTONES Y ACCIONES
-   ============================================================================== */
+/* --- BOTONES (FLAT INDUSTRIAL CLEAN-TECH - ZERO BOX-SHADOW) --- */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -395,71 +306,48 @@ textarea {
   border: 1px solid transparent;
   cursor: pointer;
   box-shadow: none;
-  transition: background-color 0.15s ease,
-              border-color 0.15s ease,
-              color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   text-decoration: none;
   line-height: 1.35;
   white-space: nowrap;
 }
-
-.btn:hover,
-.btn:focus,
-.btn:active {
+.btn:hover, .btn:focus, .btn:active {
   text-decoration: none;
   box-shadow: none;
 }
-
-.btn:active {
-  opacity: 0.92;
-}
+.btn:active { opacity: 0.92; }
 
 .btn-primary {
   background-color: #0f766e;
   border-color: #0f766e;
   color: #ffffff;
-  box-shadow: none;
 }
-
-.btn-primary:hover,
-.btn-primary:focus,
-.btn-primary:active {
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active {
   background-color: #115e59;
   border-color: #115e59;
   color: #ffffff;
-  box-shadow: none;
 }
 
 .btn-secondary {
   background-color: #ffffff;
   border-color: var(--border-color);
   color: var(--text-primary);
-  box-shadow: none;
 }
-
-.btn-secondary:hover,
-.btn-secondary:focus,
-.btn-secondary:active {
+.btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
   background-color: #f8fafc;
   border-color: var(--border-bright);
   color: var(--text-primary);
-  box-shadow: none;
 }
 
 .btn-danger {
   background-color: #fff1f2;
   border-color: #fecdd3;
   color: #e11d48;
-  box-shadow: none;
 }
-
-.btn-danger:hover,
-.btn-danger:focus,
-.btn-danger:active {
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active {
   background-color: #e11d48;
   border-color: #be123c;
   color: #ffffff;
-  box-shadow: none;
 }
 
 .btn-sm {
@@ -467,14 +355,9 @@ textarea {
   font-size: 0.82rem;
   border-radius: var(--radius-xs);
 }
+.btn-block { width: 100%; }
 
-.btn-block {
-  width: 100%;
-}
-
-/* ==============================================================================
-   TARJETAS Y PANELES (SURFACES BLANCAS)
-   ============================================================================== */
+/* --- TARJETAS Y CONTENEDORES --- */
 .card {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -484,10 +367,7 @@ textarea {
   margin-bottom: 1.75rem;
   transition: border-color 0.15s ease;
 }
-
-.card:hover {
-  border-color: #cbd5e1;
-}
+.card:hover { border-color: #cbd5e1; }
 
 .card-header {
   padding: 1.25rem 1.5rem;
@@ -505,9 +385,7 @@ textarea {
   letter-spacing: -0.02em;
 }
 
-.card-body {
-  padding: 1.5rem;
-}
+.card-body { padding: 1.5rem; }
 
 .card-footer {
   padding: 1rem 1.5rem;
@@ -515,12 +393,8 @@ textarea {
   background-color: #f8fafc;
 }
 
-/* ==============================================================================
-   FORMULARIOS Y CAMPOS DE ENTRADA
-   ============================================================================== */
-.form-group {
-  margin-bottom: 1.25rem;
-}
+/* --- FORMULARIOS --- */
+.form-group { margin-bottom: 1.25rem; }
 
 .form-label {
   display: block;
@@ -530,29 +404,21 @@ textarea {
   margin-bottom: 0.45rem;
 }
 
-.form-control,
-.form-select,
-.form-textarea {
+.form-control, .form-select, .form-textarea {
   width: 100%;
   padding: 0.65rem 0.9rem;
-  font-size: 1rem; /* 16px exactos: previene auto-zoom molesto en iOS Safari */
+  font-size: 1rem; /* 16px exactos: previene zoom en iOS Safari */
   font-family: inherit;
   color: var(--text-primary);
   background-color: #ffffff;
   border: 1px solid #cbd5e1;
   border-radius: var(--radius-sm);
-  transition: border-color 0.18s ease, background-color 0.18s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
   box-shadow: none;
 }
+.form-control::placeholder, .form-textarea::placeholder { color: var(--text-dim); }
 
-.form-control::placeholder,
-.form-textarea::placeholder {
-  color: var(--text-dim);
-}
-
-.form-control:focus,
-.form-select:focus,
-.form-textarea:focus {
+.form-control:focus, .form-select:focus, .form-textarea:focus {
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.16);
@@ -583,9 +449,7 @@ textarea {
   gap: 1.15rem;
 }
 
-/* ==============================================================================
-   MIGAS DE PAN (BREADCRUMBS INDUSTRIALES - WCAG HIERARCHY)
-   ============================================================================== */
+/* --- MIGAS DE PAN (BREADCRUMBS) --- */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -597,39 +461,27 @@ textarea {
   font-size: 0.82rem;
   color: var(--text-muted);
 }
-
-.breadcrumb-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
+.breadcrumb-item { display: inline-flex; align-items: center; gap: 0.45rem; }
 .breadcrumb-item a {
   color: var(--text-secondary);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.15s ease;
 }
-
 .breadcrumb-item a:hover {
   color: var(--color-primary);
   text-decoration: underline;
 }
-
 .breadcrumb-separator {
   color: var(--border-bright);
   font-size: 0.75rem;
   user-select: none;
 }
-
 .breadcrumb-item[aria-current="page"] {
   color: var(--text-primary);
   font-weight: 700;
 }
 
-/* ==============================================================================
-   TARJETAS DE MÉTRICAS (ESTADÍSTICAS INDUSTRIALES ESTANDARIZADAS)
-   ============================================================================== */
+/* --- TARJETAS DE MÉTRICAS --- */
 .metric-card {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-color);
@@ -642,10 +494,7 @@ textarea {
   position: relative;
   box-shadow: none;
 }
-
-.metric-card:hover {
-  border-color: #cbd5e1;
-}
+.metric-card:hover { border-color: #cbd5e1; }
 
 .metric-card-label {
   font-size: 0.76rem;
@@ -673,22 +522,18 @@ textarea {
   line-height: 1.4;
 }
 
-/* ==============================================================================
-   ESTADOS VACÍOS (EMPTY STATES)
-   ============================================================================== */
+/* --- ESTADOS VACÍOS (EMPTY STATES) --- */
 .empty-state {
   text-align: center;
   padding: 3.5rem 1.5rem;
   color: var(--text-secondary);
 }
-
 .empty-state-title {
   font-size: 1.15rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
 }
-
 .empty-state-desc {
   font-size: 0.92rem;
   color: var(--text-secondary);
@@ -697,9 +542,7 @@ textarea {
   line-height: 1.5;
 }
 
-/* ==============================================================================
-   TABLAS Y LISTADOS INDUSTRIALES
-   ============================================================================== */
+/* --- TABLAS Y LISTADOS --- */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
@@ -707,7 +550,6 @@ textarea {
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   background-color: var(--bg-surface);
-  box-shadow: none;
 }
 
 .table {
@@ -737,21 +579,12 @@ textarea {
 }
 
 .table tbody tr {
-  transition: background-color 0.16s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: background-color 0.15s ease;
 }
+.table tbody tr:hover { background-color: #f1f5f9; }
+.table tbody tr:last-child td { border-bottom: none; }
 
-.table tbody tr:hover {
-  background-color: #f1f5f9;
-}
-
-.table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-/* ==============================================================================
-   INSIGNIAS Y BADGES CROMÁTICOS (MODO CLARO CON ALTO CONTRASTE)
-   ============================================================================== */
+/* --- BADGES E INSIGNIAS CROMÁTICAS --- */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -765,22 +598,19 @@ textarea {
   line-height: 1.2;
 }
 
-.badge-disponible,
-.badge-success {
+.badge-disponible, .badge-success {
   background-color: var(--color-success-bg);
   color: var(--color-success-text);
   border: 1px solid var(--color-success-border);
 }
 
-.badge-reservado,
-.badge-warning {
+.badge-reservado, .badge-warning {
   background-color: var(--color-warning-bg);
   color: var(--color-warning-text);
   border: 1px solid var(--color-warning-border);
 }
 
-.badge-vendido,
-.badge-muted {
+.badge-vendido, .badge-muted {
   background-color: #f1f5f9;
   color: #475569;
   border: 1px solid #cbd5e1;
@@ -792,59 +622,44 @@ textarea {
   border: 1px solid var(--color-danger-border);
 }
 
-.badge-polimero {
+.badge-polimero, .badge-polimero-pe, .badge-polimero-default {
   background-color: #f0fdfa;
   color: #0f766e;
   border: 1px solid #99f6e4;
   font-family: var(--font-mono);
 }
-
-/* Codificación Cromática Industrial de Resinas (WCAG AA ≥ 4.5:1) */
-.badge-polimero-pe {
-  background-color: #f0fdfa;
-  color: #0f766e;
-  border-color: #99f6e4;
-}
-
 .badge-polimero-pp {
   background-color: #eff6ff;
   color: #1d4ed8;
-  border-color: #bfdbfe;
+  border: 1px solid #bfdbfe;
 }
-
 .badge-polimero-pvc {
   background-color: #f5f3ff;
   color: #6d28d9;
-  border-color: #ddd6fe;
+  border: 1px solid #ddd6fe;
 }
-
 .badge-polimero-abs {
   background-color: #fff1f2;
   color: #be123c;
-  border-color: #fecdd3;
+  border: 1px solid #fecdd3;
 }
-
 .badge-polimero-nylon {
   background-color: #fdf2f8;
   color: #be185d;
-  border-color: #fbcfe8;
+  border: 1px solid #fbcfe8;
 }
-
 .badge-polimero-pet {
   background-color: #f0f9ff;
   color: #0369a1;
-  border-color: #bae6fd;
+  border: 1px solid #bae6fd;
 }
-
 .badge-polimero-equipamiento {
   background-color: #faf5ff;
   color: #7e22ce;
-  border-color: #e9d5ff;
+  border: 1px solid #e9d5ff;
 }
 
-/* ==============================================================================
-   HERO Y SECCIONES DE PORTADA (WELCOME)
-   ============================================================================== */
+/* --- HERO Y SECCIÓN DE PORTADA --- */
 .hero-wrapper {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
@@ -854,20 +669,12 @@ textarea {
 }
 
 .hero-content {
-  animation: heroTextReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: heroTextReveal 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-
 @keyframes heroTextReveal {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 
 .hero-heading {
   font-size: 2.75rem;
@@ -909,10 +716,7 @@ textarea {
   box-shadow: var(--shadow-sm);
   transition: border-color 0.15s ease;
 }
-
-.hero-stat-card:hover {
-  border-color: #cbd5e1;
-}
+.hero-stat-card:hover { border-color: #cbd5e1; }
 
 .hero-stat-num {
   font-size: 1.4rem;
@@ -932,7 +736,6 @@ textarea {
   display: block;
 }
 
-/* Lote Destacado en Hero */
 .featured-lot-box {
   background-color: #ffffff;
   border: 1px solid var(--border-color);
@@ -942,10 +745,7 @@ textarea {
   position: relative;
   transition: border-color 0.15s ease;
 }
-
-.featured-lot-box:hover {
-  border-color: #cbd5e1;
-}
+.featured-lot-box:hover { border-color: #cbd5e1; }
 
 .featured-lot-badge {
   display: inline-flex;
@@ -970,12 +770,7 @@ textarea {
   border-top: 1px solid var(--border-color);
   border-bottom: 1px solid var(--border-color);
 }
-
-.spec-item {
-  display: flex;
-  flex-direction: column;
-}
-
+.spec-item { display: flex; flex-direction: column; }
 .spec-label {
   font-size: 0.72rem;
   color: var(--text-muted);
@@ -983,21 +778,15 @@ textarea {
   letter-spacing: 0.05em;
   font-weight: 600;
 }
-
 .spec-value {
   font-size: 0.95rem;
   font-weight: 700;
   color: var(--text-primary);
   margin-top: 0.15rem;
 }
+.spec-value.accent { color: var(--color-accent); }
 
-.spec-value.accent {
-  color: var(--color-accent);
-}
-
-/* ==============================================================================
-   SECCIONES Y GRIDS DE CONTENIDO
-   ============================================================================== */
+/* --- SECCIONES Y GRIDS DE CONTENIDO --- */
 .content-section {
   padding: 4rem 0;
   border-top: 1px solid var(--border-color);
@@ -1011,7 +800,7 @@ textarea {
 
 .section-title {
   font-size: 1.85rem;
-  font-weight: 650;
+  font-weight: 700;
   color: var(--text-primary);
   line-height: 1.25;
   letter-spacing: -0.025em;
@@ -1038,9 +827,9 @@ textarea {
   gap: 1.5rem;
 }
 
-.grid-4 {
+.grid-4, .polymer-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.25rem;
 }
 
@@ -1056,10 +845,7 @@ textarea {
   box-shadow: var(--shadow-sm);
   transition: border-color 0.15s ease;
 }
-
-.role-card:hover {
-  border-color: #cbd5e1;
-}
+.role-card:hover { border-color: #cbd5e1; }
 
 .role-header {
   display: flex;
@@ -1093,7 +879,6 @@ textarea {
   flex-direction: column;
   gap: 0.85rem;
 }
-
 .role-list li {
   display: flex;
   align-items: flex-start;
@@ -1102,10 +887,7 @@ textarea {
   color: var(--text-secondary);
   line-height: 1.5;
 }
-
-.role-list li strong {
-  color: var(--text-primary);
-}
+.role-list li strong { color: var(--text-primary); }
 
 /* Tarjetas de Categorías de Polímeros */
 .polymer-card {
@@ -1119,10 +901,7 @@ textarea {
   box-shadow: var(--shadow-sm);
   transition: border-color 0.15s ease;
 }
-
-.polymer-card:hover {
-  border-color: #cbd5e1;
-}
+.polymer-card:hover { border-color: #cbd5e1; }
 
 .polymer-badge {
   display: inline-block;
@@ -1163,10 +942,7 @@ textarea {
   box-shadow: var(--shadow-sm);
   transition: border-color 0.15s ease;
 }
-
-.impact-card:hover {
-  border-color: #cbd5e1;
-}
+.impact-card:hover { border-color: #cbd5e1; }
 
 .impact-num {
   font-size: 2.2rem;
@@ -1189,9 +965,7 @@ textarea {
   color: var(--text-muted);
 }
 
-/* ==============================================================================
-   PIE DE PÁGINA (FOOTER)
-   ============================================================================== */
+/* --- PIE DE PÁGINA --- */
 .site-footer {
   background-color: #ffffff;
   border-top: 1px solid var(--border-color);
@@ -1217,9 +991,7 @@ textarea {
   line-height: 1.5;
 }
 
-/* ==============================================================================
-   ADAPTATIVIDAD Y RESPONSIVE BREAKPOINTS
-   ============================================================================== */
+/* --- RESPONSIVE BREAKPOINTS --- */
 @media (max-width: 980px) {
   .hero-wrapper {
     grid-template-columns: 1fr;
@@ -1229,9 +1001,7 @@ textarea {
 }
 
 @media (max-width: 768px) {
-  .hero-heading {
-    font-size: 2.15rem;
-  }
+  .hero-heading { font-size: 2.15rem; }
   .nav-container {
     flex-direction: column;
     align-items: stretch;
@@ -1262,44 +1032,15 @@ textarea {
     flex-direction: column;
     text-align: center;
   }
-  .footer-credits {
-    text-align: center !important;
-  }
+  .footer-credits { text-align: center !important; }
 }
 
-/* ==============================================================================
-   ACCESIBILIDAD: PREFERS-REDUCED-MOTION
-   Respeta las preferencias de accesibilidad del usuario desactivando o reduciendo
-   desplazamientos espaciales y bucles continuos sin perder feedback de estado.
-   ============================================================================== */
+/* --- ACCESIBILIDAD: PREFERS-REDUCED-MOTION --- */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
-  .btn:hover,
-  .btn:active,
-  .card:hover,
-  .role-card:hover,
-  .polymer-card:hover,
-  .impact-card:hover,
-  .hero-stat-card:hover,
-  .featured-lot-box:hover,
-  .table tbody tr:hover {
-    transform: none !important;
-  }
-
-  .status-dot,
-  .featured-lot-badge,
-  .featured-lot-box,
-  .hero-content,
-  .alert {
-    animation: none !important;
-  }
 }
-

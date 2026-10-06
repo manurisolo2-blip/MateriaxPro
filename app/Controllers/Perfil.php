@@ -57,10 +57,7 @@ class Perfil extends BaseController
         }
 
         $fields = ['nombre', 'cuit', 'telefono', 'rubro', 'ciudad', 'provincia', 'direccion'];
-        $data = [];
-        foreach ($fields as $f) {
-            $data[$f] = trim((string) $this->request->getPost($f));
-        }
+        $data   = array_map(fn($v) => trim((string)$v), $this->request->getPost($fields));
 
         $this->userModel->update($user['id'], $data);
         session()->set($data);

@@ -36,7 +36,7 @@
   </div>
 </div>
 
-<div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 1.5rem; align-items: start;">
+<div class="grid-2" style="align-items: start;">
   
   <!-- Columna 1: Edición de Datos Corporativos -->
   <div>

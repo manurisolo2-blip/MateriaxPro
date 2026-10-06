@@ -49,15 +49,15 @@
 <!-- 1. HERO SECTION -->
 <section class="hero-wrapper" id="inicio" aria-label="Introducción a la plataforma MateriaX">
   <div class="hero-content">
-    <h1 class="hero-heading" style="text-align: left; margin-bottom: 1rem;">
+    <h1 class="hero-heading">
       Transformar excedentes plásticos en <br>
       <span style="color: var(--color-primary);">recursos industriales de valor</span>
     </h1>
-    <p class="hero-desc" style="text-align: left; max-width: 580px; margin-bottom: 1.75rem;">
+    <p class="hero-desc">
       Plataforma corporativa que conecta industrias y plantas manufactureras para publicar, solicitar y reutilizar excedentes de polímeros industriales (PE, PP, PVC, ABS, Nylon) con trazabilidad verificada, sesiones seguras y arquitectura MVC en CodeIgniter 4.
     </p>
 
-    <div class="hero-actions" style="justify-content: flex-start;">
+    <div class="hero-actions">
       <?php if ($isAuth): ?>
         <a href="<?= site_url('productos') ?>" class="btn btn-primary">Ver Inventario de Polímeros</a>
         <a href="<?= site_url('productos/crear') ?>" class="btn btn-secondary">Publicar Lote de Material</a>

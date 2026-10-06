@@ -19,16 +19,9 @@ class Panel extends BaseController
         $productoModel = new ProductoModel();
         $misProductos  = $productoModel->where('user_id', $userId)->orderBy('created_at', 'DESC')->findAll();
 
-        $totalKilos       = 0.0;
-        $valorEstimado    = 0.0;
-        $lotesDisponibles = 0;
-
-        foreach ($misProductos as $p) {
-            $kg = (float) ($p['cantidad_kg'] ?? 0);
-            $totalKilos += $kg;
-            $valorEstimado += ($kg * (float) ($p['precio_unitario'] ?? 0));
-            if (($p['estado'] ?? '') === 'Disponible') $lotesDisponibles++;
-        }
+        $totalKilos       = (float) array_sum(array_column($misProductos, 'cantidad_kg'));
+        $valorEstimado    = (float) array_sum(array_map(fn($p) => (float)($p['cantidad_kg'] ?? 0) * (float)($p['precio_unitario'] ?? 0), $misProductos));
+        $lotesDisponibles = count(array_filter($misProductos, fn($p) => ($p['estado'] ?? '') === 'Disponible'));
 
         $lotesMercado = $productoModel->select('productos.*, usuarios.nombre as empresa_nombre, usuarios.ciudad, usuarios.provincia')
                                       ->join('usuarios', 'usuarios.id = productos.user_id', 'left')

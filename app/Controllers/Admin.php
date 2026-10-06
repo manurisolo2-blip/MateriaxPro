@@ -28,11 +28,6 @@ class Admin extends BaseController
         }
         unset($ea);
 
-        foreach ($empresasPendientes as &$ep) {
-            $ep['total_lotes'] = 0;
-        }
-        unset($ep);
-
         return view('admin/dashboard', [
             'pageTitle'          => 'Panel de Administración y Auditoría | MateriaX',
             'empresasPendientes' => $empresasPendientes,

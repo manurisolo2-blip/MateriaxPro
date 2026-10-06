@@ -172,7 +172,7 @@
     </div>
   </div>
 
-  <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+  <div class="grid-2" style="margin-bottom: 2rem;">
     <?php foreach ($lotesMercado as $lm): ?>
       <div class="card" style="margin-bottom: 0; padding: 1.25rem; display: flex; flex-direction: column; justify-content: space-between;">
         <div>
