@@ -183,26 +183,20 @@
     </div>
     <div class="card-body">
       <div class="form-row">
-        <div>
-          <p><strong style="color: var(--text-primary);">1. DER del Sistema:</strong></p>
-          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-            Documentado formalmente en <a href="<?= site_url('../docs/DER.md') ?>">docs/DER.md</a> y editable en Draw.io con <a href="<?= site_url('../docs/DER_drawio.xml') ?>">docs/DER_drawio.xml</a>.
-          </p>
-          <p><strong style="color: var(--text-primary);">2. Modelo Relacional:</strong></p>
-          <p style="font-size: 0.9rem; color: var(--text-secondary);">
-            Normalizado rigurosamente en 1FN, 2FN y 3FN en <a href="<?= site_url('../docs/MODELO_RELACIONAL.md') ?>">docs/MODELO_RELACIONAL.md</a> y script ejecutable en <code>database.sql</code>.
-          </p>
-        </div>
-        <div>
-          <p><strong style="color: var(--text-primary);">3. Login y Registro Seguro:</strong></p>
-          <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
-            Autenticación MVC funcionando con sesiones de CodeIgniter 4 y hash seguro <code>password_hash()</code>.
-          </p>
-          <p><strong style="color: var(--text-primary);">4. Primer Módulo Funcional (CRUD de Productos):</strong></p>
-          <p style="font-size: 0.9rem; color: var(--text-secondary);">
-            CRUD de la entidad secundaria <strong>productos</strong> (lotes de polímeros), con listado protegido sólo para usuarios con sesión activa y confirmación de borrado server-side.
-          </p>
-        </div>
+        <?php 
+          $entregables = [
+            ['1. DER del Sistema', 'Documentado formalmente en <a href="' . site_url('../docs/DER.md') . '">docs/DER.md</a> y editable en Draw.io con <a href="' . site_url('../docs/DER_drawio.xml') . '">docs/DER_drawio.xml</a>.'],
+            ['2. Modelo Relacional', 'Normalizado rigurosamente en 1FN, 2FN y 3FN en <a href="' . site_url('../docs/MODELO_RELACIONAL.md') . '">docs/MODELO_RELACIONAL.md</a> y script ejecutable en <code>database.sql</code>.'],
+            ['3. Login y Registro Seguro', 'Autenticación MVC funcionando con sesiones de CodeIgniter 4 y hash seguro <code>password_hash()</code>.'],
+            ['4. Primer Módulo Funcional (CRUD de Productos)', 'CRUD de la entidad secundaria <strong>productos</strong> (lotes de polímeros), con listado protegido sólo para usuarios con sesión activa y confirmación de borrado server-side.'],
+          ];
+          foreach ($entregables as $ent): 
+        ?>
+          <div style="margin-bottom: 0.75rem;">
+            <p><strong><?= $ent[0] ?>:</strong></p>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);"><?= $ent[1] ?></p>
+          </div>
+        <?php endforeach; ?>
       </div>
     </div>
   </div>

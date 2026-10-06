@@ -55,3 +55,11 @@ if (! function_exists('format_precio')) {
         return '$' . number_format((float) $precio, 2, ',', '.');
     }
 }
+
+if (! function_exists('nav_attr')) {
+    function nav_attr(bool $isActive): string
+    {
+        return $isActive ? 'class="active" aria-current="page"' : '';
+    }
+}
+

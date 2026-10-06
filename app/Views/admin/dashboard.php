@@ -253,18 +253,11 @@
                     Ver
                   </a>
 
-                  <?php if ($empresa['estado'] === 'activo'): ?>
+                  <?php if ($empresa['estado'] === 'activo' || $empresa['estado'] === 'inactivo'): ?>
                     <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
                       <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Pausar temporalmente acceso de la empresa">
-                        Pausar
-                      </button>
-                    </form>
-                  <?php elseif ($empresa['estado'] === 'inactivo'): ?>
-                    <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
-                      <?= csrf_field() ?>
-                      <button type="submit" class="btn btn-secondary btn-sm" style="color: #16a34a;" title="Reactivar acceso comercial de la empresa">
-                        Reactivar
+                      <button type="submit" class="btn btn-secondary btn-sm" style="color: <?= ($empresa['estado'] === 'activo') ? '#dc2626' : '#16a34a' ?>;" title="<?= ($empresa['estado'] === 'activo') ? 'Pausar temporalmente acceso' : 'Reactivar acceso comercial' ?>">
+                        <?= ($empresa['estado'] === 'activo') ? 'Pausar' : 'Reactivar' ?>
                       </button>
                     </form>
                   <?php elseif ($empresa['estado'] === 'rechazado'): ?>

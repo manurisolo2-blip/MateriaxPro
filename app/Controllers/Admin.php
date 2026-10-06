@@ -33,10 +33,7 @@ class Admin extends BaseController
             'empresasPendientes' => $empresasPendientes,
             'empresasAuditadas'  => $empresasAuditadas,
             'totalPendientes'    => count($empresasPendientes),
-            'totalEmpresas'      => count($empresasPendientes) + count($empresasAuditadas),
             'empresasActivas'    => count(array_filter($empresasAuditadas, fn($e) => $e['estado'] === 'activo')),
-            'empresasInactivas'  => count(array_filter($empresasAuditadas, fn($e) => $e['estado'] === 'inactivo')),
-            'empresasRechazadas' => count(array_filter($empresasAuditadas, fn($e) => $e['estado'] === 'rechazado')),
             'totalLotes'         => $this->productoModel->countAllResults(),
             'totalKg'            => $this->productoModel->getTotalKg(),
         ]);

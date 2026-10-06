@@ -32,45 +32,19 @@
       <ul class="nav-menu">
         <?php if (session()->get('isLoggedIn')): ?>
           <?php if (session()->get('rol') === 'admin'): ?>
-            <li class="nav-item">
-              <a href="<?= site_url('admin') ?>" class="<?= (url_is('admin') && !url_is('admin/lotes*')) ? 'active' : '' ?>" <?= (url_is('admin') && !url_is('admin/lotes*')) ? 'aria-current="page"' : '' ?>>Panel Admin</a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('admin/lotes') ?>" class="<?= url_is('admin/lotes*') ? 'active' : '' ?>" <?= url_is('admin/lotes*') ? 'aria-current="page"' : '' ?>>Moderar Lotes</a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('productos') ?>" class="<?= url_is('productos*') ? 'active' : '' ?>" <?= url_is('productos*') ? 'aria-current="page"' : '' ?>>Mercado</a>
-            </li>
+            <li class="nav-item"><a href="<?= site_url('admin') ?>" <?= nav_attr(url_is('admin') && !url_is('admin/lotes*')) ?>>Panel Admin</a></li>
+            <li class="nav-item"><a href="<?= site_url('admin/lotes') ?>" <?= nav_attr(url_is('admin/lotes*')) ?>>Moderar Lotes</a></li>
+            <li class="nav-item"><a href="<?= site_url('productos') ?>" <?= nav_attr(url_is('productos*')) ?>>Mercado</a></li>
           <?php else: ?>
-            <li class="nav-item">
-              <a href="<?= site_url('panel') ?>" class="<?= url_is('panel*') ? 'active' : '' ?>" <?= url_is('panel*') ? 'aria-current="page"' : '' ?>>Mi Panel</a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('productos') ?>" class="<?= ((url_is('productos') || url_is('productos/*')) && !url_is('productos/crear*')) ? 'active' : '' ?>" <?= ((url_is('productos') || url_is('productos/*')) && !url_is('productos/crear*')) ? 'aria-current="page"' : '' ?>>Mercado</a>
-            </li>
-            <li class="nav-item">
-              <a href="<?= site_url('productos/crear') ?>" class="<?= url_is('productos/crear*') ? 'active' : '' ?>" <?= url_is('productos/crear*') ? 'aria-current="page"' : '' ?>>Publicar Lote</a>
-            </li>
+            <li class="nav-item"><a href="<?= site_url('panel') ?>" <?= nav_attr(url_is('panel*')) ?>>Mi Panel</a></li>
+            <li class="nav-item"><a href="<?= site_url('productos') ?>" <?= nav_attr(url_is('productos*') && !url_is('productos/crear*')) ?>>Mercado</a></li>
+            <li class="nav-item"><a href="<?= site_url('productos/crear') ?>" <?= nav_attr(url_is('productos/crear*')) ?>>Publicar Lote</a></li>
           <?php endif; ?>
         <?php else: ?>
-          <li class="nav-item">
-            <a href="<?= site_url('/') ?>" class="<?= (url_is('/') || url_is('')) ? 'active' : '' ?>" <?= (url_is('/') || url_is('')) ? 'aria-current="page"' : '' ?>>Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a href="<?= site_url('/#ecosistema') ?>">Ecosistema</a>
-          </li>
-          <li class="nav-item">
-            <a href="<?= site_url('/#polimeros') ?>">Polímeros</a>
-          </li>
-          <li class="nav-item">
-            <a href="<?= site_url('/#seguridad') ?>">Seguridad</a>
-          </li>
-          <li class="nav-item">
-            <a href="<?= site_url('/#metricas') ?>">Métricas</a>
-          </li>
-          <li class="nav-item">
-            <a href="<?= site_url('/#contacto') ?>">Contacto</a>
-          </li>
+          <li class="nav-item"><a href="<?= site_url('/') ?>" <?= nav_attr(url_is('/') || url_is('')) ?>>Inicio</a></li>
+          <?php foreach (['ecosistema' => 'Ecosistema', 'polimeros' => 'Polímeros', 'seguridad' => 'Seguridad', 'metricas' => 'Métricas', 'contacto' => 'Contacto'] as $anchor => $label): ?>
+            <li class="nav-item"><a href="<?= site_url('/#' . $anchor) ?>"><?= $label ?></a></li>
+          <?php endforeach; ?>
         <?php endif; ?>
       </ul>
 

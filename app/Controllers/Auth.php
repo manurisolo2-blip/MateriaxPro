@@ -126,20 +126,16 @@ class Auth extends BaseController
         }
 
         $userModel = $this->getModel();
-        $newUserId = $userModel->insert([
-            'nombre'       => trim((string) $this->request->getPost('nombre')),
-            'email'        => strtolower(trim((string) $this->request->getPost('email'))),
-            'password'     => password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT),
-            'cuit'         => trim((string) $this->request->getPost('cuit')),
-            'telefono'     => trim((string) $this->request->getPost('telefono')),
-            'rubro'        => trim((string) $this->request->getPost('rubro')),
-            'ciudad'       => trim((string) $this->request->getPost('ciudad')),
-            'provincia'    => trim((string) $this->request->getPost('provincia')),
-            'direccion'    => trim((string) $this->request->getPost('direccion')),
-            'rol'          => 'empresa',
-            'estado'       => 'pendiente',
-            'ultimo_login' => null,
-        ]);
+        $fields    = ['nombre', 'cuit', 'telefono', 'rubro', 'ciudad', 'provincia', 'direccion'];
+        $data      = array_map(fn($v) => trim((string) $v), $this->request->getPost($fields));
+
+        $data['email']        = strtolower(trim((string) $this->request->getPost('email')));
+        $data['password']     = password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT);
+        $data['rol']          = 'empresa';
+        $data['estado']       = 'pendiente';
+        $data['ultimo_login'] = null;
+
+        $newUserId = $userModel->insert($data);
 
         if (!$newUserId) {
             return redirect()->back()->withInput()->with('error', 'Ocurrió un error al registrar la cuenta en la base de datos.');

@@ -58,15 +58,16 @@
             <label for="rubro" class="form-label">Rubro / Sector Productivo <span class="required-indicator" aria-hidden="true">*</span></label>
             <select name="rubro" id="rubro" class="form-select" required>
               <option value="">-- Seleccionar Rubro --</option>
-              <option value="Moldeo por Inyección" <?= (old('rubro') === 'Moldeo por Inyección') ? 'selected' : '' ?>>Moldeo por Inyección</option>
-              <option value="Extrusión de Película / Film" <?= (old('rubro') === 'Extrusión de Película / Film') ? 'selected' : '' ?>>Extrusión de Película / Film</option>
-              <option value="Reciclado & Granza" <?= (old('rubro') === 'Reciclado & Granza') ? 'selected' : '' ?>>Reciclado & Molienda / Granza</option>
-              <option value="Soplado de Cuerpos Huecos" <?= (old('rubro') === 'Soplado de Cuerpos Huecos') ? 'selected' : '' ?>>Soplado de Cuerpos Huecos / Bidones</option>
-              <option value="Compuestos & Masterbatch" <?= (old('rubro') === 'Compuestos & Masterbatch') ? 'selected' : '' ?>>Compuestos & Masterbatch</option>
-              <option value="Termoformado & Envases" <?= (old('rubro') === 'Termoformado & Envases') ? 'selected' : '' ?>>Termoformado & Envases</option>
-              <option value="Automotriz & Autopartes" <?= (old('rubro') === 'Automotriz & Autopartes') ? 'selected' : '' ?>>Automotriz & Autopartes</option>
-              <option value="Petroquímica & Resinas" <?= (old('rubro') === 'Petroquímica & Resinas') ? 'selected' : '' ?>>Petroquímica & Producción de Resinas</option>
-              <option value="Otro Sector Industrial" <?= (old('rubro') === 'Otro Sector Industrial') ? 'selected' : '' ?>>Otro Sector Industrial</option>
+              <?php 
+                $rubros = [
+                  'Moldeo por Inyección', 'Extrusión de Película / Film', 'Reciclado & Granza',
+                  'Soplado de Cuerpos Huecos', 'Compuestos & Masterbatch', 'Termoformado & Envases',
+                  'Automotriz & Autopartes', 'Petroquímica & Resinas', 'Otro Sector Industrial'
+                ];
+                foreach ($rubros as $rb): 
+              ?>
+                <option value="<?= $rb ?>" <?= (old('rubro') === $rb) ? 'selected' : '' ?>><?= $rb ?></option>
+              <?php endforeach; ?>
             </select>
           </div>
         </div>
@@ -140,16 +141,12 @@
             <label for="provincia" class="form-label">Provincia <span class="required-indicator" aria-hidden="true">*</span></label>
             <select name="provincia" id="provincia" class="form-select" required>
               <option value="">-- Seleccionar Provincia --</option>
-              <option value="Córdoba" <?= (old('provincia', 'Córdoba') === 'Córdoba') ? 'selected' : '' ?>>Córdoba</option>
-              <option value="Buenos Aires" <?= (old('provincia') === 'Buenos Aires') ? 'selected' : '' ?>>Buenos Aires</option>
-              <option value="Ciudad Autónoma de Buenos Aires" <?= (old('provincia') === 'Ciudad Autónoma de Buenos Aires') ? 'selected' : '' ?>>Ciudad Autónoma de Buenos Aires</option>
-              <option value="Santa Fe" <?= (old('provincia') === 'Santa Fe') ? 'selected' : '' ?>>Santa Fe</option>
-              <option value="Mendoza" <?= (old('provincia') === 'Mendoza') ? 'selected' : '' ?>>Mendoza</option>
-              <option value="Entre Ríos" <?= (old('provincia') === 'Entre Ríos') ? 'selected' : '' ?>>Entre Ríos</option>
-              <option value="Tucumán" <?= (old('provincia') === 'Tucumán') ? 'selected' : '' ?>>Tucumán</option>
-              <option value="San Luis" <?= (old('provincia') === 'San Luis') ? 'selected' : '' ?>>San Luis</option>
-              <option value="Salta" <?= (old('provincia') === 'Salta') ? 'selected' : '' ?>>Salta</option>
-              <option value="Otra Provincia" <?= (old('provincia') === 'Otra Provincia') ? 'selected' : '' ?>>Otra Provincia</option>
+              <?php 
+                $provincias = ['Córdoba', 'Buenos Aires', 'Ciudad Autónoma de Buenos Aires', 'Santa Fe', 'Mendoza', 'Entre Ríos', 'Tucumán', 'San Luis', 'Salta', 'Otra Provincia'];
+                foreach ($provincias as $prov): 
+              ?>
+                <option value="<?= $prov ?>" <?= (old('provincia', 'Córdoba') === $prov) ? 'selected' : '' ?>><?= $prov ?></option>
+              <?php endforeach; ?>
             </select>
           </div>
         </div>
