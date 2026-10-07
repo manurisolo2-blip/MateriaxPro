@@ -80,6 +80,8 @@ class CreateUsuariosTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
+        $this->forge->addKey('estado');
+        $this->forge->addKey('rol');
         $this->forge->createTable('usuarios', true);
     }
 

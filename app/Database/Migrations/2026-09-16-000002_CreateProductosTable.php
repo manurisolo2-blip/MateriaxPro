@@ -59,6 +59,8 @@ class CreateProductosTable extends Migration
             ],
         ]);
         $this->forge->addKey('id', true);
+        $this->forge->addKey('tipo_polimero');
+        $this->forge->addKey('estado');
         $this->forge->addForeignKey('user_id', 'usuarios', 'id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('productos', true);
     }

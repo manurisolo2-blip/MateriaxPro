@@ -28,7 +28,9 @@ CREATE TABLE `usuarios` (
   `estado` ENUM('pendiente', 'activo', 'inactivo', 'rechazado') NOT NULL DEFAULT 'pendiente' COMMENT 'Estado operativo y de auditoría de la cuenta',
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ultimo_login` DATETIME NULL COMMENT 'Fecha y hora del último acceso exitoso'
+  `ultimo_login` DATETIME NULL COMMENT 'Fecha y hora del último acceso exitoso',
+  KEY `idx_usuarios_estado` (`estado`),
+  KEY `idx_usuarios_rol` (`rol`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ------------------------------------------------------------------------------
@@ -46,6 +48,9 @@ CREATE TABLE `productos` (
   `estado` ENUM('Disponible', 'Reservado', 'Vendido') NOT NULL DEFAULT 'Disponible' COMMENT 'Estado comercial del lote',
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `idx_productos_user_id` (`user_id`),
+  KEY `idx_productos_tipo_polimero` (`tipo_polimero`),
+  KEY `idx_productos_estado` (`estado`),
   CONSTRAINT `fk_productos_usuarios` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

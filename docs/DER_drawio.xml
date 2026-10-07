@@ -225,7 +225,7 @@
         <mxCell id="u_f7" value="       &lt;b&gt;rol&lt;/b&gt; : VARCHAR(50) DEFAULT 'empresa'" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
           <mxGeometry y="292" width="380" height="26" as="geometry" />
         </mxCell>
-        <mxCell id="u_f_estado" value="       &lt;b&gt;estado&lt;/b&gt; : ENUM('activo','inactivo') DEFAULT 'activo'" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#34d399;fontSize=12;" vertex="1" parent="tbl_usuarios">
+        <mxCell id="u_f_estado" value="       &lt;b&gt;estado&lt;/b&gt; : ENUM('pendiente','activo','inactivo','rechazado') DEFAULT 'pendiente'" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#34d399;fontSize=12;" vertex="1" parent="tbl_usuarios">
           <mxGeometry y="318" width="380" height="26" as="geometry" />
         </mxCell>
         <mxCell id="u_f8" value="       &lt;b&gt;created_at&lt;/b&gt; : DATETIME NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#64748b;fontSize=12;" vertex="1" parent="tbl_usuarios">

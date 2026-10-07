@@ -6,105 +6,198 @@
 
 ---
 
-## 1. Descripción del Sistema y Alcance
-MateriaX es una plataforma corporativa que permite a empresas e industrias publicar, gestionar y reutilizar excedentes de polímeros industriales (Polietileno PE, Polipropileno PP, PVC, ABS, Nylon, PET, etc.).
+## 1. Contexto del Negocio y Dominio del Sistema
 
-Para el **Hito 1**, el sistema se compone de dos entidades nucleares:
-1. **Entidad Principal: USUARIOS**: Representa a las empresas o usuarios registrados que interactúan en la plataforma, gestionan su cuenta e inician sesión de manera autenticada.
-2. **Entidad Secundaria: PRODUCTOS (Excedentes de Materiales)**: Representa los lotes de materiales y polímeros industriales dados de alta en el sistema, con su volumen, precio, ubicación geográfica y ficha descriptiva.
+**MateriaX** es una plataforma tecnológica corporativa concebida para impulsar la economía circular y la simbiosis industrial en la región centro del país. Su propósito es conectar industrias y plantas manufactureras para que puedan publicar, solicitar, valorizar y reincorporar excedentes, mermas limpias, descartes de producción y granzas de polímeros industriales (Polietileno PE, Polipropileno PP, PVC, ABS, Poliamida/Nylon PA, PET y equipamiento logístico reutilizable).
 
----
-
-## 2. Entidades y Atributos
-
-### Entidad: `USUARIO`
-- **id** (Numérico, Entero, Clave Primaria - PK): Identificador unívoco del usuario en el sistema.
-- **nombre** (Texto, hasta 100 caracteres): Nombre o razón social de la empresa.
-- **email** (Texto, hasta 150 caracteres, Único): Dirección de correo corporativo para login.
-- **password** (Texto, 255 caracteres): Hash criptográfico seguro (bcrypt) de la clave de acceso.
-- **cuit** (Texto, hasta 20 caracteres): CUIT de identificación fiscal de la entidad.
-- **telefono** (Texto, hasta 30 caracteres): Línea o celular institucional de contacto.
-- **rubro** (Texto, hasta 100 caracteres): Sector o rubro productivo (Inyección, Extrusión, Reciclado, etc.).
-- **ciudad** (Texto, hasta 100 caracteres): Ciudad o localidad de radicación.
-- **provincia** (Texto, hasta 100 caracteres): Provincia.
-- **direccion** (Texto, hasta 150 caracteres): Domicilio de planta o sede fiscal.
-- **rol** (Texto, hasta 50 caracteres): Perfil de usuario (por defecto: `'empresa'`).
-- **estado** (Texto / Dominio: `pendiente`, `activo`, `inactivo`, `rechazado`): Estado operativo y de auditoría de la cuenta empresarial.
-- **created_at** (Fecha y Hora): Fecha y hora en que se registró la cuenta.
-- **updated_at** (Fecha y Hora): Última fecha de modificación del perfil.
-- **ultimo_login** (Fecha y Hora): Fecha y hora del último acceso exitoso.
-
-### Entidad: `PRODUCTO` (Lote de Material)
-- **id** (Numérico, Entero, Clave Primaria - PK): Identificador unívoco del producto/lote publicado.
-- **user_id** (Numérico, Entero, Clave Foránea - FK): Identificador del usuario que publica el material.
-- **nombre** (Texto, hasta 150 caracteres): Título o denominación del material (ej. *Pellet HDPE Virgen Recuperado*).
-- **tipo_polimero** (Texto, hasta 50 caracteres): Categoría técnica del polímero (ej. *Polietileno (PE)*, *Polipropileno (PP)*, *PVC*, etc.).
-- **cantidad_kg** (Numérico Decimal): Volumen en kilogramos del lote disponible.
-- **precio_unitario** (Numérico Decimal): Precio por kilogramo en moneda de curso legal.
-- **ubicacion** (Texto, hasta 100 caracteres): Localidad, parque industrial o planta física de origen.
-- **descripcion** (Texto enriquecido/largo): Especificaciones técnicas, color, pureza, malla de molienda o proceso de origen.
-- **estado** (Texto / Dominio: `Disponible`, `Reservado`, `Vendido`): Situación comercial del lote.
-- **created_at** (Fecha y Hora): Marca temporal de creación de la publicación.
-- **updated_at** (Fecha y Hora): Marca temporal de última edición.
+El diseño de la base de datos para el **Hito 1** responde a tres pilares fundamentales:
+1. **Seguridad y Control Institucional:** Acceso exclusivo para plantas con personería jurídica validada ante AFIP (CUIT) y auditoría previa por parte del Administrador.
+2. **Trazabilidad Técnica de Materiales:** Especificación unívoca del tipo de resina, peso en kilogramos, precio unitario de referencia, ubicación física de planta y características de pureza/molienda.
+3. **Arquitectura Cero JavaScript:** Integridad de datos y validaciones procesadas íntegramente del lado del servidor (PHP 8 / CodeIgniter 4 / MySQL InnoDB).
 
 ---
 
-## 3. Relaciones y Cardinalidad
+## 2. Clasificación y Semántica Formal de las Entidades
 
-### Relación: `PUBLICAR` (Usuario publica Productos)
-- **Entidad origen:** `USUARIO`
-- **Entidad destino:** `PRODUCTO`
-- **Cardinalidad:**
-  - Un **Usuario** puede publicar **cero, uno o muchos (0..N)** productos.
-  - Un **Producto** pertenece de forma obligatoria a **un y sólo un (1..1)** usuario.
-- **Tipo de relación:** **1 a N** (Uno a Muchos).
-- **Regla de integridad referencial:** En caso de borrado del usuario (`ON DELETE CASCADE`), se eliminan sus publicaciones asociadas, manteniendo la consistencia de la base de datos.
+El modelo conceptual del Hito 1 está integrado por dos entidades centrales:
+
+```
+┌─────────────────────────────────┐           (1,N)           ┌─────────────────────────────────┐
+│             USUARIO             │ ◄───────────────────────► │            PRODUCTO             │
+│      (Empresa Homologada)       │          PUBLICA          │       (Lote de Polímero)        │
+└─────────────────────────────────┘                           └─────────────────────────────────┘
+```
+
+### A. Entidad Regular Fuerte: `USUARIO`
+Representa a los actores comerciales e institucionales con credenciales de acceso al sistema. Comprende tanto a las empresas operativas (plantas industriales, transformadores plásticos, recicladores) como a los administradores generales de la plataforma.
+
+* **Naturaleza:** Entidad regular (fuerte), ya que posee existencia propia e independiente en el dominio del problema.
+* **Clave Primaria (PK):** `id` (numérico entero, autoincremental).
+* **Clave Candidata / Alternativa (UK):** `email` (dirección corporativa única).
+
+### B. Entidad Regular Débil por Existencia: `PRODUCTO`
+Representa los lotes físicos de excedentes de materiales poliméricos publicados en la red para su intercambio comercial o retiro.
+
+* **Naturaleza:** Entidad dependiente por existencia de la entidad `USUARIO`. Un lote no puede concebirse ni persistir en el catálogo sin una empresa titular responsable de su despacho y facturación.
+* **Clave Primaria (PK):** `id` (numérico entero, autoincremental).
+* **Clave Foránea (FK):** `user_id` (referencia al usuario que realiza la oferta).
 
 ---
 
-## 4. Diagrama Visual (Notación Chen / Patrón Entidad-Relación)
+## 3. Taxonomía Exhaustiva de Atributos
+
+Siguiendo la teoría clásica de modelado conceptual de bases de datos:
+
+### Tabla de Atributos: Entidad `USUARIO`
+
+| Atributo | Tipo Conceptual | Clasificación | Dominio / Restricción | Propósito en el Negocio |
+| :--- | :--- | :--- | :--- | :--- |
+| **id** | Numérico Entero | Identificador (PK) | Entero positivo > 0 | Clave primaria unívoca. |
+| **nombre** | Alfanumérico (100) | Simple, Obligatorio | No nulo, texto libre | Razón social o denominación legal. |
+| **email** | Alfanumérico (150) | Simple, Único (UK) | Formato email válido, único | Credencial corporativa de acceso. |
+| **password** | Alfanumérico (255) | Simple, Obligatorio | Hash bcrypt (60+ caracteres) | Almacenamiento seguro de clave. |
+| **cuit** | Alfanumérico (20) | Simple, Obligatorio | Formato `30-XXXXXXXX-X` | Identificación fiscal tributaria ante AFIP. |
+| **telefono** | Alfanumérico (30) | Simple, Obligatorio | Min 6 dígitos | Contacto telefónico de planta. |
+| **rubro** | Alfanumérico (100) | Simple, Opcional | Inyección, Extrusión, Reciclado... | Clasificación del sector fabril. |
+| **ciudad** | Alfanumérico (100) | Componente atómico | Localidad de radicación | Ubicación de la planta o sede. |
+| **provincia** | Alfanumérico (100) | Componente atómico | Jurisdicción provincial | Ubicación geográfica provincial. |
+| **direccion** | Alfanumérico (150) | Componente atómico | Calle, número, parque ind. | Domicilio legal o de planta fabril. |
+| **rol** | Alfanumérico (50) | Simple, Obligatorio | `'empresa'`, `'admin'` | Perfil y nivel de autorización. |
+| **estado** | Enum / Dominio | Simple, Obligatorio | `pendiente`, `activo`, `inactivo`, `rechazado` | Estado de homologación y auditoría fiscal. |
+| **created_at** | Marca Temporal | Auditoría | Fecha y hora válida | Registro inicial de la solicitud. |
+| **updated_at** | Marca Temporal | Auditoría | Fecha y hora válida | Última modificación de datos. |
+| **ultimo_login**| Marca Temporal | Auditoría | Fecha y hora nula/válida | Registro de último acceso exitoso. |
+
+> [!NOTE]
+> **Atributo Compuesto descompuesto en Atómicos:** La dirección geográfica física se modela conceptualmente descompuesta en tres atributos atómicos independientes (`direccion`, `ciudad`, `provincia`), cumpliendo con la 1FN para permitir filtros eficientes por localidad y provincia.
+
+---
+
+### Tabla de Atributos: Entidad `PRODUCTO`
+
+| Atributo | Tipo Conceptual | Clasificación | Dominio / Restricción | Propósito en el Negocio |
+| :--- | :--- | :--- | :--- | :--- |
+| **id** | Numérico Entero | Identificador (PK) | Entero positivo > 0 | Clave primaria del lote. |
+| **user_id** | Numérico Entero | Foránea (FK) | Referencia a `USUARIO(id)` | Titularidad de la empresa oferente. |
+| **nombre** | Alfanumérico (150) | Simple, Obligatorio | Min 3 caracteres | Denominación técnica del material. |
+| **tipo_polimero** | Alfanumérico (50) | Simple, Obligatorio | `PE`, `PP`, `PVC`, `ABS`, `PA`, `PET` | Código de identificación de resinas (RIC). |
+| **cantidad_kg** | Decimal (10,2) | Simple, Obligatorio | Valor numérico > 0 | Masa disponible pesada en báscula (kg). |
+| **precio_unitario**| Decimal (10,2) | Simple, Obligatorio | Valor numérico >= 0 | Valor neto en pesos ($ ARS) por kg. |
+| **ubicacion** | Alfanumérico (100) | Simple, Obligatorio | Planta o parque industrial | Lugar físico para el retiro de carga. |
+| **descripcion** | Texto Largo | Simple, Opcional | Texto libre | Especificación técnica, MFI, color, empaque. |
+| **estado** | Enum / Dominio | Simple, Obligatorio | `'Disponible'`, `'Reservado'`, `'Vendido'` | Estado de disponibilidad comercial. |
+| **created_at** | Marca Temporal | Auditoría | Fecha y hora válida | Momento de publicación del lote. |
+| **updated_at** | Marca Temporal | Auditoría | Fecha y hora válida | Última edición de ficha técnica o volumen. |
+
+> [!TIP]
+> **Atributo Derivado (Calculado):** El valor económico total del lote no se almacena para evitar redundancias de cálculo, sino que se obtiene dinámicamente mediante la fórmula:
+> $$\text{Valor Total Lote} = \text{cantidad\_kg} \times \text{precio\_unitario}$$
+
+---
+
+## 4. Relación, Conectividad y Cardinalidad
+
+### Vínculo: `PUBLICA` (Oferta Comercial de Excedentes)
+Conecta a la entidad `USUARIO` con la entidad `PRODUCTO`.
+
+* **Cardinalidad Mínima y Máxima:**
+  * **`USUARIO` $\to$ `PRODUCTO`:** Cardinalidad **(0, N)**.  
+    Una empresa que se registra puede no haber publicado ningún lote aún (mínimo 0), o bien puede publicar múltiples lotes de diferentes polímeros a lo largo del tiempo (máximo N).
+  * **`PRODUCTO` $\to$ `USUARIO`:** Cardinalidad **(1, 1)**.  
+    Todo lote de material existente en la plataforma pertenece de manera estricta y obligatoria a una y sólo una empresa oferente (mínimo 1, máximo 1). No se admiten publicaciones anónimas ni copropiedad de lotes en esta fase.
+
+* **Tipo de Vínculo:** **1 a N** (Uno a Muchos).
+
+* **Participación:**
+  * `PRODUCTO`: **Participación Total** (todo producto está forzosamente asociado a un usuario).
+  * `USUARIO`: **Participación Parcial** (pueden existir usuarios sin publicaciones activas).
+
+* **Regla de Integridad Referencial:**
+  * `ON DELETE CASCADE`: Si una empresa es dada de baja del sistema, sus lotes asociados se eliminan en cascada para evitar materiales huérfanos sin responsable legal.
+  * `ON UPDATE CASCADE`: Si el identificador de la empresa se actualiza, la referencia en sus lotes se actualiza automáticamente.
+
+---
+
+## 5. Ciclos de Vida y Diagramas de Estados
+
+### A. Ciclo de Vida del Usuario / Empresa
+```mermaid
+stateDiagram-v2
+    [*] --> Pendiente : Registro de Empresa (Formulario)
+    Pendiente --> Activo : Aprobado por Administrador
+    Pendiente --> Rechazado : Documentación fiscal inválida
+    Activo --> Inactivo : Suspensión comercial temporal
+    Inactivo --> Activo : Reactivación por Administrador
+    Rechazado --> Activo : Reconsideración de solicitud
+    Activo --> [*] : Baja definitiva
+```
+
+### B. Ciclo de Vida del Producto / Lote de Material
+```mermaid
+stateDiagram-v2
+    [*] --> Disponible : Publicación de Lote (Oferente)
+    Disponible --> Reservado : Inicio de negociación / seña comercial
+    Reservado --> Disponible : Cancelación de orden
+    Reservado --> Vendido : Despacho y entrega confirmada
+    Disponible --> Vendido : Venta directa
+    Disponible --> [*] : Baja por moderación o retiro voluntario
+    Vendido --> [*] : Cierre de ciclo circular
+```
+
+---
+
+## 6. Diagrama Entidad-Relación Visual (Mermaid)
+
+### Diagrama Conceptual y Lógico Completo
 
 ```mermaid
 erDiagram
     USUARIO ||--o{ PRODUCTO : "publica (1:N)"
-    
+
     USUARIO {
-        int id PK "Identificador único"
-        string nombre "Razón social"
-        string email UK "Correo de acceso"
-        string password "Hash bcrypt"
-        string cuit "Identificación tributaria"
-        string telefono "Contacto telefónico"
-        string rol "Perfil institucional"
-        datetime created_at "Alta"
-        datetime updated_at "Actualización"
+        int id PK "Identificador único de la empresa"
+        string nombre "Razón social / Denominación legal"
+        string email UK "Correo corporativo único"
+        string password "Hash criptográfico bcrypt"
+        string cuit "Identificación tributaria AFIP"
+        string telefono "Línea o celular de contacto"
+        string rubro "Sector productivo (Inyección, etc.)"
+        string ciudad "Localidad de radicación"
+        string provincia "Provincia de radicación"
+        string direccion "Domicilio de planta fabril"
+        string rol "Perfil: 'empresa' | 'admin'"
+        string estado "Auditoría: pendiente | activo | inactivo | rechazado"
+        datetime created_at "Fecha y hora de registro"
+        datetime updated_at "Fecha de última modificación"
+        datetime ultimo_login "Último ingreso a la plataforma"
     }
 
     PRODUCTO {
-        int id PK "Identificador de lote"
-        int user_id FK "Usuario oferente"
-        string nombre "Nombre del polímero"
-        string tipo_polimero "Familia (PE, PP, PVC...)"
-        decimal cantidad_kg "Kilos disponibles"
-        decimal precio_unitario "Precio por kg"
-        string ubicacion "Localidad / Parque Industrial"
-        text descripcion "Ficha técnica y pureza"
-        string estado "Disponible | Reservado | Vendido"
-        datetime created_at "Publicación"
-        datetime updated_at "Modificación"
+        int id PK "Identificador único del lote"
+        int user_id FK "Empresa titular oferente (NOT NULL)"
+        string nombre "Denominación del material o scrap"
+        string tipo_polimero "Familia de resina (PE, PP, PVC, ABS, PA, PET)"
+        decimal cantidad_kg "Volumen total disponible en kilogramos"
+        decimal precio_unitario "Precio por kg en moneda nacional ($ ARS)"
+        string ubicacion "Planta o parque industrial de retiro"
+        text descripcion "Ficha técnica, pureza, color y granulometría"
+        string estado "Comercial: Disponible | Reservado | Vendido"
+        datetime created_at "Fecha y hora de alta"
+        datetime updated_at "Fecha de última actualización"
     }
 ```
 
 ---
 
-## 5. Archivo Draw.io Oficial Multi-Pestaña
+## 7. Diagrama Draw.io Oficial Multi-Pestaña
+
 El archivo [`docs/DER_drawio.xml`](file:///c:/xampp/htdocs/MateriaxPro/docs/DER_drawio.xml) contiene **2 páginas completas** listas para visualizar y editar en [Draw.io / diagrams.net](https://app.diagrams.net):
 
-1. **Pestaña 1: "1. DER (Entidad-Relación)"**: Diagrama Conceptual completo en notación Chen con entidades (`USUARIO`, `PRODUCTO`, `CATEGORIA_POLIMERO`), relaciones (`PUBLICA`, `CLASIFICA`), elipses de atributos, claves primarias subrayadas y cardinalidades mínimas/máximas `(1,1)` y `(0,N)`.
-2. **Pestaña 2: "2. Modelo Relacional (Tablas)"**: Diagrama Lógico/Físico de tablas con tipos de datos de MySQL (`INT`, `VARCHAR`, `DECIMAL`, `ENUM`), campos obligatorios, claves primarias (`PK`), claves foráneas (`FK`) y conectores relacionales de pata de gallo (*Crow's Foot* `1:N`) con regla `ON DELETE CASCADE`.
+1. **Pestaña 1: "1. DER (Entidad-Relación)"**: Diagrama Conceptual formal en notación Chen con entidades rectangulares (`USUARIO`, `PRODUCTO`), rombo de relación (`PUBLICA`), elipses de atributos, atributos identificadores subrayados y cardinalidades explícitas `(1,1)` y `(0,N)`.
+2. **Pestaña 2: "2. Modelo Relacional (Tablas)"**: Diagrama Lógico/Físico de tablas relacionales con tipos de datos MariaDB/MySQL (`INT`, `VARCHAR`, `DECIMAL(10,2)`, `ENUM`), claves primarias (`PK`), foráneas (`FK`), índices de optimización y conectores relacionales pata de gallo (*Crow's Foot* `1:N`) con regla `ON DELETE CASCADE`.
 
-### Cómo abrirlo en Draw.io:
-1. Ingresar a https://app.diagrams.net
-2. Seleccionar **Archivo > Abrir desde > Dispositivo**
-3. Cargar el archivo `docs/DER_drawio.xml`.
-4. En la parte inferior de Draw.io, cambiar entre las pestañas **1. DER** y **2. Modelo Relacional**.
+### Instrucciones para Visualización en Draw.io:
+1. Abrir https://app.diagrams.net en cualquier navegador web.
+2. Seleccionar **Archivo > Abrir desde > Dispositivo**.
+3. Cargar el archivo local `docs/DER_drawio.xml`.
+4. En la barra inferior, alternar entre las pestañas **1. DER** y **2. Modelo Relacional**.
