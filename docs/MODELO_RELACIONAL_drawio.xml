@@ -1,0 +1,121 @@
+<mxfile host="app.diagrams.net" modified="2026-10-07T20:30:00.000Z" agent="Antigravity" version="22.0.0" type="device">
+  <diagram id="tab-mr-solo" name="Modelo Relacional (Tablas Fisicas)">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" background="#0b0f19">
+      <root>
+        <mxCell id="mr_0" />
+        <mxCell id="mr_1" parent="mr_0" />
+
+        <!-- Encabezado Institucional -->
+        <mxCell id="mr_header" value="&lt;b style=&quot;font-size: 18px; color: #38bdf8;&quot;&gt;MATERIAX — MODELO RELACIONAL (ESQUEMA FÍSICO / LÓGICO)&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 13px; color: #94a3b8;&quot;&gt;Traducción del DER a Tablas Normalizadas (1FN, 2FN, 3FN, FNBC) con Claves Primarias, Foráneas e Índices · MySQL InnoDB&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#111827;strokeColor=#1e293b;align=center;verticalAlign=middle;" vertex="1" parent="mr_1">
+          <mxGeometry x="320" y="30" width="940" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ================= TABLA: USUARIOS ================= -->
+        <mxCell id="tbl_usuarios" value="&lt;b&gt;usuarios&lt;/b&gt;  (Entidad Regular Fuerte - Empresas)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#1e293b;fontColor=#ffffff;strokeColor=#3b82f6;strokeWidth=2;fontSize=13;" vertex="1" parent="mr_1">
+          <mxGeometry x="120" y="130" width="400" height="422" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u_f1" value="  &lt;b style=&quot;color: #f59e0b;&quot;&gt;PK&lt;/b&gt;  &lt;b&gt;id&lt;/b&gt; : INT(11) UNSIGNED AUTO_INCREMENT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="32" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f2" value="       &lt;b&gt;nombre&lt;/b&gt; : VARCHAR(100) NOT NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="58" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f3" value="  &lt;b style=&quot;color: #38bdf8;&quot;&gt;UK&lt;/b&gt;  &lt;b&gt;email&lt;/b&gt; : VARCHAR(150) NOT NULL UNIQUE" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#38bdf8;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="84" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f4" value="       &lt;b&gt;password&lt;/b&gt; : VARCHAR(255) NOT NULL (hash bcrypt)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="110" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f5" value="       &lt;b&gt;cuit&lt;/b&gt; : VARCHAR(20) NOT NULL (30-XXXXXXXX-X)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#94a3b8;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="136" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f6" value="       &lt;b&gt;telefono&lt;/b&gt; : VARCHAR(30) NOT NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#94a3b8;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="162" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f_rubro" value="       &lt;b&gt;rubro&lt;/b&gt; : VARCHAR(100) NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="188" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f_ciudad" value="       &lt;b&gt;ciudad&lt;/b&gt; : VARCHAR(100) NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="214" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f_provincia" value="       &lt;b&gt;provincia&lt;/b&gt; : VARCHAR(100) NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="240" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f_dir" value="       &lt;b&gt;direccion&lt;/b&gt; : VARCHAR(150) NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="266" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f7" value="  &lt;b style=&quot;color: #a78bfa;&quot;&gt;IDX&lt;/b&gt; &lt;b&gt;rol&lt;/b&gt; : VARCHAR(50) NOT NULL DEFAULT 'empresa'" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="292" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f_estado" value="  &lt;b style=&quot;color: #a78bfa;&quot;&gt;IDX&lt;/b&gt; &lt;b&gt;estado&lt;/b&gt; : ENUM('pendiente','activo','inactivo','rechazado')" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#34d399;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="318" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f8" value="       &lt;b&gt;created_at&lt;/b&gt; : DATETIME NULL DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#64748b;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="344" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f9" value="       &lt;b&gt;updated_at&lt;/b&gt; : DATETIME NULL DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#64748b;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="370" width="400" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="u_f_ultimo" value="       &lt;b&gt;ultimo_login&lt;/b&gt; : DATETIME NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#64748b;fontSize=12;" vertex="1" parent="tbl_usuarios">
+          <mxGeometry y="396" width="400" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ================= TABLA: PRODUCTOS ================= -->
+        <mxCell id="tbl_productos" value="&lt;b&gt;productos&lt;/b&gt;  (Entidad Débil por Existencia - Lotes)" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=32;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#064e3b;fontColor=#ffffff;strokeColor=#10b981;strokeWidth=2;fontSize=13;" vertex="1" parent="mr_1">
+          <mxGeometry x="720" y="130" width="440" height="344" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p_f1" value="  &lt;b style=&quot;color: #f59e0b;&quot;&gt;PK&lt;/b&gt;  &lt;b&gt;id&lt;/b&gt; : INT(11) UNSIGNED AUTO_INCREMENT" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#f8fafc;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="32" width="440" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f2" value="  &lt;b style=&quot;color: #60a5fa;&quot;&gt;FK, IDX&lt;/b&gt; &lt;b&gt;user_id&lt;/b&gt; : INT(11) UNSIGNED NOT NULL  ──▶  usuarios(id)" style="text;strokeColor=none;fillColor=rgba(37,99,235,0.15);align=left;verticalAlign=middle;spacingLeft=8;fontColor=#93c5fd;fontSize=12;fontStyle=1;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="60" width="440" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f3" value="       &lt;b&gt;nombre&lt;/b&gt; : VARCHAR(150) NOT NULL" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="88" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f4" value="  &lt;b style=&quot;color: #a78bfa;&quot;&gt;IDX&lt;/b&gt; &lt;b&gt;tipo_polimero&lt;/b&gt; : VARCHAR(50) NOT NULL (PE, PP, PVC, ABS...)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#38bdf8;fontSize=12;fontStyle=1;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="114" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f5" value="       &lt;b&gt;cantidad_kg&lt;/b&gt; : DECIMAL(10,2) NOT NULL (CHECK &gt; 0)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="140" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f6" value="       &lt;b&gt;precio_unitario&lt;/b&gt; : DECIMAL(10,2) NOT NULL (CHECK &gt;= 0)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#34d399;fontSize=12;fontStyle=1;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="166" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f7" value="       &lt;b&gt;ubicacion&lt;/b&gt; : VARCHAR(100) NOT NULL (Planta de retiro)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#cbd5e1;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="192" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f8" value="       &lt;b&gt;descripcion&lt;/b&gt; : TEXT NULL (Ficha técnica y pureza)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#94a3b8;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="218" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f9" value="  &lt;b style=&quot;color: #a78bfa;&quot;&gt;IDX&lt;/b&gt; &lt;b&gt;estado&lt;/b&gt; : ENUM('Disponible','Reservado','Vendido')" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#f59e0b;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="244" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f10" value="       &lt;b&gt;created_at&lt;/b&gt; : DATETIME NULL DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#64748b;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="270" width="440" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="p_f11" value="       &lt;b&gt;updated_at&lt;/b&gt; : DATETIME NULL DEFAULT CURRENT_TIMESTAMP" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=8;fontColor=#64748b;fontSize=12;" vertex="1" parent="tbl_productos">
+          <mxGeometry y="296" width="440" height="26" as="geometry" />
+        </mxCell>
+
+        <!-- ================= RELACIÓN FK CROW'S FOOT ================= -->
+        <mxCell id="fk_arrow" value="&lt;b style=&quot;color: #38bdf8; background-color: #0b0f19;&quot;&gt;1 : N&lt;br&gt;ON DELETE CASCADE&lt;br&gt;ON UPDATE CASCADE&lt;/b&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#38bdf8;strokeWidth=2;startArrow=ERone;endArrow=ERmany;startFill=0;endFill=0;" edge="1" parent="mr_1" source="u_f1" target="p_f2">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="620" y="175" />
+              <mxPoint x="620" y="204" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Cuadro Informativo de Normalización y Notación de Codd -->
+        <mxCell id="mr_notes" value="&lt;b style=&quot;color: #38bdf8; font-size: 13px;&quot;&gt;JUSTIFICACIÓN CIENTÍFICA DE NORMALIZACIÓN Y ESQUEMA DE CODD:&lt;/b&gt;&lt;br&gt;&lt;br&gt;• &lt;b style=&quot;color: #ffffff;&quot;&gt;Notación Formal de Codd:&lt;/b&gt; &lt;br&gt;  USUARIOS(&lt;u&gt;id&lt;/u&gt;, nombre, email&lt;sup&gt;UK&lt;/sup&gt;, password, cuit, telefono, rubro, ciudad, provincia, direccion, rol, estado, created_at, updated_at, ultimo_login)&lt;br&gt;  PRODUCTOS(&lt;u&gt;id&lt;/u&gt;, user_id&lt;sup&gt;FK&lt;/sup&gt;, nombre, tipo_polimero, cantidad_kg, precio_unitario, ubicacion, descripcion, estado, created_at, updated_at)&lt;br&gt;&lt;br&gt;• &lt;b style=&quot;color: #ffffff;&quot;&gt;1FN (Primera Forma Normal):&lt;/b&gt; Dominios atómicos indivisibles; el atributo compuesto de localización se dividió en direccion, ciudad y provincia.&lt;br&gt;• &lt;b style=&quot;color: #ffffff;&quot;&gt;2FN (Segunda Forma Normal):&lt;/b&gt; Demostrado por el &lt;i&gt;Teorema de Clave Simple&lt;/i&gt;. Al tener claves primarias atómicas simples (id), es imposible la existencia de dependencias parciales.&lt;br&gt;• &lt;b style=&quot;color: #ffffff;&quot;&gt;3FN y FNBC (Tercera Forma Normal y Boyce-Codd):&lt;/b&gt; No existen dependencias transitivas. Los datos de la empresa no se duplican en productos y se resuelven puramente mediante JOIN. En toda DF no trivial X → Y, el determinante X es superclave." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#111827;strokeColor=#1e293b;align=left;verticalAlign=top;spacing=14;fontColor=#cbd5e1;fontSize=11;" vertex="1" parent="mr_1">
+          <mxGeometry x="120" y="585" width="1040" height="205" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
