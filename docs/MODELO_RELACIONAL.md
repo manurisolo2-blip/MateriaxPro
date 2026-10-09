@@ -1,374 +1,188 @@
-# MateriaX Pro — Modelo Relacional y Normalización
-**Red Industrial de Reutilización Circular y Simbiosis de Polímeros**  
-**Instituto Técnico Río Tercero — Curso 6° B**  
-**Espacios Curriculares:** Bases de Datos · Laboratorio de Aplicaciones II · Laboratorio de Programación  
-**Docentes:** Vanesa Stucher · Francisco Rissone · Simón Zanetti  
+# Modelo Relacional y Normalización — MateriaX Pro
+**Instituto Técnico Río Tercero — 6° Año "B"**  
+**Materia:** Bases de Datos · Laboratorio de Aplicaciones II · Laboratorio de Programación  
+**Proyecto:** MateriaX Pro — Plataforma de Economía Circular de Polímeros Industriales  
+**Alumnos:** 6° B  
 
 ---
 
-## 1. Metodología de Traducción del DER al Modelo Relacional
+## 1. ¿De qué se trata este modelo?
 
-La derivación del esquema relacional a partir del Diagrama Entidad-Relación conceptual se basa en la aplicación sistemática de las **reglas formales de mapeo relacional** (Elmasri & Navathe / Date):
+Este modelo relacional representa la base de datos de **MateriaX Pro**, una plataforma web diseñada para que empresas e industrias puedan publicar y conseguir excedentes de plásticos y polímeros industriales (como polipropileno, polietileno, PVC, etc.) para reciclarlos o reutilizarlos.
 
-1. **Regla 1 (Mapeo de Entidades Fuertes a Tablas):**  
-   Cada entidad fuerte (`USUARIO`, `CATEGORIA_POLIMERO`) genera una relación base con su clave primaria correspondiente (`id`).
-2. **Regla 2 (Mapeo de Entidades Débiles por Existencia):**  
-   Entidades dependientes (`PLANTA_INDUSTRIAL`, `PRODUCTO`, `MENSAJE_NEGOCIACION`, `AUDITORIA_ESTADO_LOTE`) se convierten en tablas independientes cuya clave primaria es un identificador subrogado simple (`id`), incorporando como claves foráneas obligatorias (`NOT NULL`) los identificadores de sus entidades propietarias.
-3. **Regla 3 (Mapeo de Relaciones Binarias 1:N):**  
-   Para cada relación 1:N (ej. `USUARIO` $\to$ `PRODUCTO`), la clave primaria del lado "1" se propaga como **clave foránea (FK)** en el lado "N". Se indexa físicamente mediante árboles B-Tree para optimizar las operaciones de reunión (*JOIN*).
-4. **Regla 4 (Mapeo de Relaciones 1:1 Subordinadas):**  
-   La relación entre `TRANSACCION` y `CERTIFICADO_AMBIENTAL` es 1:1. La clave foránea `transaccion_id` se ubica en `CERTIFICADO_AMBIENTAL` con restricción de unicidad (`UNIQUE`), garantizando biunivocidad estricta.
-5. **Regla 5 (Políticas de Integridad Referencial Transaccional):**  
-   * **`ON DELETE CASCADE`:** Aplicado en registros subordinados operativos (ej. si se elimina un borrador de producto, sus mensajes de consulta se suprimen en cascada).
-   * **`ON DELETE RESTRICT`:** Aplicado en entidades comerciales y de auditoría (ej. una empresa con transacciones históricas o certificados ambientales emitidos no puede ser suprimida físicamente sin antes archivar o preservar la trazabilidad fiscal).
+Para que el sistema sea **claro, funcional y fácil de mantener**, la base de datos se organiza alrededor de dos entidades principales que resuelven el funcionamiento del sitio:
+* **`usuarios`**: Guarda a las empresas que se registran en la plataforma.
+* **`productos`**: Guarda los lotes de materiales plásticos que las empresas publican para vender o transferir.
 
 ---
 
-## 2. Notación Relacional Formal (Modelo de Codd)
+## 2. Diferenciación de Roles y Permisos: ¿Por qué el Usuario NO puede ser Administrador?
 
-A continuación se presentan los esquemas relacionales formales, subrayando las **claves primarias (PK)** y señalando las **claves foráneas (FK)** y **candidatas (UK)**:
+Una regla fundamental del sistema es que **un usuario común (empresa) NUNCA puede ser administrador**, sin importar si está logeado o no logeado. 
 
-### 2.1. Módulo de Identidad y Sedes Fabriles
-$$\text{USUARIOS}(\underline{\text{id}}, \text{nombre}, \text{email}^{\text{UK}}, \text{password}, \text{cuit}^{\text{UK}}, \text{telefono}, \text{rubro}, \text{direccion\_fiscal}, \text{ciudad\_fiscal}, \text{provincia\_fiscal}, \text{rol}, \text{estado}, \text{verificado\_afip}, \text{created\_at}, \text{updated\_at}, \text{ultimo\_login})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{UK}_1 = \{\text{email}\}, \quad \text{UK}_2 = \{\text{cuit}\}$
+Tienen propósitos y permisos completamente distintos en el sistema:
 
-$$\text{PLANTAS\_INDUSTRIALES}(\underline{\text{id}}, \text{empresa\_id}^{\text{FK}}, \text{nombre\_planta}, \text{direccion}, \text{localidad}, \text{provincia}, \text{coordenadas\_gps}, \text{posee\_bascula}, \text{activa}, \text{created\_at}, \text{updated\_at})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{FK}: \text{empresa\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE CASCADE}]$
+### Tabla de Permisos según el Tipo de Usuario
 
----
+| Función / Sección | Usuario NO Logeado (Visitante) | Usuario Logeado (Empresa) | Administrador del Sistema |
+| :--- | :---: | :---: | :---: |
+| Ver página de inicio y explicación | Sí | Sí | Sí |
+| Registrar una nueva empresa | Sí | No (ya tiene cuenta) | No |
+| Iniciar sesión | Sí | No (ya inició) | No |
+| Ver catálogo de materiales (Mercado) | No (requiere login) | **Sí** | **Sí** |
+| Publicar un nuevo lote de polímero | No | **Sí** | No (solo modera) |
+| Editar o borrar sus propios lotes | No | **Sí (solo los propios)** | **Sí (por moderación)** |
+| Editar o borrar lotes de otras empresas | No | **NO (bloqueado)** | **Sí (por moderación)** |
+| Ver su panel personal de estadísticas | No | **Sí (/panel)** | No (tiene /admin) |
+| Modificar sus propios datos de empresa | No | **Sí (/perfil)** | No |
+| **Aprobar o rechazar empresas nuevas** | **NO** | **NO** | **Sí (/admin)** |
+| **Suspender o reactivar empresas** | **NO** | **NO** | **Sí (/admin)** |
+| **Acceder al panel de control (/admin)** | **NO** | **NO** | **Sí (/admin)** |
 
-### 2.2. Módulo de Catálogo y Oferta de Polímeros
-$$\text{CATEGORIAS\_POLIMERO}(\underline{\text{id}}, \text{codigo\_spi}, \text{sigla}^{\text{UK}}, \text{nombre\_tecnico}, \text{densidad\_g\_cm3}, \text{temp\_fusion\_c}, \text{factor\_co2\_kg}, \text{reciclabilidad}, \text{activo})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{UK} = \{\text{sigla}\}$
+### ¿Cómo aseguramos que un usuario no pueda ser administrador?
 
-$$\text{PRODUCTOS}(\underline{\text{id}}, \text{user\_id}^{\text{FK}}, \text{planta\_id}^{\text{FK}}, \text{categoria\_id}^{\text{FK}}, \text{nombre}, \text{tipo\_polimero}, \text{presentacion}, \text{color}, \text{fluidez\_mfi}, \text{contaminacion\_pct}, \text{cantidad\_kg}, \text{cantidad\_disp\_kg}, \text{pedido\_minimo\_kg}, \text{precio\_unitario}, \text{moneda}, \text{ubicacion}, \text{descripcion}, \text{estado}, \text{created\_at}, \text{updated\_at})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{FK}_1: \text{user\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE CASCADE}]$
-* $\text{FK}_2: \text{planta\_id} \to \text{PLANTAS\_INDUSTRIALES}(\text{id}) \quad [\text{ON DELETE SET NULL}]$
-* $\text{FK}_3: \text{categoria\_id} \to \text{CATEGORIAS\_POLIMERO}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
-
----
-
-### 2.3. Módulo Transaccional y Certificación Ambiental
-$$\text{TRANSACCIONES}(\underline{\text{id}}, \text{codigo\_operacion}^{\text{UK}}, \text{producto\_id}^{\text{FK}}, \text{comprador\_id}^{\text{FK}}, \text{vendedor\_id}^{\text{FK}}, \text{planta\_origen\_id}^{\text{FK}}, \text{cantidad\_kg}, \text{precio\_unitario\_pactado}, \text{subtotal}, \text{costo\_flete}, \text{monto\_total}, \text{modalidad\_retiro}, \text{estado}, \text{ticket\_balanza\_kg}, \text{numero\_remito}, \text{fecha\_solicitud}, \text{fecha\_acuerdo}, \text{fecha\_despacho}, \text{fecha\_cierre})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{UK} = \{\text{codigo\_operacion}\}$
-* $\text{FK}_1: \text{producto\_id} \to \text{PRODUCTOS}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
-* $\text{FK}_2: \text{comprador\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
-* $\text{FK}_3: \text{vendedor\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
-* $\text{FK}_4: \text{planta\_origen\_id} \to \text{PLANTAS\_INDUSTRIALES}(\text{id}) \quad [\text{ON DELETE SET NULL}]$
-
-$$\text{CERTIFICADOS\_AMBIENTALES}(\underline{\text{id}}, \text{codigo\_certificado}^{\text{UK}}, \text{transaccion\_id}^{\text{FK, UK}}, \text{generadora\_id}^{\text{FK}}, \text{revalorizadora\_id}^{\text{FK}}, \text{kg\_recuperados}, \text{co2\_evitado\_kg}, \text{mwh\_ahorrado}, \text{fecha\_emision})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{UK}_1 = \{\text{codigo\_certificado}\}, \quad \text{UK}_2 = \{\text{transaccion\_id}\}$
-* $\text{FK}_1: \text{transaccion\_id} \to \text{TRANSACCIONES}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
-* $\text{FK}_2: \text{generadora\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
-* $\text{FK}_3: \text{revalorizadora\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
+1. **En el Registro:** Cuando una empresa se registra desde el formulario público, el sistema le asigna automáticamente el rol `'empresa'` y el estado `'pendiente'`. No hay ninguna opción para elegir ser administrador.
+2. **En el Perfil:** Cuando una empresa edita sus datos (nombre, teléfono, dirección, etc.), el sistema solo actualiza esos campos comerciales. El campo `rol` no se puede modificar desde el formulario.
+3. **En el Filtro de Rutas (`AdminFilter`):** Todas las rutas de administración (`/admin`, `/admin/lotes`, aprobar/rechazar empresas) están protegidas por un filtro del servidor. Si un usuario no está logeado, lo manda al login. Si está logeado pero su rol es `'empresa'`, le bloquea el acceso con un mensaje de error y lo redirige al mercado.
 
 ---
 
-### 2.4. Módulo de Comunicación y Auditoría
-$$\text{MENSAJES\_NEGOCIACION}(\underline{\text{id}}, \text{producto\_id}^{\text{FK}}, \text{transaccion\_id}^{\text{FK}}, \text{emisor\_id}^{\text{FK}}, \text{receptor\_id}^{\text{FK}}, \text{mensaje}, \text{leido}, \text{created\_at})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{FK}_1: \text{producto\_id} \to \text{PRODUCTOS}(\text{id}) \quad [\text{ON DELETE CASCADE}]$
-* $\text{FK}_2: \text{transaccion\_id} \to \text{TRANSACCIONES}(\text{id}) \quad [\text{ON DELETE CASCADE}]$
-* $\text{FK}_3: \text{emisor\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE CASCADE}]$
-* $\text{FK}_4: \text{receptor\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE CASCADE}]$
+## 3. Tablas de la Base de Datos
 
-$$\text{AUDITORIA\_ESTADO\_LOTE}(\underline{\text{id}}, \text{producto\_id}^{\text{FK}}, \text{usuario\_id}^{\text{FK}}, \text{estado\_anterior}, \text{estado\_nuevo}, \text{motivo}, \text{ip\_address}, \text{created\_at})$$
-* $\text{PK} = \{\text{id}\}$
-* $\text{FK}_1: \text{producto\_id} \to \text{PRODUCTOS}(\text{id}) \quad [\text{ON DELETE CASCADE}]$
-* $\text{FK}_2: \text{usuario\_id} \to \text{USUARIOS}(\text{id}) \quad [\text{ON DELETE RESTRICT}]$
+### 3.1. Tabla: `usuarios` (Empresas Registradas)
+Guarda la información de cada empresa que participa en la red.
 
----
+| Campo | Tipo de Dato | Clave | Nulo | Descripción |
+| :--- | :--- | :---: | :---: | :--- |
+| **id** | INT | **PK** | NO | Número único de identificación (autoincremental). |
+| **nombre** | VARCHAR(100) | | NO | Nombre o razón social de la empresa. |
+| **email** | VARCHAR(150) | **UK** | NO | Correo electrónico corporativo (único, se usa para login). |
+| **password** | VARCHAR(255) | | NO | Contraseña encriptada con algoritmo seguro (bcrypt). |
+| **cuit** | VARCHAR(20) | | NO | CUIT fiscal de la empresa (ej: 30-XXXXXXXX-X). |
+| **telefono** | VARCHAR(30) | | NO | Teléfono de contacto institucional. |
+| **rubro** | VARCHAR(100) | | SÍ | Sector de la fábrica (ej: Inyección, Extrusión, Reciclado). |
+| **ciudad** | VARCHAR(100) | | SÍ | Ciudad o localidad donde está radicada. |
+| **provincia** | VARCHAR(100) | | SÍ | Provincia (ej: Córdoba). |
+| **direccion** | VARCHAR(150) | | SÍ | Calle y número de la planta o sede legal. |
+| **rol** | VARCHAR(50) | | NO | Rol en el sistema: `'empresa'` (usuario común) o `'admin'`. |
+| **estado** | ENUM | | NO | Estado de la cuenta: `'pendiente'`, `'activo'`, `'inactivo'`, `'rechazado'`. |
+| **created_at** | DATETIME | | SÍ | Fecha y hora en la que se registró la empresa. |
+| **updated_at** | DATETIME | | SÍ | Fecha y hora de la última modificación. |
+| **ultimo_login**| DATETIME | | SÍ | Fecha y hora del último inicio de sesión. |
 
-## 3. Diccionario Físico de Datos (MariaDB / MySQL InnoDB)
-
-### 3.1. Tabla: `usuarios`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador único de usuario. |
-| `nombre` | `VARCHAR(120)` | NO | | | Razón social o denominación legal. |
-| `email` | `VARCHAR(150)` | NO | **UK** | | Correo electrónico corporativo único. |
-| `password` | `VARCHAR(255)` | NO | | | Hash seguro bcrypt. |
-| `cuit` | `VARCHAR(20)` | NO | **UK** | | CUIT tributario validado ante AFIP. |
-| `telefono` | `VARCHAR(30)` | NO | | | Teléfono de planta / contacto comercial. |
-| `rubro` | `VARCHAR(100)` | SÍ | | `NULL` | Inyección, Extrusión, Reciclado, etc. |
-| `direccion_fiscal`| `VARCHAR(150)` | SÍ | | `NULL` | Domicilio legal de la empresa. |
-| `ciudad_fiscal` | `VARCHAR(100)` | SÍ | | `NULL` | Ciudad de la sede legal. |
-| `provincia_fiscal`| `VARCHAR(100)`| SÍ | | `NULL` | Provincia de radicación. |
-| `rol` | `VARCHAR(50)` | NO | **INDEX**| `'empresa'` | `'empresa'`, `'admin'`, `'operador'`. |
-| `estado` | `ENUM(...)` | NO | **INDEX**| `'pendiente'` | `'pendiente'`, `'activo'`, `'inactivo'`, `'rechazado'`. |
-| `verificado_afip` | `TINYINT(1)` | NO | | `0` | `1` = Homologado, `0` = Sin auditar. |
-| `created_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Alta de registro. |
-| `updated_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Modificación de perfil. |
-| `ultimo_login` | `DATETIME` | SÍ | | `NULL` | Registro de última autenticación. |
+* **Clave Primaria (PK):** `id` (identifica a cada empresa de forma única).
+* **Clave Única (UK):** `email` (no pueden existir dos cuentas con el mismo correo).
 
 ---
 
-### 3.2. Tabla: `plantas_industriales`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador de planta. |
-| `empresa_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Referencia a `usuarios(id)`. |
-| `nombre_planta`| `VARCHAR(100)` | NO | | | Nombre identificatorio del predio fabril. |
-| `direccion` | `VARCHAR(150)` | NO | | | Dirección física para carga/descarga. |
-| `localidad` | `VARCHAR(100)` | NO | **INDEX**| | Localidad o municipio. |
-| `provincia` | `VARCHAR(100)` | NO | **INDEX**| | Provincia de radicación fabril. |
-| `coordenadas_gps`| `VARCHAR(50)` | SÍ | | `NULL` | Formato latitud,longitud para geolocalización. |
-| `posee_bascula`| `TINYINT(1)` | NO | | `1` | `1` = Báscula de camiones operativa. |
-| `activa` | `TINYINT(1)` | NO | | `1` | `1` = Planta operativa, `0` = Clausurada. |
-| `created_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Fecha de alta de sede. |
-| `updated_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Fecha de edición. |
+### 3.2. Tabla: `productos` (Lotes de Polímeros Publicados)
+Guarda los lotes de materiales plásticos y polímeros que las empresas publican para reutilizar o vender.
+
+| Campo | Tipo de Dato | Clave | Nulo | Descripción |
+| :--- | :--- | :---: | :---: | :--- |
+| **id** | INT | **PK** | NO | Número único del lote de producto (autoincremental). |
+| **user_id** | INT | **FK** | NO | ID de la empresa que publicó el lote (conecta con `usuarios.id`). |
+| **nombre** | VARCHAR(150) | | NO | Título o nombre del material (ej: "Scrap de Polipropileno Negro"). |
+| **tipo_polimero**| VARCHAR(50) | | NO | Tipo de plástico: `PE`, `PP`, `PVC`, `ABS`, `PET`, etc. |
+| **cantidad_kg** | DECIMAL(10,2) | | NO | Cantidad disponible en kilogramos. |
+| **precio_unitario**| DECIMAL(10,2)| | NO | Precio por kilogramo en pesos ($ ARS). |
+| **ubicacion** | VARCHAR(100) | | NO | Ciudad o parque industrial donde se encuentra el material. |
+| **descripcion** | TEXT | | SÍ | Detalles técnicos: pureza, si es molido o en piezas, empaque, etc. |
+| **estado** | ENUM | | NO | Estado comercial: `'Disponible'`, `'Reservado'`, `'Vendido'`. |
+| **created_at** | DATETIME | | SÍ | Fecha y hora de la publicación del lote. |
+| **updated_at** | DATETIME | | SÍ | Fecha y hora de la última edición. |
+
+* **Clave Primaria (PK):** `id` (identifica a cada lote de forma única).
+* **Clave Foránea (FK):** `user_id` (apunta al `id` de la tabla `usuarios`).
 
 ---
 
-### 3.3. Tabla: `categorias_polimero`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador de la resina. |
-| `codigo_spi` | `TINYINT UNSIGNED` | NO | **INDEX**| | Código SPI (1 a 7). |
-| `sigla` | `VARCHAR(10)` | NO | **UK** | | Identificador unívoco (`PP`, `PEAD`, `ABS`, etc.). |
-| `nombre_tecnico`| `VARCHAR(100)` | NO | | | Nombre químico completo. |
-| `densidad_g_cm3`| `DECIMAL(4,3)` | NO | | | Densidad estándar de referencia ($g/cm^3$). |
-| `temp_fusion_c` | `SMALLINT` | SÍ | | `NULL` | Temperatura de fusión en °C. |
-| `factor_co2_kg` | `DECIMAL(5,2)` | NO | | `1.85` | $kg\text{ }CO_2\text{eq}$ evitados por kg reciclado. |
-| `reciclabilidad`| `ENUM(...)` | NO | | `'alta'` | `'alta'`, `'media'`, `'baja'`, `'especial'`. |
-| `activo` | `TINYINT(1)` | NO | | `1` | Estado en catálogo. |
+## 4. Relación entre las Tablas
+
+La relación entre ambas tablas es de **1 a N (Uno a Muchos)**:
+
+$$\text{usuarios } \mathbf{(1)} \longleftrightarrow \mathbf{(N)} \text{ productos}$$
+
+* **Una empresa (`usuarios`)** puede publicar **0, 1 o muchos** lotes de materiales (`productos`).
+* **Cada lote (`productos`)** pertenece a **una sola** empresa responsable (`user_id`).
+* **Integridad Referencial (`ON DELETE CASCADE`):** Si una empresa es dada de baja definitivamente del sistema, todos sus lotes publicados se eliminan automáticamente para evitar que queden publicaciones "huérfanas" sin dueño.
 
 ---
 
-### 3.4. Tabla: `productos`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador único del lote. |
-| `user_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Referencia a `usuarios(id)` titular. |
-| `planta_id` | `INT(11) UNSIGNED` | SÍ | **FK, INDEX**| `NULL` | Referencia a `plantas_industriales(id)`. |
-| `categoria_id` | `INT(11) UNSIGNED` | SÍ | **FK, INDEX**| `NULL` | Referencia a `categorias_polimero(id)`. |
-| `nombre` | `VARCHAR(150)` | NO | | | Título técnico o comercial de la publicación. |
-| `tipo_polimero`| `VARCHAR(50)` | NO | **INDEX**| | Sigla de resina (compatibilidad y filtros directos). |
-| `presentacion` | `ENUM(...)` | NO | **INDEX**| `'scrap_molido'`| `'scrap_molido'`, `'pellet_regranulado'`, `'purga_torta'`, etc. |
-| `color` | `VARCHAR(50)` | NO | | `'Negro'` | Pigmentación del material. |
-| `fluidez_mfi` | `DECIMAL(6,2)` | SÍ | | `NULL` | Índice MFI en $g/10\text{ min}$. |
-| `contaminacion_pct`|`DECIMAL(5,2)` | NO | | `0.00` | Porcentaje estimado de impurezas. |
-| `cantidad_kg` | `DECIMAL(10,2)` | NO | | | Kilos totales originales publicados. |
-| `cantidad_disp_kg`|`DECIMAL(10,2)` | NO | **INDEX**| | Kilos disponibles para reserva/compra. |
-| `pedido_minimo_kg`|`DECIMAL(10,2)` | NO | | `100.00` | Volumen mínimo por operación. |
-| `precio_unitario`| `DECIMAL(10,2)` | NO | | | Precio por kg en pesos/dólares. |
-| `moneda` | `ENUM(...)` | NO | | `'ARS'` | `'ARS'`, `'USD'`. |
-| `ubicacion` | `VARCHAR(100)` | NO | | | Ciudad de retiro visible. |
-| `descripcion` | `TEXT` | SÍ | | `NULL` | Memoria técnica, empaque y pureza. |
-| `estado` | `ENUM(...)` | NO | **INDEX**| `'Disponible'` | `'Disponible'`, `'Reservado'`, `'Vendido'`, `'Pausado'`, `'Retirado'`. |
-| `created_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Fecha de publicación. |
-| `updated_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Fecha de edición. |
+## 5. Normalización Explicada Fácil (1FN, 2FN y 3FN)
+
+Para garantizar que la base de datos esté bien armada y no tenga datos repetidos ni errores, aplicamos las **tres primeras formas normales**:
+
+### 1. Primera Forma Normal (1FN) — "Datos Atómicos y sin Listas"
+* **¿Qué pide la regla?** Que cada celda de la tabla contenga un único valor (que sea atómico) y que no haya columnas repetidas ni listas separadas por comas.
+* **¿Cómo lo cumplimos?**
+  * La dirección no se guardó toda junta en un solo texto mezclado, sino que se separó en `direccion`, `ciudad` y `provincia`. Así podemos filtrar fácilmente por ciudad sin tener que desarmar textos.
+  * Cada publicación tiene su propia fila en la tabla `productos`, en lugar de guardar una lista de productos adentro de la empresa.
+
+### 2. Segunda Forma Normal (2FN) — "Dependencia Total de la Clave"
+* **¿Qué pide la regla?** Que la tabla esté en 1FN y que todos los datos dependan de la clave primaria completa, no de una parte de ella.
+* **¿Cómo lo cumplimos?**
+  * Como tanto `usuarios` como `productos` tienen una **clave primaria simple de un solo campo (`id`)**, no existen claves compuestas. Por lo tanto, todos los campos dependen directamente y al 100% del `id`. Se cumple automáticamente la 2FN.
+
+### 3. Tercera Forma Normal (3FN) — "Sin Dependencias Transitivas"
+* **¿Qué pide la regla?** Que la tabla esté en 2FN y que ningún campo que no sea clave dependa de otro campo que tampoco sea clave (no guardar datos repetidos que le pertenezcan a otra entidad).
+* **¿Cómo lo cumplimos?**
+  * En la tabla `productos` **NO** guardamos el teléfono, el CUIT, el email ni el nombre de la empresa. Solo guardamos el `user_id`.
+  * Si necesitamos saber de qué empresa es un lote, hacemos un `JOIN` entre `productos` y `usuarios`. De esta manera, si la empresa cambia de teléfono, se actualiza en un solo lugar (`usuarios`) y no hay que modificar cientos de publicaciones.
 
 ---
 
-### 3.5. Tabla: `transacciones`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador de la transacción. |
-| `codigo_operacion`| `VARCHAR(20)` | NO | **UK** | | Código de trazabilidad (ej: `TRX-2026-0001`). |
-| `producto_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Referencia a `productos(id)`. |
-| `comprador_id`| `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Empresa demandante adquirente. |
-| `vendedor_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Empresa oferente generadora. |
-| `planta_origen_id`| `INT(11) UNSIGNED`| SÍ | **FK** | `NULL` | Planta donde se retira la mercadería. |
-| `cantidad_kg` | `DECIMAL(10,2)` | NO | | | Kilos pactados en la transacción. |
-| `precio_unitario_pactado`|`DECIMAL(10,2)`| NO | | | Precio por kilo cerrado. |
-| `subtotal` | `DECIMAL(12,2)` | NO | | | $\text{cantidad\_kg} \times \text{precio\_pactado}$. |
-| `costo_flete` | `DECIMAL(10,2)` | NO | | `0.00` | Flete o logística asociada. |
-| `monto_total` | `DECIMAL(12,2)` | NO | | | Valor bruto total de la orden. |
-| `modalidad_retiro`| `ENUM(...)` | NO | | `'retiro_comprador'`| Logística acordada entre partes. |
-| `estado` | `ENUM(...)` | NO | **INDEX**| `'solicitada'` | `'solicitada'`, `'en_evaluacion'`, `'aprobada'`, `'pesaje_balanza'`, `'completada'`, etc. |
-| `ticket_balanza_kg`|`DECIMAL(10,2)`| SÍ | | `NULL` | Kilos reales pesados en báscula. |
-| `numero_remito`| `VARCHAR(50)` | SÍ | | `NULL` | Guía o remito legal de traslado. |
-| `fecha_solicitud`| `DATETIME` | NO | | `CURRENT_TIMESTAMP`| Apertura de orden. |
-| `fecha_acuerdo`| `DATETIME` | SÍ | | `NULL` | Confirmación de condiciones. |
-| `fecha_despacho`| `DATETIME` | SÍ | | `NULL` | Carga sobre camión. |
-| `fecha_cierre` | `DATETIME` | SÍ | | `NULL` | Recepción y conformidad final. |
+## 6. Esquema Relacional en Notación de Codd
+
+La forma estándar de escribir el modelo relacional es subrayando la clave primaria y marcando las claves foráneas:
+
+* **USUARIOS** (<u>id</u>, nombre, email, password, cuit, telefono, rubro, ciudad, provincia, direccion, rol, estado, created_at, updated_at, ultimo_login)
+* **PRODUCTOS** (<u>id</u>, user_id*, nombre, tipo_polimero, cantidad_kg, precio_unitario, ubicacion, descripcion, estado, created_at, updated_at)
+
+*(Donde `user_id*` es la clave foránea que hace referencia a `USUARIOS.id`)*.
 
 ---
 
-### 3.6. Tabla: `certificados_ambientales`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador único del certificado. |
-| `codigo_certificado`| `VARCHAR(40)`| NO | **UK** | | Hash alfanumérico / UUID para QR. |
-| `transaccion_id`| `INT(11) UNSIGNED`| NO | **FK, UK**| | Transacción única certificada (1:1). |
-| `generadora_id`| `INT(11) UNSIGNED`| NO | **FK, INDEX**| | Empresa generadora del descarte. |
-| `revalorizadora_id`|`INT(11) UNSIGNED`| NO | **FK, INDEX**| | Empresa recicladora/adquirente. |
-| `kg_recuperados`| `DECIMAL(10,2)` | NO | | | Kilogramos certificados reincorporados. |
-| `co2_evitado_kg`| `DECIMAL(10,2)` | NO | | | Reducción neta de huella de carbono. |
-| `mwh_ahorrado` | `DECIMAL(8,2)` | NO | | | Energía equivalente preservada. |
-| `fecha_emision`| `DATETIME` | NO | | `CURRENT_TIMESTAMP`| Fecha de firma y expedición digital. |
-
----
-
-### 3.7. Tabla: `mensajes_negociacion`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador del mensaje. |
-| `producto_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Lote consultado. |
-| `transaccion_id`| `INT(11) UNSIGNED`| SÍ | **FK, INDEX**| `NULL` | Transacción asociada si ya se inició orden. |
-| `emisor_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Usuario remitente. |
-| `receptor_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Usuario destinatario. |
-| `mensaje` | `TEXT` | NO | | | Propuesta técnica, consulta de flete o precio. |
-| `leido` | `TINYINT(1)` | NO | | `0` | `1` = Leído, `0` = No leído. |
-| `created_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Fecha y hora de envío. |
-
----
-
-### 3.8. Tabla: `auditoria_estados_lote`
-| Campo | Tipo MySQL | Nulo | Clave | Default | Restricción / Descripción |
-| :--- | :--- | :---: | :---: | :--- | :--- |
-| `id` | `INT(11) UNSIGNED` | NO | **PK** | `AUTO_INCREMENT` | Identificador del log. |
-| `producto_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Lote afectado. |
-| `usuario_id` | `INT(11) UNSIGNED` | NO | **FK, INDEX**| | Usuario o admin que ejecutó la acción. |
-| `estado_anterior`| `VARCHAR(30)` | NO | | | Estado previo al cambio. |
-| `estado_nuevo`| `VARCHAR(30)` | NO | | | Nuevo estado aplicado. |
-| `motivo` | `VARCHAR(255)` | SÍ | | `NULL` | Justificación técnica o comercial. |
-| `ip_address` | `VARCHAR(45)` | SÍ | | `NULL` | Dirección IP de origen. |
-| `created_at` | `DATETIME` | SÍ | | `CURRENT_TIMESTAMP`| Marca temporal inmutable del evento. |
-
----
-
-## 4. Demostración Matemática Formal de Normalización
-
-El esquema relacional completo de **MateriaX Pro** satisface con rigor matemático las condiciones de las **tres primeras formas normales (1FN, 2FN, 3FN)** y la **Forma Normal de Boyce-Codd (FNBC)**:
-
-### 4.1. Primera Forma Normal (1FN)
-* **Definición Formal:** Una relación $R$ está en 1FN si y sólo si el dominio de cada atributo contiene únicamente valores indivisibles (atómicos) y no existen grupos repetitivos ni atributos multivaluados en ninguna tupla.
-* **Demostración:**
-  1. Todos los campos de tipo dirección fueron desglosados en atributos atómicos (`direccion`, `localidad`, `provincia`).
-  2. Los teléfonos, correos y contactos se modelan individualmente sin arrays serializados ni listas separadas por comas.
-  3. Las múltiples plantas fabriles de una empresa se extrajeron a su propia relación `plantas_industriales`, eliminando cualquier grupo repetitivo de sedes dentro de `usuarios`.
-  4. Los múltiples mensajes y estados históricos se modelaron en tablas hijas independientes vinculadas mediante claves foráneas.
-  $$\therefore \text{El esquema se encuentra estrictamente en 1FN.}$$
-
-### 4.2. Segunda Forma Normal (2FN)
-* **Definición Formal:** Una relación $R$ está en 2FN si y sólo si está en 1FN y todo atributo no primo $A \in (R - K)$ depende funcionalmente de manera completa de cada clave candidata $K$ (no existen dependencias parciales de subconjuntos propios de una clave).
-* **Demostración mediante el Teorema de Clave Simple:**
-  $$\forall R \in \text{Esquema MateriaX}, \quad |PK(R)| = 1 \quad (\text{todas las claves primarias son el atributo simple subrogado } id)$$
-  Dado que una dependencia parcial requiere formalmente que exista un subconjunto propio $K' \subset PK$ tal que $K' \to A$, y en este esquema $|PK| = 1$, no existen subconjuntos propios no vacíos de la clave.
-  $$\nexists K' \subset PK \implies \text{Es matemáticamente imposible la presencia de dependencias parciales.}$$
-  $$\therefore \text{El esquema se encuentra estrictamente en 2FN.}$$
-
-### 4.3. Tercera Forma Normal (3FN)
-* **Definición Formal:** Una relación $R$ está en 3FN si y sólo si está en 2FN y ningún atributo no primo depende transitivamente de una clave candidata (es decir, para toda dependencia funcional no trivial $X \to Y$, o bien $X$ es una superclave, o bien $Y$ está compuesto exclusivamente por atributos primos).
-* **Demostración:**
-  1. En `productos`, los datos fiscales y de contacto de la empresa oferente no se repiten: se resuelven exclusivamente mediante $user\_id \to USUARIOS(id)$.
-  2. Las propiedades intrínsecas de la resina química (densidad, temperatura de fusión, factor de emisión $CO_2$) residen en `categorias_polimero` y no se duplican en cada lote: se resuelven mediante $categoria\_id \to CATEGORIAS\_POLIMERO(id)$.
-  3. En `transacciones`, los nombres de las empresas y plantas se resuelven por sus respectivas claves foráneas `comprador_id`, `vendedor_id`, `planta_origen_id`. No existe transitividad entre atributos descriptivos.
-  4. En `certificados_ambientales`, la relación con la transacción es 1:1, asegurando que los datos provienen del acuerdo comercial certificado.
-  $$\therefore \text{El esquema se encuentra estrictamente en 3FN.}$$
-
-### 4.4. Forma Normal de Boyce-Codd (FNBC / BCNF)
-* **Definición Formal:** Una relación $R$ está en FNBC si y sólo si para toda dependencia funcional no trivial $X \to Y$ en $R$, el conjunto determinante $X$ es una **superclave** de $R$.
-* **Demostración:**
-  * En `usuarios`: Las dependencias no triviales son $id \to R$, $email \to R$ y $cuit \to R$. Como $\{id\}$, $\{email\}$ y $\{cuit\}$ son claves candidatas (superclaves), se cumple FNBC.
-  * En `categorias_polimero`: $id \to R$ y $sigla \to R$. Ambos determinantes son superclaves. Se cumple FNBC.
-  * En `transacciones`: $id \to R$ y $codigo\_operacion \to R$. Ambos son determinantes únicos (superclaves). Se cumple FNBC.
-  * En `certificados_ambientales`: $id \to R$, $codigo\_certificado \to R$ y $transaccion\_id \to R$. Todos los determinantes son superclaves. Se cumple FNBC.
-  $$\therefore \text{El esquema relacional completo cumple la Forma Normal de Boyce-Codd (FNBC).}$$
-
----
-
-## 5. Estrategia Física de Indexación B-Tree (Optimización de Consultas)
-
-Para soportar alta concurrencia de consultas en MySQL/MariaDB InnoDB, se establecen los siguientes índices B-Tree:
+## 7. Script SQL de Creación (Fácil de importar en phpMyAdmin)
 
 ```sql
--- 1. Optimización en usuarios
-CREATE INDEX idx_usuarios_rol ON usuarios(rol);
-CREATE INDEX idx_usuarios_estado ON usuarios(estado);
-CREATE INDEX idx_usuarios_cuit ON usuarios(cuit);
+-- 1. Crear tabla de usuarios
+CREATE TABLE `usuarios` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `nombre` VARCHAR(100) NOT NULL,
+  `email` VARCHAR(150) NOT NULL UNIQUE,
+  `password` VARCHAR(255) NOT NULL,
+  `cuit` VARCHAR(20) NOT NULL,
+  `telefono` VARCHAR(30) NOT NULL,
+  `rubro` VARCHAR(100) NULL,
+  `ciudad` VARCHAR(100) NULL,
+  `provincia` VARCHAR(100) NULL,
+  `direccion` VARCHAR(150) NULL,
+  `rol` VARCHAR(50) NOT NULL DEFAULT 'empresa',
+  `estado` ENUM('pendiente', 'activo', 'inactivo', 'rechazado') NOT NULL DEFAULT 'pendiente',
+  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ultimo_login` DATETIME NULL,
+  KEY `idx_usuarios_rol` (`rol`),
+  KEY `idx_usuarios_estado` (`estado`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2. Optimización en plantas_industriales
-CREATE INDEX idx_plantas_empresa ON plantas_industriales(empresa_id);
-CREATE INDEX idx_plantas_provincia_localidad ON plantas_industriales(provincia, localidad);
-
--- 3. Optimización en categorias_polimero
-CREATE INDEX idx_categorias_spi ON categorias_polimero(codigo_spi);
-
--- 4. Optimización en productos
-CREATE INDEX idx_productos_user_id ON productos(user_id);
-CREATE INDEX idx_productos_planta_id ON productos(planta_id);
-CREATE INDEX idx_productos_categoria_id ON productos(categoria_id);
-CREATE INDEX idx_productos_tipo_polimero ON productos(tipo_polimero);
-CREATE INDEX idx_productos_estado ON productos(estado);
-CREATE INDEX idx_productos_stock_disponible ON productos(cantidad_disp_kg);
-
--- 5. Optimización en transacciones
-CREATE INDEX idx_transacciones_comprador ON transacciones(comprador_id);
-CREATE INDEX idx_transacciones_vendedor ON transacciones(vendedor_id);
-CREATE INDEX idx_transacciones_producto ON transacciones(producto_id);
-CREATE INDEX idx_transacciones_estado ON transacciones(estado);
-CREATE INDEX idx_transacciones_fecha ON transacciones(fecha_solicitud);
-
--- 6. Optimización en mensajes y auditoría
-CREATE INDEX idx_mensajes_producto ON mensajes_negociacion(producto_id);
-CREATE INDEX idx_mensajes_receptor_leido ON mensajes_negociacion(receptor_id, leido);
-CREATE INDEX idx_auditoria_producto ON auditoria_estados_lote(producto_id);
-```
-
----
-
-## 6. Vistas SQL de Negocio para Explotación Analítica
-
-### 6.1. Vista de Catálogo Comercial Activo (`v_catalogo_activo`)
-Permite al marketplace listar instantáneamente los lotes disponibles combinando los datos del oferente, la planta de retiro y las especificaciones químicas de la resina:
-
-```sql
-CREATE OR REPLACE VIEW v_catalogo_activo AS
-SELECT 
-    p.id AS producto_id,
-    p.nombre AS titulo_lote,
-    p.tipo_polimero,
-    c.codigo_spi,
-    c.nombre_tecnico AS familia_quimica,
-    p.presentacion,
-    p.color,
-    p.fluidez_mfi,
-    p.contaminacion_pct,
-    p.cantidad_disp_kg AS kilos_disponibles,
-    p.precio_unitario,
-    (p.cantidad_disp_kg * p.precio_unitario) AS valor_lote_estimado,
-    u.id AS vendedor_id,
-    u.nombre AS empresa_vendedora,
-    COALESCE(pl.nombre_planta, 'Sede Central') AS planta_retiro,
-    COALESCE(pl.localidad, u.ciudad_fiscal, p.ubicacion) AS localidad_retiro,
-    COALESCE(pl.provincia, u.provincia_fiscal) AS provincia_retiro,
-    pl.posee_bascula,
-    p.created_at AS fecha_publicacion
-FROM productos p
-INNER JOIN usuarios u ON p.user_id = u.id
-LEFT JOIN categorias_polimero c ON p.categoria_id = c.id
-LEFT JOIN plantas_industriales pl ON p.planta_id = pl.id
-WHERE p.estado = 'Disponible' 
-  AND p.cantidad_disp_kg > 0
-  AND u.estado = 'activo';
-```
-
-### 6.2. Vista de Balance e Impacto Ambiental Circular (`v_balance_ambiental_co2`)
-Calcula en tiempo real los indicadores sustentables (kilos reciclados, $CO_2$ evitado y energía preservada) consolidados por empresa generadora y por tipo de polímero:
-
-```sql
-CREATE OR REPLACE VIEW v_balance_ambiental_co2 AS
-SELECT 
-    u.id AS empresa_id,
-    u.nombre AS empresa,
-    c.sigla AS tipo_resina,
-    COUNT(cert.id) AS certificados_emitidos,
-    SUM(cert.kg_recuperados) AS total_kg_reincorporados,
-    SUM(cert.co2_evitado_kg) AS total_kg_co2_evitados,
-    SUM(cert.mwh_ahorrado) AS total_mwh_ahorrados
-FROM certificados_ambientales cert
-INNER JOIN usuarios u ON cert.generadora_id = u.id
-INNER JOIN transacciones t ON cert.transaccion_id = t.id
-INNER JOIN productos p ON t.producto_id = p.id
-LEFT JOIN categorias_polimero c ON p.categoria_id = c.id
-GROUP BY u.id, u.nombre, c.sigla;
+-- 2. Crear tabla de productos
+CREATE TABLE `productos` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL,
+  `nombre` VARCHAR(150) NOT NULL,
+  `tipo_polimero` VARCHAR(50) NOT NULL,
+  `cantidad_kg` DECIMAL(10,2) NOT NULL,
+  `precio_unitario` DECIMAL(10,2) NOT NULL,
+  `ubicacion` VARCHAR(100) NOT NULL,
+  `descripcion` TEXT NULL,
+  `estado` ENUM('Disponible', 'Reservado', 'Vendido') NOT NULL DEFAULT 'Disponible',
+  `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `idx_productos_user_id` (`user_id`),
+  KEY `idx_productos_tipo` (`tipo_polimero`),
+  KEY `idx_productos_estado` (`estado`),
+  CONSTRAINT `fk_productos_usuarios` FOREIGN KEY (`user_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 ```

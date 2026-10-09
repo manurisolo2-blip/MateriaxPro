@@ -127,7 +127,8 @@ _modules/*
 /phpunit.xml
 
 #-------------------------
-# Impeccable
+# Impeccable & Hallmark
 #-------------------------
 **/scripts/bin/
 .impeccable/config.local.json
+.hallmark/
