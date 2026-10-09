@@ -42,7 +42,7 @@
           <?php endif; ?>
         <?php else: ?>
           <li class="nav-item"><a href="<?= site_url('/') ?>" <?= nav_attr(url_is('/') || url_is('')) ?>>Inicio</a></li>
-          <?php foreach (['ecosistema' => 'Ecosistema', 'polimeros' => 'Polímeros', 'seguridad' => 'Seguridad', 'metricas' => 'Métricas', 'contacto' => 'Contacto'] as $anchor => $label): ?>
+          <?php foreach (['feed' => 'Sobras & Feed', 'categorias' => 'Materiales', 'ecosistema' => 'Red B2B', 'metricas' => 'Métricas', 'contacto' => 'Contacto'] as $anchor => $label): ?>
             <li class="nav-item"><a href="<?= site_url('/#' . $anchor) ?>"><?= $label ?></a></li>
           <?php endforeach; ?>
         <?php endif; ?>
@@ -58,7 +58,7 @@
           <a href="<?= site_url('logout') ?>" class="btn btn-secondary btn-sm" title="Cerrar sesión de forma segura">Cerrar Sesión</a>
         <?php else: ?>
           <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-sm">Iniciar Sesión</a>
-          <a href="<?= site_url('register') ?>" class="btn btn-primary btn-sm">Registrar Empresa</a>
+          <a href="<?= site_url('register') ?>" class="btn btn-primary btn-sm">Registrar Empresa (Sign Up)</a>
         <?php endif; ?>
       </div>
     </nav>
