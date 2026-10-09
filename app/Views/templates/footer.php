@@ -4,7 +4,7 @@
   <footer class="site-footer" role="contentinfo">
     <div class="footer-container">
       <div>
-        <strong style="color: var(--text-primary);">MateriaX</strong> &mdash; Red Industrial de Reutilización Circular
+        <strong class="site-footer-brand">MateriaX</strong> &mdash; Red Industrial de Reutilización Circular
         <p class="footer-credits">Transformando excedentes de polímeros industriales en recursos de valor con trazabilidad verificada.</p>
       </div>
 

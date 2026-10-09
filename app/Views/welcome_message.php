@@ -151,7 +151,7 @@
   <aside class="marketplace-sidebar" aria-label="Navegación de Marketplace y Filtros">
     <div>
       <h2 class="marketplace-sidebar-title">
-        <span>🛒</span>
+        <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
         <span>Marketplace B2B</span>
       </h2>
       <p style="font-size: 0.8rem; color: var(--color-ink-muted); margin-top: 0.25rem;">
@@ -162,7 +162,10 @@
     <!-- Barra de Búsqueda Rápida de Publicaciones -->
     <div class="marketplace-search-box">
       <label for="market-search" class="sr-only" style="position: absolute; width: 1px; height: 1px; overflow: hidden;">Buscar en el Marketplace</label>
-      <input type="search" id="market-search" class="marketplace-search-input" placeholder="🔍 Buscar sobras de polímeros..." aria-label="Buscar publicaciones en el marketplace">
+      <span class="marketplace-search-icon" aria-hidden="true">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </span>
+      <input type="search" id="market-search" class="marketplace-search-input" placeholder="Buscar sobras de polímeros..." aria-label="Buscar publicaciones en el marketplace">
     </div>
 
     <!-- Botón Rector de Acción Estilo Marketplace -->
@@ -183,31 +186,46 @@
       <ul class="marketplace-sidebar-nav">
         <li>
           <a href="#feed" class="marketplace-nav-link active">
-            <span>📰 Feed de Publicaciones</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.45rem;">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+              Feed de Publicaciones
+            </span>
             <span class="badge badge-polimero-default">4</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
-            <span>🔄 Rotomoldeo (PEAD / PEBD)</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.45rem;">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+              Rotomoldeo (PEAD / PEBD)
+            </span>
             <span style="font-size: 0.75rem; color: var(--color-ink-muted);">Mesh 35</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
-            <span>🧵 Filamentos 3D & Bobinas</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.45rem;">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              Filamentos 3D & Bobinas
+            </span>
             <span style="font-size: 0.75rem; color: var(--color-ink-muted);">1.75mm</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
-            <span>📐 Matrices & Modelos CAD</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.45rem;">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline></svg>
+              Matrices & Modelos CAD
+            </span>
             <span style="font-size: 0.75rem; color: var(--color-ink-muted);">STEP/STL</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
-            <span>⚙️ Inyección & Mermas PP</span>
+            <span style="display: inline-flex; align-items: center; gap: 0.45rem;">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              Inyección & Mermas PP
+            </span>
             <span style="font-size: 0.75rem; color: var(--color-ink-muted);">MFI 8-15</span>
           </a>
         </li>
@@ -218,7 +236,7 @@
     <div class="marketplace-filter-block">
       <span class="marketplace-filter-label">Ubicación de Retiro</span>
       <div class="marketplace-pill-badge">
-        <span>📍</span>
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
         <span>Río Tercero · Todo el país</span>
       </div>
     </div>
@@ -226,7 +244,7 @@
     <div class="marketplace-filter-block">
       <span class="marketplace-filter-label">Estado de Transacción</span>
       <div class="marketplace-pill-badge" style="color: var(--color-success);">
-        <span>🛡️</span>
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
         <span>Empresas Homologadas AFIP</span>
       </div>
     </div>
@@ -235,10 +253,10 @@
     <div class="marketplace-filter-block">
       <span class="marketplace-filter-label">Comunidad & Soporte</span>
       <ul class="marketplace-sidebar-nav" style="margin-top: 0.25rem;">
-        <li><a href="#ecosistema" class="marketplace-nav-link"><span>🤝 Cómo Opera la Red</span></a></li>
-        <li><a href="#metricas" class="marketplace-nav-link"><span>📊 Métricas de la Red</span></a></li>
-        <li><a href="#entregables" class="marketplace-nav-link"><span>📋 Hito 1 (IT Río Tercero)</span></a></li>
-        <li><a href="#contacto" class="marketplace-nav-link"><span>📞 Mesa de Operaciones</span></a></li>
+        <li><a href="#ecosistema" class="marketplace-nav-link"><span>Cómo Opera la Red</span></a></li>
+        <li><a href="#metricas" class="marketplace-nav-link"><span>Métricas de la Red</span></a></li>
+        <li><a href="#entregables" class="marketplace-nav-link"><span>Hito 1 (IT Río Tercero)</span></a></li>
+        <li><a href="#contacto" class="marketplace-nav-link"><span>Mesa de Operaciones</span></a></li>
       </ul>
     </div>
   </aside>
@@ -249,23 +267,25 @@
     <!-- BARRA SUPERIOR DEL FEED: LOCATION CHIPS & CATEGORY PILLS -->
     <div class="marketplace-top-bar" role="toolbar" aria-label="Filtros rápidos de Marketplace">
       <div class="marketplace-location-indicator">
-        <span>📍</span>
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" style="color: var(--color-accent);" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
         <span>Publicaciones en Circulación de Hoy</span>
       </div>
       <div class="marketplace-chips-container" role="navigation" aria-label="Accesos rápidos por material">
         <a href="#feed" class="marketplace-chip active">Todo el Feed</a>
-        <a href="#categorias" class="marketplace-chip">🔄 Rotomoldeo</a>
-        <a href="#categorias" class="marketplace-chip">🧵 Filamentos 3D</a>
-        <a href="#categorias" class="marketplace-chip">📐 Matrices & Moldes</a>
-        <a href="#categorias" class="marketplace-chip">⚙️ Scrap Inyección</a>
-        <a href="#metricas" class="marketplace-chip">📈 24.800 kg Valorizados</a>
+        <a href="#categorias" class="marketplace-chip">Rotomoldeo</a>
+        <a href="#categorias" class="marketplace-chip">Filamentos 3D</a>
+        <a href="#categorias" class="marketplace-chip">Matrices & Moldes</a>
+        <a href="#categorias" class="marketplace-chip">Scrap Inyección</a>
+        <a href="#metricas" class="marketplace-chip">24.800 kg Valorizados</a>
       </div>
     </div>
 
     <!-- CAJA DE PUBLICACIÓN RÁPIDA ESTILO RED SOCIAL B2B -->
     <div class="social-post-creator" role="region" aria-label="Publicar sobra de polímero en la red">
       <div class="social-creator-top">
-        <div class="social-creator-avatar" aria-hidden="true">🏢</div>
+        <div class="social-creator-avatar" aria-hidden="true">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        </div>
         <a href="<?= $isAuth ? site_url('productos/crear') : site_url('register') ?>" class="social-creator-input-fake">
           <?= $isAuth ? '¿Qué sobrante de tolva, bobina o matriz deseas circular hoy?...' : '¿Tu empresa genera sobrantes? Registrate para publicar un lote...' ?>
         </a>
@@ -275,11 +295,20 @@
       </div>
       <div class="social-creator-actions">
         <div class="social-creator-pills">
-          <span class="social-creator-pill-tag"><span>📄</span> Ficha Técnica Verificada</span>
-          <span class="social-creator-pill-tag"><span>⚖️</span> Declaración de Kilos</span>
-          <span class="social-creator-pill-tag"><span>📍</span> Retiro Directo en Planta</span>
+          <span class="social-creator-pill-tag">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Ficha Técnica Verificada
+          </span>
+          <span class="social-creator-pill-tag">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M12 3v18M4 7l4 8H0zM20 7l4 8h-8z"></path></svg>
+            Declaración de Kilos
+          </span>
+          <span class="social-creator-pill-tag">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Retiro Directo en Planta
+          </span>
         </div>
-        <span style="font-size: 0.75rem; color: var(--color-success); font-weight: 700;">✓ Trato Directo sin Comisiones</span>
+        <span class="social-creator-direct-badge">✓ Trato Directo sin Comisiones</span>
       </div>
     </div>
 
@@ -314,12 +343,12 @@
 
       <!-- Ficha Técnica de Lote en Vivo (Workbench Spec Box / Marketplace Highlight) -->
       <aside class="featured-lot-box" aria-label="Ficha de lote destacado en vivo">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-          <span style="font-size: 0.78rem; color: var(--color-ink-muted); font-weight: 700; font-family: var(--font-mono);">Lote #ROT-204</span>
+        <div class="featured-lot-header">
+          <span class="featured-lot-meta">Lote #ROT-204</span>
           <span class="badge badge-success">Auditado</span>
         </div>
-        <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--color-ink); margin-bottom: 0.4rem;">PEAD Micronizado para Rotomoldeo</h3>
-        <p style="font-size: 0.88rem; color: var(--color-ink-2); line-height: 1.5; margin-bottom: 0.85rem;">
+        <h3 class="featured-lot-title">PEAD Micronizado para Rotomoldeo</h3>
+        <p class="featured-lot-desc">
           Sobrante homogéneo de tolva industrial en polvo (35 Mesh). Color negro con aditivación UV8 para moldeo rotacional de tanques y contenedores huecos.
         </p>
         <div class="spec-grid">
@@ -328,8 +357,11 @@
           <div class="spec-item"><span class="spec-label">Índice Fluidez (MFI)</span><span class="spec-value">4.2 g/10min</span></div>
           <div class="spec-item"><span class="spec-label">Densidad Específica</span><span class="spec-value">0.938 g/cm³</span></div>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 0.5rem; gap: 0.75rem; flex-wrap: wrap;">
-          <span style="font-size: 0.82rem; color: var(--color-ink-muted);">📍 Planta Río Tercero, Córdoba</span>
+        <div class="featured-lot-footer">
+          <span class="featured-lot-location">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Planta Río Tercero, Córdoba
+          </span>
           <a href="<?= site_url($isAuth ? 'productos' : 'register') ?>" class="btn btn-sm btn-primary">
             <?= $isAuth ? 'Ver Ficha de Lote &rarr;' : 'Registrarse para Ofertar &rarr;' ?>
           </a>
@@ -356,7 +388,7 @@
                     <?= $f['empresa'] ?>
                     <span class="marketplace-verified-badge" title="Empresa con CUIT Homologado">✓ Verificada</span>
                   </span>
-                  <span class="marketplace-author-time"><?= $f['tiempo'] ?> &middot; 📍 <?= $f['origen'] ?></span>
+                  <span class="marketplace-author-time"><?= $f['tiempo'] ?> &middot; <span class="feed-item-location"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <?= $f['origen'] ?></span></span>
                 </div>
               </div>
               <span class="badge <?= $f['badge_cls'] ?>"><?= $f['tipo'] ?></span>
@@ -388,15 +420,17 @@
               <div>
                 <div class="social-card-actions">
                   <a href="<?= $f['link'] ?>" class="btn btn-primary btn-sm" style="flex: 1; text-align: center;">
-                    <?= $isAuth ? '💬 Contactar a la Empresa &rarr;' : '💬 Contactar al Vendedor &rarr;' ?>
+                    <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <?= $isAuth ? 'Contactar Empresa &rarr;' : 'Contactar Vendedor &rarr;' ?>
                   </a>
                   <a href="<?= $f['link'] ?>" class="btn btn-secondary btn-sm" title="Ver ficha técnica completa">
-                    📄 Ficha
+                    <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    Ficha
                   </a>
                 </div>
 
                 <div class="social-interest-counter">
-                  <span>👥</span>
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                   <span><?= $f['interes'] ?></span>
                 </div>
               </div>
@@ -492,31 +526,28 @@
     </section>
 
     <!-- 7. ENTREGABLES INSTITUCIONALES HITO 1 -->
-    <section class="content-section" id="entregables" style="margin-bottom: var(--space-md);" aria-label="Resumen de entregables académicos">
+    <section class="content-section" id="entregables" aria-labelledby="heading-entregables">
       <div class="section-divider-bar"></div>
-      <div class="card" style="margin-bottom: 0;">
-        <div class="card-header">
-          <h3 class="card-title">Resumen de Entregables — Hito 1</h3>
-          <span style="font-size: 0.82rem; color: var(--color-ink-muted); font-weight: 700; font-family: var(--font-mono);">Instituto Técnico Río Tercero &middot; 6° B</span>
-        </div>
-        <div class="card-body">
-          <div class="form-row">
-            <?php 
-              $entregables = [
-                ['1. DER del Sistema', 'Documentado formalmente en <a href="' . site_url('../docs/DER.md') . '">docs/DER.md</a> y editable en Draw.io con <a href="' . site_url('../docs/DER_drawio.xml') . '">docs/DER_drawio.xml</a>.'],
-                ['2. Modelo Relacional', 'Normalizado rigurosamente en 1FN, 2FN y 3FN en <a href="' . site_url('../docs/MODELO_RELACIONAL.md') . '">docs/MODELO_RELACIONAL.md</a> y script ejecutable en <code>database.sql</code>.'],
-                ['3. Login y Registro Seguro', 'Autenticación MVC funcionando con sesiones de CodeIgniter 4 y hash seguro <code>password_hash()</code>.'],
-                ['4. Primer Módulo Funcional (CRUD de Lotes)', 'CRUD de la entidad secundaria <strong>productos</strong> (lotes de polímeros), con listado protegido sólo para usuarios con sesión activa y confirmación de borrado server-side.'],
-              ];
-              foreach ($entregables as $ent): 
-            ?>
-              <div style="margin-bottom: 0.75rem;">
-                <p style="color: var(--color-ink); font-weight: 700; font-size: 0.92rem; margin-bottom: 0.2rem;"><?= $ent[0] ?>:</p>
-                <p style="font-size: 0.88rem; color: var(--color-ink-2); line-height: 1.45;"><?= $ent[1] ?></p>
-              </div>
-            <?php endforeach; ?>
+      <div class="section-heading">
+        <span class="section-kicker">Instituto Técnico Río Tercero &middot; 6° B</span>
+        <h2 class="section-title" id="heading-entregables">Resumen de Entregables — Hito 1</h2>
+        <p class="section-subtitle">Arquitectura técnica con base relacional normalizada, interoperabilidad fiscal y cumplimiento estricto del estándar Zero-JavaScript.</p>
+      </div>
+      <div class="form-row">
+        <?php 
+          $entregables = [
+            ['1. DER del Sistema', 'Documentado formalmente en <a href="' . site_url('../docs/DER.md') . '">docs/DER.md</a> y editable en Draw.io con <a href="' . site_url('../docs/DER_drawio.xml') . '">docs/DER_drawio.xml</a>.'],
+            ['2. Modelo Relacional', 'Normalizado rigurosamente en 1FN, 2FN y 3FN en <a href="' . site_url('../docs/MODELO_RELACIONAL.md') . '">docs/MODELO_RELACIONAL.md</a> y script ejecutable en <code>database.sql</code>.'],
+            ['3. Login y Registro Seguro', 'Autenticación MVC funcionando con sesiones de CodeIgniter 4 y hash seguro <code>password_hash()</code>.'],
+            ['4. Primer Módulo Funcional (CRUD de Lotes)', 'CRUD de la entidad secundaria <strong>productos</strong> (lotes de polímeros), con listado protegido sólo para usuarios con sesión activa y confirmación de borrado server-side.'],
+          ];
+          foreach ($entregables as $ent): 
+        ?>
+          <div style="margin-bottom: 0.75rem;">
+            <p style="color: var(--color-ink); font-weight: 700; font-size: 0.92rem; margin-bottom: 0.2rem;"><?= $ent[0] ?>:</p>
+            <p style="font-size: 0.88rem; color: var(--color-ink-2); line-height: 1.45;"><?= $ent[1] ?></p>
           </div>
-        </div>
+        <?php endforeach; ?>
       </div>
     </section>
 
@@ -530,13 +561,13 @@
       </div>
       <div class="grid-3">
         <?php foreach ($contacto as $c): ?>
-          <div class="card" style="margin-bottom: 0; padding: 1.75rem 1.5rem; text-align: left;">
-            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--color-ink); margin-bottom: 0.4rem;"><?= $c['title'] ?></h3>
-            <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-bottom: 0.85rem; line-height: 1.5;"><?= $c['desc'] ?></p>
+          <div class="card contact-card">
+            <h3 class="contact-card-title"><?= $c['title'] ?></h3>
+            <p class="contact-card-desc"><?= $c['desc'] ?></p>
             <?php if (!empty($c['link'])): ?>
-              <a href="<?= $c['link'] ?>" style="font-weight: 700; color: var(--color-accent); font-family: var(--font-mono); font-size: 0.88rem;"><?= $c['text'] ?></a>
+              <a href="<?= $c['link'] ?>" class="contact-card-link"><?= $c['text'] ?></a>
             <?php else: ?>
-              <span style="<?= $c['subClass'] ?? 'color: var(--color-ink); font-size: 0.9rem; font-weight: 600;' ?>"><?= $c['sub'] ?></span>
+              <span class="contact-card-sub"><?= $c['sub'] ?></span>
             <?php endif; ?>
           </div>
         <?php endforeach; ?>
@@ -562,28 +593,28 @@
           <span class="live-pulse-dot" aria-hidden="true"></span>
           <div>
             <strong>Rotomoldeo del Centro</strong> publicó 4.200 kg de PEAD en Río Tercero.
-            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Hace 2 horas</div>
+            <div class="social-time-tag">Hace 2 horas</div>
           </div>
         </li>
         <li class="live-activity-item">
           <span class="live-pulse-dot" aria-hidden="true"></span>
           <div>
             <strong>Lab Aditivo Córdoba</strong> acordó retiro de bobinas PETG (#FIL-108).
-            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Hace 4 horas</div>
+            <div class="social-time-tag">Hace 4 horas</div>
           </div>
         </li>
         <li class="live-activity-item">
           <span class="live-pulse-dot" aria-hidden="true"></span>
           <div>
             <strong>Matricería San Martín</strong> subió 2 matrices de rotomoldeo (#MOD-019).
-            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Ayer</div>
+            <div class="social-time-tag">Ayer</div>
           </div>
         </li>
         <li class="live-activity-item">
           <span class="live-pulse-dot" aria-hidden="true"></span>
           <div>
             <strong>IT Río Tercero</strong> auditó protocolo de trazabilidad de scrap circular.
-            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Ayer</div>
+            <div class="social-time-tag">Ayer</div>
           </div>
         </li>
       </ul>
@@ -593,10 +624,10 @@
     <div class="social-widget-card">
       <div class="social-widget-header">
         <h3 class="social-widget-title">
-          <span>🔍</span>
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <span>Demandas de Compra</span>
         </h3>
-        <span style="font-size: 0.72rem; color: var(--color-accent); font-weight: 700;">2 Activas</span>
+        <span class="badge badge-polimero-default" style="font-size: 0.7rem;">2 Activas</span>
       </div>
       <p style="font-size: 0.8rem; color: var(--color-ink-muted); margin-top: -0.25rem;">
         Empresas que buscan comprar sobrantes de inmediato:
@@ -604,17 +635,23 @@
       <div class="demand-card">
         <div class="demand-title">Buscan 1.000 kg PEAD Molido</div>
         <div class="demand-desc">Planta de inyección en San Francisco requiere scrap limpio libre de PVC para paletizado.</div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem;">
-          <span style="font-size: 0.72rem; color: var(--color-ink-muted);">📍 San Francisco, Cba</span>
-          <a href="<?= site_url($isAuth ? 'productos' : 'register') ?>" style="font-size: 0.75rem; font-weight: 700; color: var(--color-accent);">Ofertar &rarr;</a>
+        <div class="demand-action-row">
+          <span class="demand-location">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            San Francisco, Cba
+          </span>
+          <a href="<?= site_url($isAuth ? 'productos' : 'register') ?>" class="demand-link">Ofertar &rarr;</a>
         </div>
       </div>
       <div class="demand-card">
         <div class="demand-title">Buscan Bobinas PLA+ / PETG</div>
         <div class="demand-desc">Taller 3D en Rosario busca sobrantes técnicos de 1.75mm para prototipado continuo.</div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem;">
-          <span style="font-size: 0.72rem; color: var(--color-ink-muted);">📍 Rosario, Santa Fe</span>
-          <a href="<?= site_url($isAuth ? 'productos' : 'register') ?>" style="font-size: 0.75rem; font-weight: 700; color: var(--color-accent);">Ofertar &rarr;</a>
+        <div class="demand-action-row">
+          <span class="demand-location">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Rosario, Santa Fe
+          </span>
+          <a href="<?= site_url($isAuth ? 'productos' : 'register') ?>" class="demand-link">Ofertar &rarr;</a>
         </div>
       </div>
       <div style="margin-top: 0.25rem;">
@@ -628,30 +665,30 @@
     <div class="social-widget-card">
       <div class="social-widget-header">
         <h3 class="social-widget-title">
-          <span>🏢</span>
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
           <span>Empresas Destacadas</span>
         </h3>
         <span class="badge badge-polimero-default" style="font-size: 0.68rem;">42 Totales</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 0.65rem;">
-        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem;">
+      <div class="company-mini-list">
+        <div class="company-mini-item">
           <div>
             <strong>Rotomoldeo del Centro</strong>
-            <div style="font-size: 0.72rem; color: var(--color-ink-muted);">Polímeros Micronizados · Río Tercero</div>
+            <div class="company-mini-sub">Polímeros Micronizados · Río Tercero</div>
           </div>
           <span class="marketplace-verified-badge">✓ CUIT OK</span>
         </div>
-        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; border-top: 1px solid var(--color-rule-subtle); padding-top: 0.5rem;">
+        <div class="company-mini-item">
           <div>
             <strong>Lab Aditivo Córdoba</strong>
-            <div style="font-size: 0.72rem; color: var(--color-ink-muted);">Manufactura 3D · Córdoba Cap.</div>
+            <div class="company-mini-sub">Manufactura 3D · Córdoba Cap.</div>
           </div>
           <span class="marketplace-verified-badge">✓ CUIT OK</span>
         </div>
-        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; border-top: 1px solid var(--color-rule-subtle); padding-top: 0.5rem;">
+        <div class="company-mini-item">
           <div>
             <strong>Transformadora Rosario</strong>
-            <div style="font-size: 0.72rem; color: var(--color-ink-muted);">Peletizado & Molienda · Santa Fe</div>
+            <div class="company-mini-sub">Peletizado & Molienda · Santa Fe</div>
           </div>
           <span class="marketplace-verified-badge">✓ CUIT OK</span>
         </div>
@@ -659,17 +696,17 @@
     </div>
 
     <!-- Widget 4: Aval Institucional Hito 1 -->
-    <div class="social-widget-card" style="border-top: 3px solid var(--color-success); background-color: color-mix(in oklch, var(--color-success) 4%, var(--color-paper-surface));">
-      <div style="display: flex; align-items: center; gap: 0.5rem;">
-        <span style="font-size: 1.1rem;">🎓</span>
-        <h4 style="font-size: 0.88rem; font-weight: 800; color: var(--color-ink); margin: 0;">Homologación Hito 1</h4>
+    <div class="social-widget-card institution-card-compact">
+      <div class="institution-head">
+        <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" style="color: var(--color-success);" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+        <h4 class="institution-title">Homologación Hito 1</h4>
       </div>
-      <p style="font-size: 0.78rem; color: var(--color-ink-2); line-height: 1.45; margin: 0;">
+      <p class="institution-desc">
         Proyecto desarrollado y auditado en el <strong>Instituto Técnico Río Tercero</strong> (6° B). Arquitectura con interoperabilidad fiscal, base relacional normalizada y cero dependencias de scripts.
       </p>
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <a href="#entregables" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">Ver Hito 1</a>
-        <a href="<?= site_url('../docs/DER.md') ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">docs/DER.md</a>
+      <div class="institution-actions">
+        <a href="#entregables" class="btn btn-secondary btn-sm institution-btn">Ver Hito 1</a>
+        <a href="<?= site_url('../docs/DER.md') ?>" class="btn btn-secondary btn-sm institution-btn">docs/DER.md</a>
       </div>
     </div>
 

@@ -131,7 +131,7 @@ button, .btn, a, input, select, textarea {
   border-bottom: 1px solid var(--color-rule);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: var(--z-sticky-nav, 300);
 }
 
 .nav-container {
@@ -703,6 +703,8 @@ button, .btn, a, input, select, textarea {
   letter-spacing: -0.03em;
   color: var(--color-ink);
   margin-bottom: var(--space-sm);
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .hero-desc {
@@ -912,6 +914,8 @@ button, .btn, a, input, select, textarea {
   line-height: 1.25;
   letter-spacing: var(--tracking-tight);
   margin-bottom: 0.5rem;
+  overflow-wrap: anywhere;
+  min-width: 0;
 }
 .section-subtitle {
   font-size: 1rem;
@@ -1208,6 +1212,7 @@ button, .btn, a, input, select, textarea {
 .marketplace-sidebar {
   position: sticky;
   top: 80px;
+  z-index: var(--z-sticky, 100);
   background-color: var(--color-paper-surface);
   border: 1px solid var(--color-rule);
   border-top: 4px solid var(--color-accent);
@@ -1242,7 +1247,9 @@ button, .btn, a, input, select, textarea {
   background-color: var(--color-paper-2);
   border: 1px solid var(--color-rule);
   border-radius: var(--radius-pill);
-  transition: all var(--dur-fast) ease;
+  outline: 2px solid transparent;
+  outline-offset: 1px;
+  transition: background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease;
 }
 .marketplace-search-icon {
   position: absolute;
@@ -1255,6 +1262,7 @@ button, .btn, a, input, select, textarea {
 }
 .marketplace-search-input:focus {
   outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
   background-color: var(--color-paper-surface);
   border-color: var(--color-accent);
 }
@@ -1366,7 +1374,7 @@ button, .btn, a, input, select, textarea {
   color: var(--color-ink-2);
   white-space: nowrap;
   text-decoration: none !important;
-  transition: all var(--dur-fast) ease;
+  transition: background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease;
 }
 .marketplace-chip:hover {
   background-color: color-mix(in oklch, var(--color-accent) 10%, transparent);
@@ -1377,6 +1385,10 @@ button, .btn, a, input, select, textarea {
   background-color: color-mix(in oklch, var(--color-accent) 15%, transparent);
   border-color: var(--color-accent);
   color: var(--color-accent);
+}
+.marketplace-chip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
 }
 
 /* Caja de Publicación Rápida Social ("¿Qué material deseas circular?") */
@@ -1418,7 +1430,7 @@ button, .btn, a, input, select, textarea {
   font-size: 0.88rem;
   color: var(--color-ink-muted);
   text-decoration: none !important;
-  transition: all var(--dur-fast) ease;
+  transition: background-color var(--dur-fast) ease, border-color var(--dur-fast) ease, color var(--dur-fast) ease;
   cursor: pointer;
   display: block;
 }
@@ -1426,6 +1438,10 @@ button, .btn, a, input, select, textarea {
   background-color: var(--color-paper-surface);
   border-color: var(--color-accent);
   color: var(--color-ink);
+}
+.social-creator-input-fake:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
 }
 .social-creator-actions {
   display: flex;
@@ -1582,6 +1598,7 @@ button, .btn, a, input, select, textarea {
 .marketplace-social-rail {
   position: sticky;
   top: 80px;
+  z-index: var(--z-sticky, 100);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -1637,12 +1654,16 @@ button, .btn, a, input, select, textarea {
 .demand-card {
   background-color: var(--color-paper-2);
   border: 1px solid var(--color-rule);
-  border-left: 3px solid var(--color-accent);
   border-radius: var(--radius-sm);
   padding: 0.75rem 0.85rem;
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+.demand-card:hover {
+  border-color: var(--color-accent);
+  background-color: var(--color-paper-surface);
 }
 .demand-title {
   font-size: 0.84rem;
@@ -1653,6 +1674,186 @@ button, .btn, a, input, select, textarea {
   font-size: 0.78rem;
   color: var(--color-ink-muted);
   line-height: 1.4;
+}
+
+/* Iconos SVG Puros & Utilidades Semánticas Hallmark */
+.svg-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 1em;
+  height: 1em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+.svg-icon-sm { width: 14px; height: 14px; }
+.svg-icon-md { width: 18px; height: 18px; }
+
+.social-time-tag {
+  font-size: 0.72rem;
+  color: var(--color-ink-muted);
+  margin-top: 0.15rem;
+}
+.demand-action-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.4rem;
+}
+.demand-location {
+  font-size: 0.72rem;
+  color: var(--color-ink-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.demand-link {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.demand-link:hover {
+  text-decoration: underline;
+}
+.company-mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.company-mini-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.82rem;
+}
+.company-mini-item + .company-mini-item {
+  border-top: 1px solid var(--color-rule-subtle);
+  padding-top: 0.5rem;
+}
+.company-mini-sub {
+  font-size: 0.72rem;
+  color: var(--color-ink-muted);
+}
+.institution-card-compact {
+  border-top: 3px solid var(--color-success);
+  background-color: color-mix(in oklch, var(--color-success) 4%, var(--color-paper-surface));
+}
+.institution-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.institution-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--color-ink);
+  margin: 0;
+}
+.institution-desc {
+  font-size: 0.78rem;
+  color: var(--color-ink-2);
+  line-height: 1.45;
+  margin: 0;
+}
+.institution-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.institution-btn {
+  font-size: 0.75rem !important;
+  padding: 0.25rem 0.6rem !important;
+}
+
+/* --- UTILIDADES SEMÁNTICAS COMPLEMENTARIAS (HALLMARK GATE 48/24) --- */
+.social-creator-direct-badge {
+  font-size: 0.75rem;
+  color: var(--color-success);
+  font-weight: 700;
+}
+.featured-lot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.featured-lot-meta {
+  font-size: 0.78rem;
+  color: var(--color-ink-muted);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+.featured-lot-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-ink);
+  margin-bottom: 0.4rem;
+}
+.featured-lot-desc {
+  font-size: 0.88rem;
+  color: var(--color-ink-2);
+  line-height: 1.5;
+  margin-bottom: 0.85rem;
+}
+.featured-lot-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.featured-lot-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--color-ink-muted);
+}
+.feed-item-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.contact-card {
+  margin-bottom: 0;
+  padding: 1.75rem 1.5rem;
+  text-align: left;
+}
+.contact-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-ink);
+  margin-bottom: 0.4rem;
+}
+.contact-card-desc {
+  font-size: 0.88rem;
+  color: var(--color-ink-2);
+  margin-bottom: 0.85rem;
+  line-height: 1.5;
+}
+.contact-card-link {
+  font-weight: 700;
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  text-decoration: none;
+}
+.contact-card-link:hover {
+  text-decoration: underline;
+}
+.contact-card-sub {
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.site-footer-brand {
+  color: var(--color-ink);
+  font-weight: 700;
 }
 
 @media (max-width: 1400px) {

@@ -100,4 +100,8 @@
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-fast: 120ms;
   --dur-short: 180ms;
+
+  /* --- CAPAS & Z-INDEX (GATE 56) --- */
+  --z-sticky: 100;
+  --z-sticky-nav: 300;
 }
