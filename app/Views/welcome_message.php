@@ -10,7 +10,13 @@
       'titulo' => 'Sobras de Filamento PETG & Fibra de Carbono',
       'desc'   => 'Lote de bobinas técnicas de 1.75mm remanentes de prototipado automotriz. Tolerancia ±0.02mm, secadas en horno al vacío.',
       'kilos'  => '340 kg',
+      'precio' => '$1.850 / kg',
+      'empresa'=> 'Lab Aditivo Córdoba S.A.S.',
+      'avatar' => '3D',
+      'tiempo' => 'Hace 3 horas',
       'origen' => 'Córdoba Capital',
+      'specs'  => ['PETG + Carbono', 'Diámetro 1.75mm', 'Tolerancia ±0.02mm', 'Secado Horno Vacío'],
+      'interes'=> '24 empresas consultaron · 5 ofertas registradas',
       'link'   => $isAuth ? site_url('productos') : site_url('register'),
     ],
     [
@@ -20,7 +26,13 @@
       'titulo' => 'Polietileno Micronizado PEAD (35 Mesh)',
       'desc'   => 'Polvo micronizado virgen sobrante de tolva para tanques huecos. Densidad 0.938 g/cm³, aditivado con protector UV8.',
       'kilos'  => '4.200 kg',
+      'precio' => '$450 / kg',
+      'empresa'=> 'Rotomoldeo del Centro S.A.',
+      'avatar' => 'PE',
+      'tiempo' => 'Hace 5 horas',
       'origen' => 'Río Tercero, Cba',
+      'specs'  => ['PEAD Virgen', '35 Mesh (425μm)', 'MFI: 4.2 g/10min', 'Protector UV8'],
+      'interes'=> '42 empresas consultaron · 8 ofertas registradas',
       'link'   => $isAuth ? site_url('productos') : site_url('register'),
     ],
     [
@@ -30,7 +42,13 @@
       'titulo' => 'Matrices de Aluminio & Archivos CAD Rotomoldeo',
       'desc'   => 'Dos matrices maquinadas para piezas utilitarias en rotomoldeo y biblioteca de planos técnicos STEP/STL asociados.',
       'kilos'  => '2 Unidades',
+      'precio' => 'Consultar Lote',
+      'empresa'=> 'Matricería San Martín Industrial',
+      'avatar' => 'AL',
+      'tiempo' => 'Ayer a las 17:30',
       'origen' => 'San Martín, Bs As',
+      'specs'  => ['Aluminio Maquinado', 'Archivos STEP/STL', 'Matrices Utilitarias', 'Tolerancia ±0.1mm'],
+      'interes'=> '19 empresas consultaron · 3 ofertas registradas',
       'link'   => $isAuth ? site_url('productos') : site_url('register'),
     ],
     [
@@ -40,7 +58,13 @@
       'titulo' => 'Scrap Molido PLA+ & ABS Técnico',
       'desc'   => 'Descartes limpios de estructuras de soporte y purgas industriales clasificados por color para peletizado directo.',
       'kilos'  => '850 kg',
+      'precio' => '$620 / kg',
+      'empresa'=> 'Transformadora Rosario Plásticos',
+      'avatar' => 'TR',
+      'tiempo' => 'Ayer a las 14:10',
       'origen' => 'Rosario, Santa Fe',
+      'specs'  => ['PLA+ & ABS Limpio', 'Descarte Seleccionado', 'Apto Peletizado', 'Sin Metales'],
+      'interes'=> '31 empresas consultaron · 6 ofertas registradas',
       'link'   => $isAuth ? site_url('productos') : site_url('register'),
     ],
   ];
@@ -229,12 +253,33 @@
         <span>Publicaciones en Circulación de Hoy</span>
       </div>
       <div class="marketplace-chips-container" role="navigation" aria-label="Accesos rápidos por material">
-        <a href="#feed" class="marketplace-chip" style="background-color: color-mix(in oklch, var(--color-accent) 15%, transparent); border-color: var(--color-accent); color: var(--color-accent);">Todo el Feed</a>
+        <a href="#feed" class="marketplace-chip active">Todo el Feed</a>
         <a href="#categorias" class="marketplace-chip">🔄 Rotomoldeo</a>
         <a href="#categorias" class="marketplace-chip">🧵 Filamentos 3D</a>
         <a href="#categorias" class="marketplace-chip">📐 Matrices & Moldes</a>
         <a href="#categorias" class="marketplace-chip">⚙️ Scrap Inyección</a>
         <a href="#metricas" class="marketplace-chip">📈 24.800 kg Valorizados</a>
+      </div>
+    </div>
+
+    <!-- CAJA DE PUBLICACIÓN RÁPIDA ESTILO RED SOCIAL B2B -->
+    <div class="social-post-creator" role="region" aria-label="Publicar sobra de polímero en la red">
+      <div class="social-creator-top">
+        <div class="social-creator-avatar" aria-hidden="true">🏢</div>
+        <a href="<?= $isAuth ? site_url('productos/crear') : site_url('register') ?>" class="social-creator-input-fake">
+          <?= $isAuth ? '¿Qué sobrante de tolva, bobina o matriz deseas circular hoy?...' : '¿Tu empresa genera sobrantes? Registrate para publicar un lote...' ?>
+        </a>
+        <a href="<?= $isAuth ? site_url('productos/crear') : site_url('register') ?>" class="btn btn-primary btn-sm" style="white-space: nowrap;">
+          <?= $isAuth ? '+ Publicar Lote' : '+ Registrarse' ?>
+        </a>
+      </div>
+      <div class="social-creator-actions">
+        <div class="social-creator-pills">
+          <span class="social-creator-pill-tag"><span>📄</span> Ficha Técnica Verificada</span>
+          <span class="social-creator-pill-tag"><span>⚖️</span> Declaración de Kilos</span>
+          <span class="social-creator-pill-tag"><span>📍</span> Retiro Directo en Planta</span>
+        </div>
+        <span style="font-size: 0.75rem; color: var(--color-success); font-weight: 700;">✓ Trato Directo sin Comisiones</span>
       </div>
     </div>
 
@@ -303,25 +348,56 @@
       <div class="exchange-feed-grid">
         <?php foreach ($lotesFeed as $f): ?>
           <article class="marketplace-item-card">
-            <div class="marketplace-card-thumb">
+            <header class="marketplace-card-header">
+              <div class="marketplace-author-wrap">
+                <span class="marketplace-author-avatar" aria-hidden="true"><?= $f['avatar'] ?></span>
+                <div class="marketplace-author-meta">
+                  <span class="marketplace-author-name">
+                    <?= $f['empresa'] ?>
+                    <span class="marketplace-verified-badge" title="Empresa con CUIT Homologado">✓ Verificada</span>
+                  </span>
+                  <span class="marketplace-author-time"><?= $f['tiempo'] ?> &middot; 📍 <?= $f['origen'] ?></span>
+                </div>
+              </div>
               <span class="badge <?= $f['badge_cls'] ?>"><?= $f['tipo'] ?></span>
-              <span class="exchange-meta"><?= $f['codigo'] ?></span>
+            </header>
+
+            <div class="marketplace-card-thumb">
+              <div>
+                <span style="font-size: 0.72rem; color: var(--color-ink-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Lote Disponible</span>
+                <div class="marketplace-card-price"><?= $f['kilos'] ?></div>
+              </div>
+              <div style="text-align: right;">
+                <span class="exchange-meta"><?= $f['codigo'] ?></span>
+                <div style="font-size: 0.82rem; font-weight: 800; color: var(--color-ink); margin-top: 0.2rem;"><?= $f['precio'] ?></div>
+              </div>
             </div>
+
             <div class="marketplace-card-body">
               <div>
-                <div class="marketplace-card-price"><?= $f['kilos'] ?></div>
-                <h3 class="exchange-title" style="margin-top: 0.35rem;"><?= $f['titulo'] ?></h3>
+                <h3 class="exchange-title" style="margin-top: 0.25rem;"><?= $f['titulo'] ?></h3>
                 <p class="exchange-desc"><?= $f['desc'] ?></p>
-              </div>
-              <div>
-                <div class="marketplace-seller-info">
-                  <span class="marketplace-seller-avatar">🏢</span>
-                  <span>📍 <?= $f['origen'] ?> &middot; <strong>Verificada</strong></span>
+
+                <div class="tech-spec-chips" aria-label="Especificaciones técnicas del lote">
+                  <?php foreach ($f['specs'] as $spec): ?>
+                    <span class="tech-chip"><?= $spec ?></span>
+                  <?php endforeach; ?>
                 </div>
-                <div style="margin-top: 0.85rem;">
-                  <a href="<?= $f['link'] ?>" class="btn btn-secondary btn-sm btn-block">
-                    <?= $isAuth ? 'Ver Publicación &rarr;' : 'Contactar a la Empresa &rarr;' ?>
+              </div>
+
+              <div>
+                <div class="social-card-actions">
+                  <a href="<?= $f['link'] ?>" class="btn btn-primary btn-sm" style="flex: 1; text-align: center;">
+                    <?= $isAuth ? '💬 Contactar a la Empresa &rarr;' : '💬 Contactar al Vendedor &rarr;' ?>
                   </a>
+                  <a href="<?= $f['link'] ?>" class="btn btn-secondary btn-sm" title="Ver ficha técnica completa">
+                    📄 Ficha
+                  </a>
+                </div>
+
+                <div class="social-interest-counter">
+                  <span>👥</span>
+                  <span><?= $f['interes'] ?></span>
                 </div>
               </div>
             </div>
@@ -468,6 +544,136 @@
     </section>
 
   </div> <!-- /marketplace-feed-area -->
+
+  <!-- RIEL DERECHO ESTILO RED SOCIAL B2B (ACTIVIDAD EN VIVO, DEMANDAS ACTIVAS & EMPRESAS) -->
+  <aside class="marketplace-social-rail" aria-label="Actividad en vivo de la red y demandas de compra">
+    
+    <!-- Widget 1: Actividad de la Red en Vivo -->
+    <div class="social-widget-card">
+      <div class="social-widget-header">
+        <h3 class="social-widget-title">
+          <span class="live-pulse-dot" aria-hidden="true"></span>
+          <span>Red en Vivo (B2B)</span>
+        </h3>
+        <span class="badge badge-success" style="font-size: 0.68rem;">Tiempo Real</span>
+      </div>
+      <ul class="live-activity-list">
+        <li class="live-activity-item">
+          <span class="live-pulse-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Rotomoldeo del Centro</strong> publicó 4.200 kg de PEAD en Río Tercero.
+            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Hace 2 horas</div>
+          </div>
+        </li>
+        <li class="live-activity-item">
+          <span class="live-pulse-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Lab Aditivo Córdoba</strong> acordó retiro de bobinas PETG (#FIL-108).
+            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Hace 4 horas</div>
+          </div>
+        </li>
+        <li class="live-activity-item">
+          <span class="live-pulse-dot" aria-hidden="true"></span>
+          <div>
+            <strong>Matricería San Martín</strong> subió 2 matrices de rotomoldeo (#MOD-019).
+            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Ayer</div>
+          </div>
+        </li>
+        <li class="live-activity-item">
+          <span class="live-pulse-dot" aria-hidden="true"></span>
+          <div>
+            <strong>IT Río Tercero</strong> auditó protocolo de trazabilidad de scrap circular.
+            <div style="font-size: 0.72rem; color: var(--color-ink-muted); margin-top: 0.15rem;">Ayer</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Widget 2: Solicitudes de Compra Activa (Avisos "Se Busca") -->
+    <div class="social-widget-card">
+      <div class="social-widget-header">
+        <h3 class="social-widget-title">
+          <span>🔍</span>
+          <span>Demandas de Compra</span>
+        </h3>
+        <span style="font-size: 0.72rem; color: var(--color-accent); font-weight: 700;">2 Activas</span>
+      </div>
+      <p style="font-size: 0.8rem; color: var(--color-ink-muted); margin-top: -0.25rem;">
+        Empresas que buscan comprar sobrantes de inmediato:
+      </p>
+      <div class="demand-card">
+        <div class="demand-title">Buscan 1.000 kg PEAD Molido</div>
+        <div class="demand-desc">Planta de inyección en San Francisco requiere scrap limpio libre de PVC para paletizado.</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem;">
+          <span style="font-size: 0.72rem; color: var(--color-ink-muted);">📍 San Francisco, Cba</span>
+          <a href="<?= site_url($isAuth ? 'productos' : 'register') ?>" style="font-size: 0.75rem; font-weight: 700; color: var(--color-accent);">Ofertar &rarr;</a>
+        </div>
+      </div>
+      <div class="demand-card">
+        <div class="demand-title">Buscan Bobinas PLA+ / PETG</div>
+        <div class="demand-desc">Taller 3D en Rosario busca sobrantes técnicos de 1.75mm para prototipado continuo.</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.4rem;">
+          <span style="font-size: 0.72rem; color: var(--color-ink-muted);">📍 Rosario, Santa Fe</span>
+          <a href="<?= site_url($isAuth ? 'productos' : 'register') ?>" style="font-size: 0.75rem; font-weight: 700; color: var(--color-accent);">Ofertar &rarr;</a>
+        </div>
+      </div>
+      <div style="margin-top: 0.25rem;">
+        <a href="<?= site_url($isAuth ? 'productos/crear' : 'register') ?>" class="btn btn-secondary btn-sm btn-block">
+          + Publicar Pedido de Compra
+        </a>
+      </div>
+    </div>
+
+    <!-- Widget 3: Plantas Homologadas en la Comunidad -->
+    <div class="social-widget-card">
+      <div class="social-widget-header">
+        <h3 class="social-widget-title">
+          <span>🏢</span>
+          <span>Empresas Destacadas</span>
+        </h3>
+        <span class="badge badge-polimero-default" style="font-size: 0.68rem;">42 Totales</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem;">
+          <div>
+            <strong>Rotomoldeo del Centro</strong>
+            <div style="font-size: 0.72rem; color: var(--color-ink-muted);">Polímeros Micronizados · Río Tercero</div>
+          </div>
+          <span class="marketplace-verified-badge">✓ CUIT OK</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; border-top: 1px solid var(--color-rule-subtle); padding-top: 0.5rem;">
+          <div>
+            <strong>Lab Aditivo Córdoba</strong>
+            <div style="font-size: 0.72rem; color: var(--color-ink-muted);">Manufactura 3D · Córdoba Cap.</div>
+          </div>
+          <span class="marketplace-verified-badge">✓ CUIT OK</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.82rem; border-top: 1px solid var(--color-rule-subtle); padding-top: 0.5rem;">
+          <div>
+            <strong>Transformadora Rosario</strong>
+            <div style="font-size: 0.72rem; color: var(--color-ink-muted);">Peletizado & Molienda · Santa Fe</div>
+          </div>
+          <span class="marketplace-verified-badge">✓ CUIT OK</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Widget 4: Aval Institucional Hito 1 -->
+    <div class="social-widget-card" style="border-top: 3px solid var(--color-success); background-color: color-mix(in oklch, var(--color-success) 4%, var(--color-paper-surface));">
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        <span style="font-size: 1.1rem;">🎓</span>
+        <h4 style="font-size: 0.88rem; font-weight: 800; color: var(--color-ink); margin: 0;">Homologación Hito 1</h4>
+      </div>
+      <p style="font-size: 0.78rem; color: var(--color-ink-2); line-height: 1.45; margin: 0;">
+        Proyecto desarrollado y auditado en el <strong>Instituto Técnico Río Tercero</strong> (6° B). Arquitectura con interoperabilidad fiscal, base relacional normalizada y cero dependencias de scripts.
+      </p>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="#entregables" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">Ver Hito 1</a>
+        <a href="<?= site_url('../docs/DER.md') ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">docs/DER.md</a>
+      </div>
+    </div>
+
+  </aside>
 
 </div> <!-- /marketplace-layout -->
 
