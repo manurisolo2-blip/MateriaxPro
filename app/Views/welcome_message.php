@@ -175,7 +175,8 @@
 </section>
 
 <!-- 2. TABLÓN TÁCTIL: SOBRAS DE FILAMENTO & LOTES ACTIVOS EN LA RED -->
-<section class="content-section" id="feed" aria-labelledby="heading-feed">
+<section class="content-section section-alt" id="feed" aria-labelledby="heading-feed">
+  <div class="section-divider-bar"></div>
   <div class="section-heading">
     <span class="section-kicker">Intercambio Directo B2B</span>
     <h2 class="section-title" id="heading-feed">Feed de Sobras Técnicas & Materiales en Circulación</h2>
@@ -208,6 +209,7 @@
 
 <!-- 3. CATEGORÍAS INDUSTRIALES -->
 <section class="content-section" id="categorias" aria-labelledby="heading-categorias">
+  <div class="section-divider-bar"></div>
   <div class="section-heading">
     <span class="section-kicker">Materiales Homologados</span>
     <h2 class="section-title" id="heading-categorias">Familias de Materiales Circulables</h2>
@@ -230,7 +232,8 @@
 </section>
 
 <!-- 4. ECOSISTEMA Y OPERACIÓN DE LA RED -->
-<section class="content-section" id="ecosistema" aria-labelledby="heading-ecosistema">
+<section class="content-section section-alt" id="ecosistema" aria-labelledby="heading-ecosistema">
+  <div class="section-divider-bar"></div>
   <div class="section-heading">
     <span class="section-kicker">Confianza & Verificación</span>
     <h2 class="section-title" id="heading-ecosistema">Cómo Opera la Red entre Empresas</h2>
@@ -271,7 +274,8 @@
 <?php endif; ?>
 
 <!-- 6. MÉTRICAS DE IMPACTO INDUSTRIAL -->
-<section class="content-section" id="metricas" aria-labelledby="heading-metricas">
+<section class="content-section section-success" id="metricas" aria-labelledby="heading-metricas">
+  <div class="section-divider-bar"></div>
   <div class="section-heading">
     <span class="section-kicker">Métricas Verificadas</span>
     <h2 class="section-title" id="heading-metricas">Impacto Acumulado en la Red</h2>
@@ -290,7 +294,8 @@
 
 <!-- 7. ENTREGABLES INSTITUCIONALES HITO 1 -->
 <section class="content-section" style="margin-bottom: var(--space-md);" aria-label="Resumen de entregables académicos">
-  <div class="card">
+  <div class="section-divider-bar"></div>
+  <div class="card" style="margin-bottom: 0;">
     <div class="card-header">
       <h3 class="card-title">Resumen de Entregables — Hito 1</h3>
       <span style="font-size: 0.82rem; color: var(--color-ink-muted); font-weight: 700; font-family: var(--font-mono);">Instituto Técnico Río Tercero &middot; 6° B</span>
@@ -317,7 +322,8 @@
 </section>
 
 <!-- 8. CONTACTO INSTITUCIONAL -->
-<section class="content-section" id="contacto" style="padding-bottom: var(--space-xl);" aria-labelledby="heading-contacto">
+<section class="content-section section-alt" id="contacto" style="padding-bottom: var(--space-xl);" aria-labelledby="heading-contacto">
+  <div class="section-divider-bar"></div>
   <div class="section-heading">
     <span class="section-kicker">Mesa de Ayuda</span>
     <h2 class="section-title" id="heading-contacto">Contacto & Soporte Técnico de la Red</h2>
