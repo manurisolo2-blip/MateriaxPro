@@ -27,13 +27,13 @@ class UserModel extends Model
         'ultimo_login',
     ];
 
-    // Dates
+    // Fechas
     protected $useTimestamps = true;
     protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
 
-    // Validation Rules
+    // Reglas de validación
     protected $validationRules = [
         'nombre'    => 'required|min_length[3]|max_length[100]',
         'email'     => 'required|valid_email|is_unique[usuarios.email,id,{id}]',

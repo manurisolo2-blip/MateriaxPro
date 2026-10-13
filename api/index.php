@@ -1,11 +1,11 @@
 <?php
 
-// Vercel Serverless Function Entry Point for CodeIgniter 4
+// Punto de entrada para despliegue en Vercel
 putenv('VERCEL=1');
 $_ENV['VERCEL'] = '1';
 $_SERVER['VERCEL'] = '1';
 
-// Set CI_ENVIRONMENT to development so that any unexpected error provides full diagnostic trace instead of opaque screen
+// Configurar entorno en modo desarrollo
 if (!getenv('CI_ENVIRONMENT')) {
     putenv('CI_ENVIRONMENT=development');
     $_ENV['CI_ENVIRONMENT'] = 'development';
@@ -17,7 +17,7 @@ if (empty($_SERVER['SCRIPT_NAME'])) {
     $_SERVER['SCRIPT_NAME'] = '/index.php';
 }
 
-// Ensure writable directories and SQLite database exist in the system temp directory
+// Crear directorios temporales de escritura
 $tmp = sys_get_temp_dir();
 $baseWritable = (!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp';
 $targetDir = rtrim($baseWritable, '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable';
@@ -31,7 +31,7 @@ foreach (['cache', 'logs', 'session', 'uploads', 'debugbar'] as $sub) {
     }
 }
 
-// Populate database in target directory
+// Inicializar base de datos SQLite en directorio temporal
 $dbPath = $targetDir . DIRECTORY_SEPARATOR . 'materiax_db.sqlite';
 $seedDb = __DIR__ . '/../writable/materiax_db.sqlite';
 
@@ -41,7 +41,7 @@ if (!file_exists($dbPath) || filesize($dbPath) === 0) {
     }
 }
 
-// Bulletproof self-healing: if file does not exist or has no tables, create and seed via PDO directly
+// Crear tablas y datos iniciales si no existen
 if (!file_exists($dbPath) || filesize($dbPath) === 0) {
     try {
         $db = new PDO('sqlite:' . $dbPath);
@@ -107,5 +107,5 @@ if (!file_exists($dbPath) || filesize($dbPath) === 0) {
     }
 }
 
-// Forward execution to CodeIgniter 4 Front Controller
+// Redirigir la ejecución al controlador de CodeIgniter 4
 require __DIR__ . '/../public/index.php';

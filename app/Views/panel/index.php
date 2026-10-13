@@ -30,7 +30,7 @@
   </div>
 </div>
 
-<!-- Tarjetas de Métricas de la Empresa -->
+<!-- Estadísticas -->
 <div class="grid-4" style="margin-bottom: 2rem;">
   <div class="metric-card">
     <span class="metric-card-label">Mis Lotes Publicados</span>
@@ -65,7 +65,7 @@
   </div>
 </div>
 
-<!-- Sección Principal: Gestión de Mis Lotes -->
+<!-- Mis lotes -->
 <div class="card" style="margin-bottom: 2.5rem;">
   <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
     <div>
@@ -154,7 +154,7 @@
   </div>
 </div>
 
-<!-- Sección Secundaria: Oportunidades del Mercado General -->
+<!-- Lotes del mercado -->
 <?php if (!empty($lotesMercado) && count($lotesMercado) > 0): ?>
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
     <div>

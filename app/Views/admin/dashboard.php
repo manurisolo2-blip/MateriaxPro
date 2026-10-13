@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<!-- Tarjetas de Métricas Globales del Administrador -->
+<!-- Métricas generales -->
 <div class="grid-4" style="margin-bottom: 2rem;">
   <div class="metric-card">
     <span class="metric-card-label">Auditorías Pendientes</span>
@@ -58,7 +58,7 @@
   </div>
 </div>
 
-<!-- BANDEJA DE AUDITORÍA: EMPRESAS PENDIENTES DE APROBACIÓN -->
+<!-- Empresas pendientes de aprobación -->
 <div class="card" style="margin-bottom: 2rem; border: 1px solid <?= ($totalPendientes > 0) ? 'rgba(245, 158, 11, 0.4)' : 'var(--border-color)' ?>;">
   <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; background: <?= ($totalPendientes > 0) ? 'rgba(245, 158, 11, 0.05)' : 'transparent' ?>;">
     <div>
@@ -133,7 +133,7 @@
                     Ver Ficha
                   </a>
 
-                  <!-- Formulario POST de Aprobación Inmediata (Cero JS) -->
+                  <!-- Aprobar empresa -->
                   <form action="<?= site_url('admin/empresa/aprobar/' . $ep['id']) ?>" method="POST" style="margin: 0; display: inline;">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-primary btn-sm" style="background: #059669; border-color: #10b981;" title="Aprobar empresa y permitirle ingresar">
@@ -141,7 +141,7 @@
                     </button>
                   </form>
 
-                  <!-- Formulario POST de Rechazo (Cero JS) -->
+                  <!-- Rechazar empresa -->
                   <form action="<?= site_url('admin/empresa/rechazar/' . $ep['id']) ?>" method="POST" style="margin: 0; display: inline;">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-secondary btn-sm" style="color: #f87171; border-color: rgba(239, 68, 68, 0.4);" title="Rechazar solicitud de registro">
@@ -167,7 +167,7 @@
   </div>
 </div>
 
-<!-- TABLA DE EMPRESAS AUDITADAS Y PROCESADAS -->
+<!-- Empresas procesadas -->
 <div class="card">
   <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
     <div>

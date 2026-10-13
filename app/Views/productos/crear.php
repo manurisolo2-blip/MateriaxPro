@@ -1,6 +1,6 @@
 <?= view('templates/header', ['pageTitle' => 'Publicar Excedente Industrial | MateriaX']) ?>
 
-<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<!-- Migas de pan -->
 <nav aria-label="Migas de pan" class="breadcrumb" style="max-width: 760px; margin: 0 auto 1rem;">
   <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
   <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>

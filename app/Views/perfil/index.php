@@ -9,7 +9,7 @@
   </p>
 </div>
 
-<!-- Tarjetas de Estadísticas de Cuenta -->
+<!-- Estadísticas de la cuenta -->
 <div class="grid-3" style="margin-top: 0; margin-bottom: 2rem;">
   <div class="metric-card">
     <span class="metric-card-label">Lotes Publicados</span>
@@ -38,7 +38,7 @@
 
 <div class="grid-2" style="align-items: start;">
   
-  <!-- Columna 1: Edición de Datos Corporativos -->
+  <!-- Datos de la empresa -->
   <div>
     <div class="card">
       <div class="card-header">
@@ -155,7 +155,7 @@
       </div>
     </div>
 
-    <!-- Módulo de Cambio de Contraseña Segura -->
+    <!-- Cambiar contraseña -->
     <div class="card">
       <div class="card-header">
         <h3 class="card-title">Seguridad & Contraseña</h3>
@@ -210,7 +210,7 @@
     </div>
   </div>
 
-  <!-- Columna 2: Mis Publicaciones en MateriaX -->
+  <!-- Mis publicaciones -->
   <div>
     <div class="card">
       <div class="card-header">

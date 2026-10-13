@@ -1,6 +1,6 @@
 <?= view('templates/header', ['pageTitle' => 'Detalle de Empresa | MateriaX Admin']) ?>
 
-<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<!-- Migas de pan -->
 <nav aria-label="Migas de pan" class="breadcrumb">
   <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
   <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
@@ -22,14 +22,14 @@
 
     <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
       <?php if ($empresa['estado'] === 'pendiente'): ?>
-        <!-- Boton POST de aprobacion directa -->
+        <!-- Aprobar empresa -->
         <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
           <?= csrf_field() ?>
           <button type="submit" class="btn btn-primary" style="background: #059669; border-color: #10b981;">
             Aprobar Empresa
           </button>
         </form>
-        <!-- Boton POST de rechazo -->
+        <!-- Rechazar empresa -->
         <form action="<?= site_url('admin/empresa/rechazar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
           <?= csrf_field() ?>
           <button type="submit" class="btn btn-secondary" style="color: #dc2626; border-color: rgba(220, 38, 38, 0.4);">
@@ -62,7 +62,7 @@
   </div>
 </div>
 
-<!-- Ficha de Datos Corporativos -->
+<!-- Datos de la empresa -->
 <div class="card" style="margin-bottom: 2rem;">
   <div class="card-header">
     <h3 class="card-title">Información Fiscal y de Contacto</h3>
@@ -176,7 +176,7 @@
   </div>
 </div>
 
-<!-- Tabla de Lotes Publicados por esta Empresa -->
+<!-- Lotes publicados -->
 <div class="card">
   <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
     <div>

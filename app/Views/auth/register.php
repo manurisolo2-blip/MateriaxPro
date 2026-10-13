@@ -13,14 +13,14 @@
       <form action="<?= site_url('register') ?>" method="POST">
         <?= csrf_field() ?>
 
-        <!-- Aviso Informativo de la Etapa de Auditoría -->
+        <!-- Aviso de revisión -->
         <div style="background: rgba(15, 118, 110, 0.06); border: 1px solid rgba(15, 118, 110, 0.2); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.5rem;">
           <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.45;">
             <strong style="color: var(--color-primary);">Proceso de Auditoría Fiscal:</strong> Al completar el formulario, tu solicitud será revisada por el administrador para validar el CUIT y los datos de tu empresa antes de habilitar el acceso comercial a la plataforma.
           </div>
         </div>
 
-        <!-- Sección 1: Identificación de la Empresa -->
+        <!-- Datos de la empresa -->
         <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
           1. Identificación Corporativa
         </h3>
@@ -72,7 +72,7 @@
           </div>
         </div>
 
-        <!-- Sección 2: Contacto y Radicación -->
+        <!-- Contacto y ubicación -->
         <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1rem;">
           2. Radicación & Datos de Contacto
         </h3>
@@ -151,7 +151,7 @@
           </div>
         </div>
 
-        <!-- Sección 3: Credenciales de Seguridad -->
+        <!-- Contraseña de acceso -->
         <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1rem;">
           3. Credenciales de Acceso
         </h3>

@@ -6,22 +6,22 @@
   <meta name="description" content="MateriaX Pro - Plataforma industrial para la recirculación, publicación y auditoría de excedentes poliméricos y materiales técnicos.">
   <title><?= esc($pageTitle ?? 'MateriaX | Red Industrial Circular') ?></title>
   
-  <!-- Optimización de Carga Tipográfica (Preconnect - Core Web Vitals) -->
+  <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  <!-- CSS Oficial Puro de MateriaX -->
+  <!-- Estilos -->
   <link rel="stylesheet" href="<?= base_url('css/materiax.css') ?>">
   
-  <!-- Favicon / Isotipo -->
+  <!-- Icono -->
   <link rel="icon" type="image/png" href="<?= base_url('assets/logos/isotipo-black.png') ?>">
 </head>
 <body>
 
-  <!-- Enlace Accesible para Navegación por Teclado (WCAG 2.2 AA) -->
+  <!-- Salto al contenido -->
   <a href="#main-content" class="skip-link">Saltar al contenido principal</a>
 
-  <!-- Cabecera de Navegación Principal -->
+  <!-- Menú de navegación -->
   <header class="site-header" role="banner">
     <nav class="nav-container" aria-label="Navegación principal">
       <a href="<?= site_url('/') ?>" class="brand-link">
@@ -64,24 +64,24 @@
     </nav>
   </header>
 
-  <!-- Contenedor Principal Accesible -->
+  <!-- Contenido principal -->
   <main id="main-content" class="main-wrapper" role="main">
 
-    <!-- Mensaje Flash: Éxito -->
+    <!-- Mensaje de éxito -->
     <?php if (session()->getFlashdata('success')): ?>
       <div class="alert alert-success" role="status" aria-live="polite">
         <div><?= esc(session()->getFlashdata('success')) ?></div>
       </div>
     <?php endif; ?>
 
-    <!-- Mensaje Flash: Error General -->
+    <!-- Mensaje de error -->
     <?php if (session()->getFlashdata('error')): ?>
       <div class="alert alert-error" role="alert" aria-live="assertive">
         <div><?= esc(session()->getFlashdata('error')) ?></div>
       </div>
     <?php endif; ?>
 
-    <!-- Mensaje Flash: Errores de Validación -->
+    <!-- Errores de validación -->
     <?php if (session()->getFlashdata('errors')): ?>
       <div class="alert alert-error" role="alert" aria-live="assertive">
         <div>

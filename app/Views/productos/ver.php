@@ -1,6 +1,6 @@
 <?= view('templates/header', ['pageTitle' => esc($producto['nombre']) . ' | MateriaX']) ?>
 
-<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<!-- Migas de pan -->
 <nav aria-label="Migas de pan" class="breadcrumb" style="max-width: 850px; margin: 0 auto 1rem;">
   <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
   <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
@@ -38,7 +38,7 @@
     </div>
   </div>
 
-  <!-- Métricas Principales del Lote -->
+  <!-- Datos del lote -->
   <div class="grid-3" style="margin-top: 0; margin-bottom: 1.5rem;">
     <div class="metric-card">
       <span class="metric-card-label">Volumen Total</span>
@@ -65,7 +65,7 @@
     </div>
   </div>
 
-  <!-- Ficha Técnica -->
+  <!-- Ficha técnica -->
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Especificaciones Técnicas del Material</h3>
@@ -85,7 +85,7 @@
     </div>
   </div>
 
-  <!-- Información de la Empresa Oferente -->
+  <!-- Datos del vendedor -->
   <div class="card">
     <div class="card-header">
       <h3 class="card-title">Datos de Contacto Institucional</h3>

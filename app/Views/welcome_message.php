@@ -19,7 +19,7 @@
 
 <div class="marketplace-feed-area" style="max-width: 1080px; margin: 0 auto; width: 100%;">
 
-  <!-- HERO PRINCIPAL -->
+  <!-- Inicio -->
   <section class="hero-wrapper" id="inicio" style="grid-template-columns: 1fr; text-align: center; padding: 2.5rem 1.5rem;" aria-label="Presentación MateriaX Pro">
     <div class="hero-content" style="max-width: 780px; margin: 0 auto;">
       <div class="hero-kicker">MateriaX Pro · Mercado Industrial</div>
@@ -41,7 +41,7 @@
     </div>
   </section>
 
-  <!-- FEED DE LOTES EN CIRCULACIÓN -->
+  <!-- Lotes disponibles -->
   <section class="content-section" id="feed" aria-labelledby="heading-feed">
     <div class="section-divider-bar"></div>
     <div class="section-heading">
@@ -92,7 +92,7 @@
     </div>
   </section>
 
-  <!-- CONTACTO INSTITUCIONAL -->
+  <!-- Contacto -->
   <section class="content-section section-alt" id="contacto" aria-labelledby="heading-contacto">
     <div class="section-divider-bar"></div>
     <div class="section-heading">

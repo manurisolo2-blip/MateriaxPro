@@ -1,6 +1,6 @@
 <?= view('templates/header', ['pageTitle' => 'Supervisión de Lotes | MateriaX Admin']) ?>
 
-<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<!-- Migas de pan -->
 <nav aria-label="Migas de pan" class="breadcrumb">
   <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
   <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
@@ -96,7 +96,7 @@
                     Ver
                   </a>
 
-                  <!-- Formulario POST puro de baja administrativa (Cero JavaScript) -->
+                  <!-- Dar de baja lote -->
                   <form action="<?= site_url('admin/lotes/eliminar/' . $lote['id']) ?>" method="POST" style="margin: 0; display: inline;">
                     <?= csrf_field() ?>
                     <button type="submit" class="btn btn-secondary btn-sm" style="color: #dc2626;" title="Dar de baja lote por moderación administrativa">

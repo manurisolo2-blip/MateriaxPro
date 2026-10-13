@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <!-- Formulario nativo HTTP POST (100% PHP, 0% JavaScript) -->
+      <!-- Confirmar eliminación -->
       <form action="<?= site_url('productos/eliminar/' . $producto['id']) ?>" method="POST" style="display: flex; gap: 1rem; flex-wrap: wrap;">
         <?= csrf_field() ?>
 

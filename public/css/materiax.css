@@ -1,10 +1,7 @@
-/* ==============================================================================
-   MATERIAX PRO - HOJA DE ESTILOS UNIFICADA & ULTRA-CONCISA
-   Hallmark · modern-minimal · Workbench · 100% Full-Width · Zero JavaScript
-   ============================================================================== */
+/* Estilos generales de MateriaX Pro */
 @import url('tokens.css');
 
-/* --- REINICIO Y FUNDAMENTOS RESILIENTES --- */
+/* Estilos base */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; scroll-behavior: smooth; }
 body { min-height: 100vh; display: flex; flex-direction: column; font-family: var(--font-body); background-color: var(--color-paper); color: var(--color-ink); line-height: 1.5; -webkit-font-smoothing: antialiased; }
@@ -18,7 +15,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .skip-link:focus { top: 1rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
 
-/* --- CABECERA Y NAVEGACIÓN (FULL-WIDTH) --- */
+/* Encabezado y navegación */
 .site-header { position: sticky; top: 0; z-index: var(--z-sticky-nav, 300); background-color: color-mix(in oklch, var(--color-paper) 90%, transparent); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--color-rule); width: 100%; }
 .nav-container { width: 100%; max-width: var(--container-max-width, 100%); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; }
 .brand-link { display: inline-flex; align-items: center; gap: 0.65rem; font-size: 1.3rem; font-weight: 800; font-family: var(--font-display); color: var(--color-ink); letter-spacing: -0.03em; text-decoration: none !important; }
@@ -32,14 +29,14 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .user-badge { display: inline-flex; align-items: center; gap: 0.5rem; background-color: var(--color-paper-surface); padding: 0.35rem 0.75rem; border-radius: var(--radius-xs); border: 1px solid var(--color-rule); font-size: 0.82rem; color: var(--color-ink); font-weight: 600; }
 .status-dot { width: 7px; height: 7px; border-radius: var(--radius-pill); background-color: var(--color-success); }
 
-/* --- CONTENEDOR PRINCIPAL & PIE DE PÁGINA --- */
+/* Contenedor principal y pie de página */
 .main-wrapper { flex: 1; width: 100%; max-width: var(--container-max-width, 100%); padding: 1rem 1.5rem 3rem; margin: 0; }
 .site-footer { width: 100%; background-color: var(--color-paper-surface); border-top: 1px solid var(--color-rule); padding: 1.5rem; margin-top: auto; font-size: 0.84rem; color: var(--color-ink-2); }
 .footer-container { width: 100%; max-width: var(--container-max-width, 100%); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .site-footer-brand { color: var(--color-ink); font-weight: 700; }
 .footer-credits { font-size: 0.78rem; color: var(--color-ink-muted); }
 
-/* --- ALERTAS & BOTONES --- */
+/* Alertas y botones */
 .alert { padding: 0.85rem 1.15rem; border-radius: var(--radius-md); margin-bottom: var(--space-md); font-size: var(--text-sm); line-height: 1.5; border: 1px solid transparent; }
 .alert-success { background: var(--color-success-bg); border-color: var(--color-success-border); color: var(--color-success-text); }
 .alert-error, .alert-danger { background: var(--color-danger-bg); border-color: var(--color-danger-border); color: var(--color-danger-text); }
@@ -56,7 +53,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .btn-lg { padding: 0.75rem 1.6rem; font-size: var(--text-base); }
 .btn-block { display: flex; width: 100%; }
 
-/* --- FORMULARIOS & TARJETAS COMUNES --- */
+/* Formularios y tarjetas */
 .form-group { margin-bottom: 1.15rem; }
 .form-label { display: block; font-size: 0.84rem; font-weight: 600; color: var(--color-ink); margin-bottom: 0.35rem; }
 .form-control, .form-select { width: 100%; padding: 0.6rem 0.85rem; font-size: var(--text-sm); font-family: var(--font-body); color: var(--color-ink); background-color: var(--color-paper-surface); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); outline: 2px solid transparent; transition: border-color var(--dur-fast); }
@@ -84,17 +81,15 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .badge-danger { background-color: var(--color-danger-bg); color: var(--color-danger-text); border: 1px solid var(--color-danger-border); }
 .badge-polimero-default { background-color: var(--color-paper-2); color: var(--color-ink-2); border: 1px solid var(--color-rule); }
 
-/* --- ICONOS SVG --- */
+/* Iconos */
 .svg-icon { width: 1.15em; height: 1.15em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: inline-block; vertical-align: -2px; flex-shrink: 0; }
 .svg-icon-sm { width: 0.95em; height: 0.95em; }
 .svg-icon-md { width: 1.3em; height: 1.3em; }
 
-/* ==============================================================================
-   ESTRUCTURA DE 3 COLUMNAS DEL MERCADO (FULL-WIDTH)
-   ============================================================================== */
+/* Estructura del mercado */
 .marketplace-layout { display: grid; grid-template-columns: 250px minmax(0, 1fr) 280px; gap: 1.25rem; align-items: start; width: 100%; }
 
-/* SIDEBAR IZQUIERDO */
+/* Menú lateral izquierdo */
 .marketplace-sidebar { position: sticky; top: 4.5rem; z-index: var(--z-sticky, 100); background: var(--color-paper-surface); border: 1px solid var(--color-rule); border-radius: var(--radius-md); padding: 1rem; box-shadow: var(--shadow-hairline); display: flex; flex-direction: column; gap: 0.85rem; max-height: calc(100vh - 5.5rem); overflow-y: auto; }
 .marketplace-sidebar-title { font-size: 1.05rem; font-weight: 800; display: flex; align-items: center; gap: 0.45rem; }
 .marketplace-search-box { position: relative; }
@@ -108,7 +103,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .marketplace-filter-block { padding-top: 0.65rem; border-top: 1px solid var(--color-rule); }
 .marketplace-filter-label { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; color: var(--color-ink-muted); letter-spacing: 0.05em; margin-bottom: 0.35rem; display: block; }
 
-/* ÁREA CENTRAL */
+/* Contenido central */
 .marketplace-feed-area { min-width: 0; display: flex; flex-direction: column; gap: 1.25rem; }
 .social-post-creator { background: var(--color-paper-surface); border: 1px solid var(--color-rule); border-radius: var(--radius-md); padding: 0.85rem 1rem; box-shadow: var(--shadow-hairline); }
 .social-creator-top { display: flex; align-items: center; gap: 0.75rem; }
@@ -116,7 +111,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .social-creator-input-fake { flex: 1; background: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-pill); padding: 0.55rem 0.85rem; font-size: 0.82rem; color: var(--color-ink-muted); text-decoration: none !important; }
 .social-creator-input-fake:hover { background: var(--color-paper-surface); border-color: var(--color-accent); color: var(--color-ink); }
 
-/* HERO */
+/* Presentación principal */
 .hero-wrapper { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr); gap: 1.25rem; align-items: start; padding: 0.25rem 0; }
 .hero-content { display: flex; flex-direction: column; }
 .hero-kicker { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.35rem; }
@@ -136,7 +131,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .featured-lot-footer { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
 .featured-lot-location { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.78rem; color: var(--color-ink-muted); }
 
-/* SECCIONES DE CONTENIDO */
+/* Secciones de contenido */
 .content-section { padding: 1.5rem; border-radius: var(--radius-lg); background-color: var(--color-paper-surface); border: 1px solid var(--color-rule); border-top: 4px solid var(--color-section-divider); box-shadow: var(--shadow-card); width: 100%; }
 .content-section.section-alt { background-color: var(--color-section-bg-alt); border-color: var(--color-section-border-alt); border-top: 4px solid var(--color-section-divider-cyan); }
 .content-section.section-success { border-top: 4px solid var(--color-success); }
@@ -147,7 +142,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .section-kicker { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.2rem; display: block; }
 .section-title { font-size: 1.4rem; font-weight: 800; color: var(--color-ink); }
 
-/* TARJETAS DEL FEED */
+/* Tarjetas de productos */
 .exchange-feed-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
 .marketplace-item-card { background: var(--color-paper-surface); border: 1px solid var(--color-rule); border-radius: var(--radius-md); box-shadow: var(--shadow-hairline); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; transition: border-color var(--dur-fast); }
 .marketplace-item-card:hover { border-color: var(--color-accent); }
@@ -166,7 +161,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .lot-specs-text { font-size: 0.74rem; color: var(--color-ink-muted); font-family: var(--font-mono); margin-bottom: 0.65rem; line-height: 1.4; }
 .social-card-actions { display: flex; gap: 0.45rem; }
 
-/* GRILLAS COMUNES */
+/* Columnas y cuadrículas */
 .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.85rem; }
 .grid-4, .polymer-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.85rem; }
@@ -189,7 +184,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .contact-card-link { font-weight: 700; font-family: var(--font-mono); font-size: 0.82rem; }
 .contact-card-sub { font-size: 0.82rem; font-weight: 600; }
 
-/* RIEL DERECHO */
+/* Panel lateral derecho */
 .marketplace-social-rail { position: sticky; top: 4.5rem; z-index: var(--z-sticky, 100); display: flex; flex-direction: column; gap: 0.85rem; max-height: calc(100vh - 5.5rem); overflow-y: auto; }
 .social-widget-card { background: var(--color-paper-surface); border: 1px solid var(--color-rule); border-radius: var(--radius-md); padding: 0.85rem; box-shadow: var(--shadow-hairline); display: flex; flex-direction: column; gap: 0.55rem; }
 .social-widget-title { font-size: 0.85rem; font-weight: 800; display: flex; align-items: center; gap: 0.35rem; }
@@ -206,7 +201,7 @@ a:hover { color: var(--color-accent-hover); text-decoration: underline; }
 .company-mini-item { display: flex; align-items: center; justify-content: space-between; font-size: 0.76rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--color-rule-subtle); }
 .company-mini-sub { font-size: 0.68rem; color: var(--color-ink-muted); }
 
-/* RESPONSIVE */
+/* Diseño responsivo para pantallas pequeñas */
 @media (max-width: 1200px) {
   .marketplace-layout { grid-template-columns: 220px minmax(0, 1fr); }
   .marketplace-social-rail { grid-column: 1 / -1; position: static; max-height: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.85rem; }

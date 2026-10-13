@@ -1,6 +1,6 @@
 <?= view('templates/header', ['pageTitle' => $pageTitle ?? 'Inventario de Polímeros']) ?>
 
-<!-- Migas de Pan (WCAG Breadcrumbs) -->
+<!-- Migas de pan -->
 <nav aria-label="Migas de pan" class="breadcrumb">
   <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
   <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
@@ -21,7 +21,7 @@
   </div>
 </div>
 
-<!-- Barra de Filtros y Búsqueda (GET nativo) -->
+<!-- Buscador y filtros -->
 <div class="card" style="margin-bottom: 1.5rem;">
   <div class="card-body" style="padding: 1rem 1.25rem;">
     <form action="<?= site_url('productos') ?>" method="GET" style="display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap;">
@@ -60,7 +60,7 @@
   </div>
 </div>
 
-<!-- Tabla del Módulo Funcional (CRUD) -->
+<!-- Listado de productos -->
 <div class="card">
   <div class="table-responsive">
     <table class="table">

@@ -3,16 +3,11 @@
 use CodeIgniter\Boot;
 use Config\Paths;
 
-/*
- *---------------------------------------------------------------
- * CHECK PHP VERSION
- *---------------------------------------------------------------
- */
-
-$minPhpVersion = '8.2'; // If you update this, don't forget to update `spark`.
+// Verificar versión de PHP
+$minPhpVersion = '8.2';
 if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
     $message = sprintf(
-        'Your PHP version must be %s or higher to run CodeIgniter. Current version: %s',
+        'Tu versión de PHP debe ser %s o superior para ejecutar CodeIgniter. Versión actual: %s',
         $minPhpVersion,
         PHP_VERSION,
     );
@@ -23,37 +18,20 @@ if (version_compare(PHP_VERSION, $minPhpVersion, '<')) {
     exit(1);
 }
 
-/*
- *---------------------------------------------------------------
- * SET THE CURRENT DIRECTORY
- *---------------------------------------------------------------
- */
-
-// Path to the front controller (this file)
+// Ruta al controlador frontal
 define('FCPATH', __DIR__ . DIRECTORY_SEPARATOR);
 
-// Ensure the current directory is pointing to the front controller's directory
+// Asegurar que el directorio de trabajo apunte a esta carpeta
 if (getcwd() . DIRECTORY_SEPARATOR !== FCPATH) {
     chdir(FCPATH);
 }
 
-/*
- *---------------------------------------------------------------
- * BOOTSTRAP THE APPLICATION
- *---------------------------------------------------------------
- * This process sets up the path constants, loads and registers
- * our autoloader, along with Composer's, loads our constants
- * and fires up an environment-specific bootstrapping.
- */
-
-// LOAD OUR PATHS CONFIG FILE
-// This is the line that might need to be changed, depending on your folder structure.
+// Cargar archivo de configuración de rutas
 require FCPATH . '../app/Config/Paths.php';
-// ^^^ Change this line if you move your application folder
 
 $paths = new Paths();
 
-// LOAD THE FRAMEWORK BOOTSTRAP FILE
+// Iniciar el framework
 require $paths->systemDirectory . '/Boot.php';
 
 exit(Boot::bootWeb($paths));

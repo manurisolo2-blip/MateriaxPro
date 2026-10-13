@@ -1,6 +1,6 @@
   </main>
 
-  <!-- Pie de Página Institucional -->
+  <!-- Pie de página -->
   <footer class="site-footer" role="contentinfo">
     <div class="footer-container">
       <div>
