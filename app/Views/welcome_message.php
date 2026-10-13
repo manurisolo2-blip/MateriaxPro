@@ -1,69 +1,65 @@
-<?= view('templates/header', ['pageTitle' => 'MateriaX Pro | Marketplace B2B de Sobras de Polímeros & Rotomoldeo']) ?>
+<?= view('templates/header', ['pageTitle' => 'MateriaX Pro | Mercado de Polímeros & Rotomoldeo']) ?>
 <?php
   $isAuth = (bool) session()->get('isLoggedIn');
   $linkAcceso = site_url($isAuth ? 'productos' : 'register');
 
   $lotesFeed = [
     [
-      'codigo' => '#FIL-108', 'tipo' => 'Filamento 3D', 'badge_cls' => 'badge-polimero-3d',
+      'codigo' => '#FIL-108', 'tipo' => 'Filamento 3D',
       'titulo' => 'Sobras de Filamento PETG & Fibra de Carbono',
-      'desc' => 'Lote de bobinas técnicas de 1.75mm remanentes de prototipado automotriz. Tolerancia ±0.02mm, secadas en horno al vacío.',
+      'desc' => 'Bobinas técnicas de 1.75mm remanentes de prototipado. Tolerancia ±0.02mm, secadas en horno al vacío.',
       'kilos' => '340 kg', 'precio' => '$1.850 / kg', 'empresa' => 'Lab Aditivo Córdoba S.A.S.', 'avatar' => '3D',
       'tiempo' => 'Hace 3 horas', 'origen' => 'Córdoba Capital',
-      'specs' => ['PETG + Carbono', 'Diámetro 1.75mm', 'Tolerancia ±0.02mm', 'Secado Horno Vacío'],
-      'interes' => '24 empresas consultaron · 5 ofertas registradas',
+      'specs' => 'PETG + Carbono · 1.75mm · Tolerancia ±0.02mm · Secado al Vacío',
     ],
     [
-      'codigo' => '#ROT-204', 'tipo' => 'Rotomoldeo', 'badge_cls' => 'badge-polimero-rotomoldeo',
+      'codigo' => '#ROT-204', 'tipo' => 'Rotomoldeo',
       'titulo' => 'Polietileno Micronizado PEAD (35 Mesh)',
-      'desc' => 'Polvo micronizado virgen sobrante de tolva para tanques huecos. Densidad 0.938 g/cm³, aditivado con protector UV8.',
+      'desc' => 'Polvo micronizado virgen sobrante de tolva para tanques. Densidad 0.938 g/cm³, aditivado con protector UV8.',
       'kilos' => '4.200 kg', 'precio' => '$450 / kg', 'empresa' => 'Rotomoldeo del Centro S.A.', 'avatar' => 'PE',
       'tiempo' => 'Hace 5 horas', 'origen' => 'Río Tercero, Cba',
-      'specs' => ['PEAD Virgen', '35 Mesh (425μm)', 'MFI: 4.2 g/10min', 'Protector UV8'],
-      'interes' => '42 empresas consultaron · 8 ofertas registradas',
+      'specs' => 'PEAD Virgen · 35 Mesh (425μm) · MFI: 4.2 g/10min · Filtro UV8',
     ],
     [
-      'codigo' => '#MOD-019', 'tipo' => 'Modelos 3D & Matrices', 'badge_cls' => 'badge-polimero-default',
-      'titulo' => 'Matrices de Aluminio & Archivos CAD Rotomoldeo',
+      'codigo' => '#MOD-019', 'tipo' => 'Matrices & CAD',
+      'titulo' => 'Matrices de Aluminio & Planos CAD Rotomoldeo',
       'desc' => 'Dos matrices maquinadas para piezas utilitarias en rotomoldeo y biblioteca de planos técnicos STEP/STL asociados.',
       'kilos' => '2 Unidades', 'precio' => 'Consultar Lote', 'empresa' => 'Matricería San Martín Industrial', 'avatar' => 'AL',
-      'tiempo' => 'Ayer a las 17:30', 'origen' => 'San Martín, Bs As',
-      'specs' => ['Aluminio Maquinado', 'Archivos STEP/STL', 'Matrices Utilitarias', 'Tolerancia ±0.1mm'],
-      'interes' => '19 empresas consultaron · 3 ofertas registradas',
+      'tiempo' => 'Ayer', 'origen' => 'San Martín, Bs As',
+      'specs' => 'Aluminio Maquinado · Archivos STEP/STL · Tolerancia ±0.1mm',
     ],
     [
-      'codigo' => '#FIL-092', 'tipo' => 'Filamento 3D', 'badge_cls' => 'badge-polimero-3d',
+      'codigo' => '#FIL-092', 'tipo' => 'Filamento 3D',
       'titulo' => 'Scrap Molido PLA+ & ABS Técnico',
-      'desc' => 'Descartes limpios de estructuras de soporte y purgas industriales clasificados por color para peletizado directo.',
+      'desc' => 'Descartes limpios clasificados por color para peletizado directo, libres de metales.',
       'kilos' => '850 kg', 'precio' => '$620 / kg', 'empresa' => 'Transformadora Rosario Plásticos', 'avatar' => 'TR',
-      'tiempo' => 'Ayer a las 14:10', 'origen' => 'Rosario, Santa Fe',
-      'specs' => ['PLA+ & ABS Limpio', 'Descarte Seleccionado', 'Apto Peletizado', 'Sin Metales'],
-      'interes' => '31 empresas consultaron · 6 ofertas registradas',
+      'tiempo' => 'Ayer', 'origen' => 'Rosario, Santa Fe',
+      'specs' => 'PLA+ & ABS Limpio · Apto Peletizado · Sin Metales',
     ],
   ];
 
   $categorias = [
-    ['badge' => 'Rotomoldeo', 'cls' => 'badge-polimero-rotomoldeo', 'title' => 'Polvos Micronizados PEAD / PEBD', 'desc' => 'Sobrantes de tolva, mezclas de pigmentación y polietilenos micronizados a 35-50 mesh listos para moldeo rotacional.', 'cta' => 'Ver Lotes de Rotomoldeo'],
-    ['badge' => 'Impresión 3D', 'cls' => 'badge-polimero-3d', 'title' => 'Sobras de Bobinas & Scrap Técnico', 'desc' => 'Filamentos técnicos (PETG, PLA+, ABS, Nylon PA12, fibra de carbono) y sobrantes de bobinas de extrusión 3D.', 'cta' => 'Ver Filamentos 3D'],
-    ['badge' => 'Modelos & Matrices', 'cls' => 'badge-polimero-default', 'title' => 'Matrices, Moldes & Archivos CAD', 'desc' => 'Intercambio de matrices de rotomoldeo liberadas, moldes de fundición de aluminio y modelos 3D con tolerancia mecánica.', 'cta' => 'Ver Matrices & Modelos'],
-    ['badge' => 'Inyección & Mermas', 'cls' => 'badge-polimero-pp', 'title' => 'Scrap PP, Granzas & Baldes', 'desc' => 'Recortes de colada, mermas de inyección con índice MFI verificado y pallets plásticos reutilizables para logística.', 'cta' => 'Ver Scrap de Inyección'],
+    ['title' => 'Polvos Micronizados PEAD / PEBD', 'desc' => 'Sobrantes de tolva y polietilenos micronizados a 35-50 mesh para moldeo rotacional.'],
+    ['title' => 'Sobras de Bobinas & Scrap 3D', 'desc' => 'Filamentos técnicos (PETG, PLA+, ABS, Nylon PA12, fibra de carbono) y sobrantes de extrusión.'],
+    ['title' => 'Matrices, Moldes & Archivos CAD', 'desc' => 'Matrices de rotomoldeo liberadas, moldes de fundición de aluminio y archivos 3D técnicos.'],
+    ['title' => 'Scrap PP, Granzas & Mermas', 'desc' => 'Recortes de colada, mermas de inyección con índice MFI verificado y pallets plásticos reutilizables.'],
   ];
 
   $ecosistema = [
-    ['title' => 'Publicación de Sobras', 'desc' => 'Empresas de rotomoldeo y talleres de impresión 3D publican directamente sobrantes de tolva, bobinas abiertas o descartes limpios con ficha técnica verificada.', 'items' => [['Clasificación Técnica:', 'Filtros por mesh, fluidez (MFI), diámetro y tipo de polímero.'], ['Control de Calidad:', 'Declaración jurada de estado de lote y ausencia de metales.'], ['Valorización Rápida:', 'Monetización de inventario inmovilizado en depósitos industriales.']]],
-    ['title' => 'Intercambio & Compra entre Pares', 'desc' => 'Comunidad industrial B2B donde las empresas contactan directamente al generador del material secundario sin comisiones opacas.', 'items' => [['Trato Directo Planta a Planta:', 'Acceso a datos de contacto corporativo y CUIT validado.'], ['Reserva Protegida:', 'Compromiso de volumen con confirmación server-side.'], ['Ahorro en Materia Prima:', 'Reducción drástica del costo respecto a resina virgen o bobinas nuevas.']]],
-    ['title' => 'Auditoría & Trazabilidad', 'desc' => 'Homologación de CUIT ante organismos oficiales para garantizar que cada intercambio ocurra entre empresas jurídicamente verificadas.', 'items' => [['Homologación Fiscal:', 'Control sobre CUIT corporativo y personería activa.'], ['Moderación de Lotes:', 'Revisión técnica antes de publicación abierta en la red.'], ['Métricas de Masa:', 'Monitoreo de kilogramos de plástico reintegrados a producción.']]],
+    ['title' => 'Publicación Directa', 'desc' => 'Las plantas publican excedentes de tolva, bobinas abiertas o descartes limpios con ficha técnica y retiro en planta.'],
+    ['title' => 'Trato Planta a Planta', 'desc' => 'Contacto directo entre empresas sin intermediarios, con CUIT validado y reserva de volumen en el sistema.'],
+    ['title' => 'Trazabilidad y Calidad', 'desc' => 'Homologación formal y control de especificaciones técnicas para garantizar material apto para producción.'],
   ];
 
   $metricas = [
-    ['num' => '24.800 kg', 'lbl' => 'Material Reincorporado', 'sub' => 'Polímeros circulares recirculados'],
-    ['num' => '42', 'lbl' => 'Plantas Homologadas', 'sub' => 'Empresas con CUIT activo en la red'],
-    ['num' => '99.4%', 'lbl' => 'Conformidad Técnica', 'sub' => 'Fichas auditadas según norma'],
-    ['num' => '100%', 'lbl' => 'Trazabilidad Fiscal', 'sub' => 'Operaciones directas entre empresas'],
+    ['num' => '24.800 kg', 'lbl' => 'Material Reincorporado', 'sub' => 'Polímeros recirculados'],
+    ['num' => '42', 'lbl' => 'Plantas Activas', 'sub' => 'Empresas registradas'],
+    ['num' => '99.4%', 'lbl' => 'Conformidad Técnica', 'sub' => 'Fichas auditadas'],
+    ['num' => '100%', 'lbl' => 'Trazabilidad Fiscal', 'sub' => 'Operaciones directas'],
   ];
 
   $contacto = [
-    ['title' => 'Mesa de Operaciones B2B', 'desc' => 'Consultas técnicas y homologación de empresas', 'link' => 'mailto:contacto@materiax.com.ar', 'text' => 'contacto@materiax.com.ar'],
+    ['title' => 'Mesa de Operaciones', 'desc' => 'Consultas técnicas y homologación de empresas', 'link' => 'mailto:contacto@materiax.com.ar', 'text' => 'contacto@materiax.com.ar'],
     ['title' => 'Sede Institucional', 'desc' => 'Instituto Técnico Río Tercero', 'sub' => 'Río Tercero, Córdoba, Argentina'],
     ['title' => 'Horario Operativo', 'desc' => 'Atención a plantas industriales', 'sub' => 'Lunes a Viernes: 08:00 — 17:00 hs'],
   ];
@@ -72,74 +68,61 @@
 <div class="marketplace-layout">
 
   <!-- 1. SIDEBAR LATERAL IZQUIERDO -->
-  <aside class="marketplace-sidebar" aria-label="Navegación y Filtros del Marketplace">
+  <aside class="marketplace-sidebar" aria-label="Navegación y Filtros del Mercado">
     <div>
       <h2 class="marketplace-sidebar-title">
         <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-        <span>Marketplace B2B</span>
+        <span>Mercado Industrial</span>
       </h2>
-      <p style="font-size: 0.8rem; color: var(--color-ink-muted); margin-top: 0.2rem;">Red de intercambio directo entre empresas</p>
+      <p style="font-size: 0.8rem; color: var(--color-ink-muted); margin-top: 0.2rem;">Intercambio directo de polímeros</p>
     </div>
 
     <div class="marketplace-search-box">
       <span class="marketplace-search-icon" aria-hidden="true"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
-      <input type="search" class="marketplace-search-input" placeholder="Buscar sobras de polímeros..." aria-label="Buscar en el marketplace">
+      <input type="search" class="marketplace-search-input" placeholder="Buscar polímeros..." aria-label="Buscar en el mercado">
     </div>
 
     <a href="<?= $isAuth ? site_url('productos/crear') : site_url('register') ?>" class="btn btn-primary btn-block">
-      <?= $isAuth ? '+ Publicar Lote de Material' : '+ Registrar Empresa (Sign Up)' ?>
+      <?= $isAuth ? '+ Publicar Lote' : '+ Registrar Empresa' ?>
     </a>
 
     <nav aria-label="Categorías">
       <ul class="marketplace-sidebar-nav">
         <li>
           <a href="#feed" class="marketplace-nav-link active">
-            <span><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Feed de Publicaciones</span>
-            <span class="badge badge-polimero-default">4</span>
+            <span><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg> Feed de Lotes</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
             <span><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg> Rotomoldeo (PEAD / PEBD)</span>
-            <span style="font-size: 0.72rem; color: var(--color-ink-muted);">Mesh 35</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
             <span><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg> Filamentos 3D & Bobinas</span>
-            <span style="font-size: 0.72rem; color: var(--color-ink-muted);">1.75mm</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
-            <span><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line></svg> Matrices & Modelos CAD</span>
-            <span style="font-size: 0.72rem; color: var(--color-ink-muted);">STEP/STL</span>
+            <span><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line></svg> Matrices & Planos CAD</span>
           </a>
         </li>
         <li>
           <a href="#categorias" class="marketplace-nav-link">
             <span><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Inyección & Mermas PP</span>
-            <span style="font-size: 0.72rem; color: var(--color-ink-muted);">MFI 8-15</span>
           </a>
         </li>
       </ul>
     </nav>
 
     <div class="marketplace-filter-block">
-      <span class="marketplace-filter-label">Ubicación de Retiro</span>
-      <div class="marketplace-pill-badge">
-        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        <span>Río Tercero · Todo el país</span>
-      </div>
-    </div>
-
-    <div class="marketplace-filter-block">
-      <span class="marketplace-filter-label">Comunidad & Soporte</span>
+      <span class="marketplace-filter-label">Secciones</span>
       <ul class="marketplace-sidebar-nav" style="margin-top: 0.2rem;">
-        <li><a href="#ecosistema" class="marketplace-nav-link"><span>Cómo Opera la Red</span></a></li>
-        <li><a href="#metricas" class="marketplace-nav-link"><span>Métricas de la Red</span></a></li>
+        <li><a href="#ecosistema" class="marketplace-nav-link"><span>Cómo Funciona</span></a></li>
+        <li><a href="#metricas" class="marketplace-nav-link"><span>Métricas</span></a></li>
         <li><a href="#entregables" class="marketplace-nav-link"><span>Hito 1 (IT Río Tercero)</span></a></li>
-        <li><a href="#contacto" class="marketplace-nav-link"><span>Mesa de Operaciones</span></a></li>
+        <li><a href="#contacto" class="marketplace-nav-link"><span>Contacto</span></a></li>
       </ul>
     </div>
   </aside>
@@ -147,69 +130,45 @@
   <!-- 2. ÁREA CENTRAL: FEED & CONTENIDO -->
   <div class="marketplace-feed-area">
 
-    <!-- BARRA SUPERIOR DE ACCESOS RÁPIDOS -->
-    <div class="marketplace-top-bar" role="toolbar" aria-label="Filtros rápidos">
-      <div class="marketplace-location-indicator">
-        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" style="color: var(--color-accent);" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        <span>Publicaciones de Hoy</span>
-      </div>
-      <div class="marketplace-chips-container" role="navigation" aria-label="Filtro rápido">
-        <a href="#feed" class="marketplace-chip active">Todo el Feed</a>
-        <a href="#categorias" class="marketplace-chip">Rotomoldeo</a>
-        <a href="#categorias" class="marketplace-chip">Filamentos 3D</a>
-        <a href="#categorias" class="marketplace-chip">Matrices</a>
-        <a href="#categorias" class="marketplace-chip">Scrap Inyección</a>
-        <a href="#metricas" class="marketplace-chip">24.800 kg Valorizados</a>
-      </div>
-    </div>
-
-    <!-- PUBLICADOR RÁPIDO SOCIAL B2B -->
+    <!-- PUBLICADOR RÁPIDO -->
     <div class="social-post-creator" role="region" aria-label="Publicar lote">
       <div class="social-creator-top">
         <div class="social-creator-avatar" aria-hidden="true">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         </div>
         <a href="<?= $linkAcceso ?>" class="social-creator-input-fake">
-          <?= $isAuth ? '¿Qué sobrante de tolva, bobina o matriz deseas circular hoy?...' : '¿Tu empresa genera sobrantes? Registrate para publicar un lote...' ?>
+          <?= $isAuth ? '¿Qué sobrante de material deseas circular hoy?...' : '¿Tu empresa tiene sobrantes? Registrate para publicar...' ?>
         </a>
         <a href="<?= $linkAcceso ?>" class="btn btn-primary btn-sm" style="white-space: nowrap;">
           <?= $isAuth ? '+ Publicar Lote' : '+ Registrarse' ?>
         </a>
       </div>
-      <div class="social-creator-actions">
-        <div class="social-creator-pills">
-          <span class="social-creator-pill-tag"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg> Ficha Técnica Verificada</span>
-          <span class="social-creator-pill-tag"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12M12 3v18M4 7l4 8H0zM20 7l4 8h-8z"></path></svg> Declaración de Kilos</span>
-          <span class="social-creator-pill-tag"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Retiro en Planta</span>
-        </div>
-        <span class="social-creator-direct-badge">✓ Trato Directo sin Comisiones</span>
-      </div>
     </div>
 
-    <!-- HERO WORKBENCH SPOTLIGHT -->
+    <!-- HERO PRINCIPAL -->
     <section class="hero-wrapper" id="inicio" aria-label="Presentación MateriaX Pro">
       <div class="hero-content">
-        <div class="hero-kicker">Red B2B · Rotomoldeo, Filamentos 3D & Matrices</div>
+        <div class="hero-kicker">Rotomoldeo, Filamentos 3D & Matrices</div>
         <h1 class="hero-heading">
           Intercambio directo de <br>
           <span style="color: var(--color-accent);">sobras de polímeros y filamentos</span>
         </h1>
         <p class="hero-desc">
-          Plataforma para plantas de rotomoldeo, talleres 3D e industrias plásticas. Comercializa excedentes de tolva, bobinas técnicas y matrices con trazabilidad fiscal CUIT y trato directo de empresa a empresa.
+          Compra y venta de excedentes de tolva, bobinas de filamento 3D y matrices industriales con trato directo de planta a planta.
         </p>
         <div class="hero-actions">
           <?php if ($isAuth): ?>
-            <a href="<?= site_url('productos') ?>" class="btn btn-primary btn-lg">Explorar Mercado de Lotes &rarr;</a>
+            <a href="<?= site_url('productos') ?>" class="btn btn-primary btn-lg">Explorar Mercado &rarr;</a>
             <a href="<?= site_url('productos/crear') ?>" class="btn btn-secondary btn-lg">Publicar Sobras</a>
           <?php else: ?>
-            <a href="<?= site_url('register') ?>" class="btn btn-primary btn-lg">Registrar Empresa (Sign Up) &rarr;</a>
+            <a href="<?= site_url('register') ?>" class="btn btn-primary btn-lg">Registrar Empresa &rarr;</a>
             <a href="<?= site_url('login') ?>" class="btn btn-secondary btn-lg">Iniciar Sesión</a>
           <?php endif; ?>
         </div>
         <div class="hero-stats-row">
           <div class="hero-stat-card"><span class="hero-stat-num">24.800 kg</span><span class="hero-stat-lbl">Polímero Circulado</span></div>
           <div class="hero-stat-card"><span class="hero-stat-num">42</span><span class="hero-stat-lbl">Plantas Activas</span></div>
-          <div class="hero-stat-card"><span class="hero-stat-num" style="color: var(--color-success);">100%</span><span class="hero-stat-lbl">Trazabilidad B2B</span></div>
+          <div class="hero-stat-card"><span class="hero-stat-num" style="color: var(--color-success);">100%</span><span class="hero-stat-lbl">Trazabilidad</span></div>
         </div>
       </div>
 
@@ -217,11 +176,11 @@
       <aside class="featured-lot-box" aria-label="Lote destacado en vivo">
         <div class="featured-lot-header">
           <span class="featured-lot-meta">Lote #ROT-204</span>
-          <span class="badge badge-success">Auditado</span>
+          <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-success);">Auditado</span>
         </div>
         <h3 class="featured-lot-title">PEAD Micronizado para Rotomoldeo</h3>
         <p class="featured-lot-desc">
-          Sobrante homogéneo de tolva industrial en polvo (35 Mesh). Color negro con aditivación UV8 para moldeo rotacional de tanques y contenedores huecos.
+          Sobrante de tolva en polvo (35 Mesh). Color negro con protector UV8 para moldeo rotacional de tanques.
         </p>
         <div class="spec-grid">
           <div class="spec-item"><span class="spec-label">Volumen Disponible</span><span class="spec-value" style="color: var(--color-accent);">4.200 kg</span></div>
@@ -235,19 +194,19 @@
             Planta Río Tercero, Córdoba
           </span>
           <a href="<?= $linkAcceso ?>" class="btn btn-sm btn-primary">
-            <?= $isAuth ? 'Ver Ficha de Lote &rarr;' : 'Registrarse para Ofertar &rarr;' ?>
+            <?= $isAuth ? 'Ver Lote &rarr;' : 'Ofertar &rarr;' ?>
           </a>
         </div>
       </aside>
     </section>
 
-    <!-- FEED DE PUBLICACIONES DEL MARKETPLACE -->
+    <!-- FEED DE LOTES EN CIRCULACIÓN -->
     <section class="content-section section-alt" id="feed" aria-labelledby="heading-feed">
       <div class="section-divider-bar"></div>
       <div class="section-heading">
-        <span class="section-kicker">Intercambio Directo B2B</span>
-        <h2 class="section-title" id="heading-feed">Feed de Sobras Técnicas & Materiales en Circulación</h2>
-        <p class="section-subtitle">Publicaciones directas de plantas de rotomoldeo, laboratorios 3D y transformadores que circulan sus mermas con ficha técnica.</p>
+        <span class="section-kicker">Mercado en Vivo</span>
+        <h2 class="section-title" id="heading-feed">Lotes Disponibles</h2>
+        <p class="section-subtitle">Excedentes publicados directamente por plantas de rotomoldeo y talleres de fabricación aditiva.</p>
       </div>
       <div class="exchange-feed-grid">
         <?php foreach ($lotesFeed as $f): ?>
@@ -256,24 +215,21 @@
               <div class="marketplace-author-wrap">
                 <span class="marketplace-author-avatar" aria-hidden="true"><?= $f['avatar'] ?></span>
                 <div class="marketplace-author-meta">
-                  <span class="marketplace-author-name">
-                    <?= $f['empresa'] ?>
-                    <span class="marketplace-verified-badge" title="CUIT Homologado">✓ Verificada</span>
-                  </span>
-                  <span class="marketplace-author-time"><?= $f['tiempo'] ?> &middot; <span class="feed-item-location"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <?= $f['origen'] ?></span></span>
+                  <span class="marketplace-author-name"><?= $f['empresa'] ?></span>
+                  <span class="marketplace-author-time"><?= $f['tiempo'] ?> &middot; <?= $f['origen'] ?></span>
                 </div>
               </div>
-              <span class="badge <?= $f['badge_cls'] ?>"><?= $f['tipo'] ?></span>
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-ink-muted); font-family: var(--font-mono);"><?= $f['tipo'] ?></span>
             </header>
 
             <div class="marketplace-card-thumb">
               <div>
-                <span style="font-size: 0.72rem; color: var(--color-ink-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Lote Disponible</span>
+                <span style="font-size: 0.72rem; color: var(--color-ink-muted); font-weight: 700;">DISPONIBLE</span>
                 <div class="marketplace-card-price"><?= $f['kilos'] ?></div>
               </div>
               <div style="text-align: right;">
                 <span class="exchange-meta"><?= $f['codigo'] ?></span>
-                <div style="font-size: 0.82rem; font-weight: 800; color: var(--color-ink); margin-top: 0.15rem;"><?= $f['precio'] ?></div>
+                <div style="font-size: 0.84rem; font-weight: 800; color: var(--color-ink);"><?= $f['precio'] ?></div>
               </div>
             </div>
 
@@ -281,28 +237,17 @@
               <div>
                 <h3 class="exchange-title"><?= $f['titulo'] ?></h3>
                 <p class="exchange-desc"><?= $f['desc'] ?></p>
-                <div class="tech-spec-chips">
-                  <?php foreach ($f['specs'] as $spec): ?>
-                    <span class="tech-chip"><?= $spec ?></span>
-                  <?php endforeach; ?>
-                </div>
+                <div class="lot-specs-text"><?= $f['specs'] ?></div>
               </div>
 
-              <div>
-                <div class="social-card-actions">
-                  <a href="<?= $linkAcceso ?>" class="btn btn-primary btn-sm" style="flex: 1; text-align: center;">
-                    <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                    <?= $isAuth ? 'Contactar Empresa &rarr;' : 'Contactar Vendedor &rarr;' ?>
-                  </a>
-                  <a href="<?= $linkAcceso ?>" class="btn btn-secondary btn-sm" title="Ver ficha técnica">
-                    <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
-                    Ficha
-                  </a>
-                </div>
-                <div class="social-interest-counter">
-                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                  <span><?= $f['interes'] ?></span>
-                </div>
+              <div class="social-card-actions">
+                <a href="<?= $linkAcceso ?>" class="btn btn-primary btn-sm" style="flex: 1; text-align: center;">
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                  <?= $isAuth ? 'Contactar Empresa' : 'Contactar Vendedor' ?>
+                </a>
+                <a href="<?= $linkAcceso ?>" class="btn btn-secondary btn-sm" title="Ver ficha técnica">
+                  Ficha
+                </a>
               </div>
             </div>
           </article>
@@ -314,58 +259,50 @@
     <section class="content-section" id="categorias" aria-labelledby="heading-categorias">
       <div class="section-divider-bar"></div>
       <div class="section-heading">
-        <span class="section-kicker">Materiales Homologados</span>
-        <h2 class="section-title" id="heading-categorias">Familias de Materiales Circulables</h2>
-        <p class="section-subtitle">Polímeros micronizados para rotomoldeo, filamentos técnicos y matrices industriales reutilizables.</p>
+        <span class="section-kicker">Materiales</span>
+        <h2 class="section-title" id="heading-categorias">Familias de Polímeros</h2>
       </div>
       <div class="polymer-grid">
         <?php foreach ($categorias as $cat): ?>
           <div class="polymer-card">
             <div>
-              <span class="polymer-badge <?= $cat['cls'] ?>"><?= $cat['badge'] ?></span>
               <h3 class="polymer-title"><?= $cat['title'] ?></h3>
               <p class="polymer-desc"><?= $cat['desc'] ?></p>
             </div>
             <a href="<?= $linkAcceso ?>" class="btn btn-secondary btn-sm btn-block">
-              <?= $isAuth ? $cat['cta'] . ' &rarr;' : 'Registrar Empresa para Ver &rarr;' ?>
+              <?= $isAuth ? 'Ver Lotes &rarr;' : 'Registrarse para Ver &rarr;' ?>
             </a>
           </div>
         <?php endforeach; ?>
       </div>
     </section>
 
-    <!-- CÓMO OPERA LA RED -->
+    <!-- CÓMO FUNCIONA -->
     <section class="content-section section-alt" id="ecosistema" aria-labelledby="heading-ecosistema">
       <div class="section-divider-bar"></div>
       <div class="section-heading">
-        <span class="section-kicker">Confianza & Verificación</span>
-        <h2 class="section-title" id="heading-ecosistema">Cómo Opera la Red entre Empresas</h2>
-        <p class="section-subtitle">Conexión directa entre industrias con homologación formal de CUIT y contratos técnicos transparentes.</p>
+        <span class="section-kicker">Operación</span>
+        <h2 class="section-title" id="heading-ecosistema">Cómo Funciona la Red</h2>
       </div>
       <div class="grid-3">
         <?php foreach ($ecosistema as $eco): ?>
           <div class="role-card">
-            <div class="role-header"><h3 class="role-title"><?= $eco['title'] ?></h3></div>
+            <h3 class="role-title" style="margin-bottom: 0.4rem;"><?= $eco['title'] ?></h3>
             <p style="font-size: 0.86rem; color: var(--color-ink-2); line-height: 1.5;"><?= $eco['desc'] ?></p>
-            <ul class="role-list">
-              <?php foreach ($eco['items'] as $it): ?>
-                <li><span><strong><?= $it[0] ?></strong> <?= $it[1] ?></span></li>
-              <?php endforeach; ?>
-            </ul>
           </div>
         <?php endforeach; ?>
       </div>
     </section>
 
-    <!-- BANNER DE CONVERSIÓN -->
+    <!-- BANNER DE REGISTRO -->
     <?php if (! $isAuth): ?>
       <div class="signup-banner" role="region" aria-label="Invitación a unirse a la red">
         <div class="signup-banner-content">
-          <h2 class="signup-banner-title">¿Tu empresa genera sobrantes de tolva, bobinas o matrices?</h2>
-          <p class="signup-banner-desc">Suma tu planta a MateriaX Pro. Publica tu material en menos de 2 minutos, recupera valor económico inmovilizado y accede a sobras de filamento técnico de otras empresas.</p>
+          <h2 class="signup-banner-title">¿Tu empresa genera sobrantes de material?</h2>
+          <p class="signup-banner-desc">Publica excedentes de rotomoldeo o filamentos técnicos en 2 minutos y recupera valor económico inmovilizado.</p>
         </div>
         <div>
-          <a href="<?= site_url('register') ?>" class="btn btn-primary btn-lg" style="white-space: nowrap;">Registrar Empresa (Sign Up) &rarr;</a>
+          <a href="<?= site_url('register') ?>" class="btn btn-primary btn-lg" style="white-space: nowrap;">Registrar Empresa &rarr;</a>
         </div>
       </div>
     <?php endif; ?>
@@ -374,9 +311,8 @@
     <section class="content-section section-success" id="metricas" aria-labelledby="heading-metricas">
       <div class="section-divider-bar"></div>
       <div class="section-heading">
-        <span class="section-kicker">Métricas Verificadas</span>
-        <h2 class="section-title" id="heading-metricas">Impacto Acumulado en la Red</h2>
-        <p class="section-subtitle">Registros auditados correspondientes a las transacciones canalizadas a través de la infraestructura MateriaX.</p>
+        <span class="section-kicker">Métricas</span>
+        <h2 class="section-title" id="heading-metricas">Impacto Acumulado</h2>
       </div>
       <div class="grid-4">
         <?php foreach ($metricas as $m): ?>
@@ -394,13 +330,12 @@
       <div class="section-divider-bar"></div>
       <div class="section-heading">
         <span class="section-kicker">Instituto Técnico Río Tercero &middot; 6° B</span>
-        <h2 class="section-title" id="heading-entregables">Resumen de Entregables — Hito 1</h2>
-        <p class="section-subtitle">Arquitectura técnica con base relacional normalizada, interoperabilidad fiscal y cumplimiento del estándar Zero-JavaScript.</p>
+        <h2 class="section-title" id="heading-entregables">Entregables — Hito 1</h2>
       </div>
       <div class="form-row">
         <div>
           <p style="color: var(--color-ink); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem;">1. DER del Sistema:</p>
-          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">Documentado formalmente en <a href="<?= site_url('../docs/DER.md') ?>">docs/DER.md</a> y Draw.io con <a href="<?= site_url('../docs/DER_drawio.xml') ?>">docs/DER_drawio.xml</a>.</p>
+          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">Documentado en <a href="<?= site_url('../docs/DER.md') ?>">docs/DER.md</a> y Draw.io en <a href="<?= site_url('../docs/DER_drawio.xml') ?>">docs/DER_drawio.xml</a>.</p>
         </div>
         <div>
           <p style="color: var(--color-ink); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem;">2. Modelo Relacional:</p>
@@ -412,7 +347,7 @@
         </div>
         <div>
           <p style="color: var(--color-ink); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem;">4. Primer Módulo Funcional (CRUD de Lotes):</p>
-          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">CRUD de entidad secundaria <strong>productos</strong> (lotes de polímeros), con listado protegido y confirmación de borrado server-side.</p>
+          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">CRUD de entidad secundaria <strong>productos</strong> con confirmación de borrado server-side.</p>
         </div>
       </div>
     </section>
@@ -421,9 +356,8 @@
     <section class="content-section section-alt" id="contacto" aria-labelledby="heading-contacto">
       <div class="section-divider-bar"></div>
       <div class="section-heading">
-        <span class="section-kicker">Mesa de Ayuda</span>
-        <h2 class="section-title" id="heading-contacto">Contacto & Soporte Técnico de la Red</h2>
-        <p class="section-subtitle">Coordina homologaciones de planta, verificación técnica de lotes o asistencia para el registro corporativo.</p>
+        <span class="section-kicker">Soporte</span>
+        <h2 class="section-title" id="heading-contacto">Contacto</h2>
       </div>
       <div class="grid-3">
         <?php foreach ($contacto as $c): ?>
@@ -442,15 +376,12 @@
 
   </div> <!-- /marketplace-feed-area -->
 
-  <!-- 3. RIEL DERECHO ESTILO RED SOCIAL B2B -->
+  <!-- 3. RIEL DERECHO: ACTIVIDAD Y DEMANDAS -->
   <aside class="marketplace-social-rail" aria-label="Actividad en vivo y demandas">
     
     <!-- Widget 1: Actividad en Vivo -->
     <div class="social-widget-card">
-      <div class="social-widget-header">
-        <h3 class="social-widget-title"><span class="live-pulse-dot" aria-hidden="true"></span><span>Red en Vivo (B2B)</span></h3>
-        <span class="badge badge-success" style="font-size: 0.65rem;">Tiempo Real</span>
-      </div>
+      <h3 class="social-widget-title"><span class="live-pulse-dot" aria-hidden="true"></span><span>Actividad en Vivo</span></h3>
       <ul class="live-activity-list">
         <li class="live-activity-item">
           <span class="live-pulse-dot" aria-hidden="true"></span>
@@ -466,55 +397,43 @@
         </li>
         <li class="live-activity-item">
           <span class="live-pulse-dot" aria-hidden="true"></span>
-          <div><strong>IT Río Tercero</strong> auditó protocolo de trazabilidad de scrap circular.<div class="social-time-tag">Ayer</div></div>
+          <div><strong>IT Río Tercero</strong> auditó trazabilidad de scrap circular.<div class="social-time-tag">Ayer</div></div>
         </li>
       </ul>
     </div>
 
     <!-- Widget 2: Demandas de Compra -->
     <div class="social-widget-card">
-      <div class="social-widget-header">
-        <h3 class="social-widget-title"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><span>Demandas de Compra</span></h3>
-        <span class="badge badge-polimero-default" style="font-size: 0.68rem;">2 Activas</span>
-      </div>
-      <p style="font-size: 0.78rem; color: var(--color-ink-muted);">Empresas que buscan comprar sobrantes de inmediato:</p>
+      <h3 class="social-widget-title"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><span>Demandas de Compra</span></h3>
       <div class="demand-card">
         <div class="demand-title">Buscan 1.000 kg PEAD Molido</div>
-        <div class="demand-desc">Planta de inyección en San Francisco requiere scrap limpio para paletizado.</div>
+        <div class="demand-desc">San Francisco, Córdoba &middot; Scrap limpio para paletizado.</div>
         <div class="demand-action-row">
-          <span class="demand-location"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> San Francisco, Cba</span>
           <a href="<?= $linkAcceso ?>" class="demand-link">Ofertar &rarr;</a>
         </div>
       </div>
       <div class="demand-card">
         <div class="demand-title">Buscan Bobinas PLA+ / PETG</div>
-        <div class="demand-desc">Taller 3D en Rosario busca sobrantes técnicos de 1.75mm para prototipado continuo.</div>
+        <div class="demand-desc">Rosario, Santa Fe &middot; Bobinas de 1.75mm para prototipado continuo.</div>
         <div class="demand-action-row">
-          <span class="demand-location"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Rosario, Santa Fe</span>
           <a href="<?= $linkAcceso ?>" class="demand-link">Ofertar &rarr;</a>
         </div>
       </div>
-      <a href="<?= $isAuth ? site_url('productos/crear') : site_url('register') ?>" class="btn btn-secondary btn-sm btn-block" style="margin-top: 0.2rem;">+ Publicar Pedido</a>
+      <a href="<?= $isAuth ? site_url('productos/crear') : site_url('register') ?>" class="btn btn-secondary btn-sm btn-block">+ Publicar Pedido</a>
     </div>
 
-    <!-- Widget 3: Empresas Destacadas -->
+    <!-- Widget 3: Empresas Participantes -->
     <div class="social-widget-card">
-      <div class="social-widget-header">
-        <h3 class="social-widget-title"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span>Empresas Destacadas</span></h3>
-        <span class="badge badge-polimero-default" style="font-size: 0.65rem;">42 Totales</span>
-      </div>
+      <h3 class="social-widget-title"><svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg><span>Empresas Registradas</span></h3>
       <div class="company-mini-list">
         <div class="company-mini-item">
-          <div><strong>Rotomoldeo del Centro</strong><div class="company-mini-sub">Polímeros Micronizados · Río Tercero</div></div>
-          <span class="marketplace-verified-badge">✓ CUIT OK</span>
+          <div><strong>Rotomoldeo del Centro</strong><div class="company-mini-sub">Río Tercero, Córdoba</div></div>
         </div>
         <div class="company-mini-item">
-          <div><strong>Lab Aditivo Córdoba</strong><div class="company-mini-sub">Manufactura 3D · Córdoba Cap.</div></div>
-          <span class="marketplace-verified-badge">✓ CUIT OK</span>
+          <div><strong>Lab Aditivo Córdoba</strong><div class="company-mini-sub">Córdoba Capital</div></div>
         </div>
         <div class="company-mini-item">
-          <div><strong>Transformadora Rosario</strong><div class="company-mini-sub">Peletizado & Molienda · Santa Fe</div></div>
-          <span class="marketplace-verified-badge">✓ CUIT OK</span>
+          <div><strong>Transformadora Rosario</strong><div class="company-mini-sub">Rosario, Santa Fe</div></div>
         </div>
       </div>
     </div>
@@ -523,10 +442,10 @@
     <div class="social-widget-card institution-card-compact">
       <div class="institution-head">
         <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" style="color: var(--color-success);" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-        <h4 class="institution-title">Homologación Hito 1</h4>
+        <h4 class="institution-title">Instituto Técnico Río Tercero</h4>
       </div>
       <p class="institution-desc">
-        Proyecto auditado en el <strong>Instituto Técnico Río Tercero</strong> (6° B). Base relacional normalizada y cero dependencias de scripts.
+        Proyecto desarrollado para 6° B. Base de datos relacional normalizada y arquitectura Zero-JavaScript.
       </p>
       <div class="institution-actions">
         <a href="#entregables" class="btn btn-secondary btn-sm institution-btn">Ver Hito 1</a>

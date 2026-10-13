@@ -42,7 +42,7 @@
           <?php endif; ?>
         <?php else: ?>
           <li class="nav-item"><a href="<?= site_url('/') ?>" <?= nav_attr(url_is('/') || url_is('')) ?>>Inicio</a></li>
-          <?php foreach (['feed' => 'Sobras & Feed', 'categorias' => 'Materiales', 'ecosistema' => 'Red B2B', 'metricas' => 'Métricas', 'contacto' => 'Contacto'] as $anchor => $label): ?>
+          <?php foreach (['feed' => 'Mercado', 'categorias' => 'Materiales', 'ecosistema' => 'Cómo Funciona', 'metricas' => 'Métricas', 'contacto' => 'Contacto'] as $anchor => $label): ?>
             <li class="nav-item"><a href="<?= site_url('/#' . $anchor) ?>"><?= $label ?></a></li>
           <?php endforeach; ?>
         <?php endif; ?>
