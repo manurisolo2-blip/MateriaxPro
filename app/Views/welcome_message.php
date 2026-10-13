@@ -73,7 +73,6 @@
       <ul class="marketplace-sidebar-nav">
         <li><a href="#ecosistema" class="marketplace-nav-link">Cómo Funciona</a></li>
         <li><a href="#metricas" class="marketplace-nav-link">Métricas</a></li>
-        <li><a href="#entregables" class="marketplace-nav-link">Hito 1 (IT Río Tercero)</a></li>
         <li><a href="#contacto" class="marketplace-nav-link">Contacto</a></li>
       </ul>
     </div>
@@ -274,33 +273,6 @@
       </div>
     </section>
 
-    <!-- ENTREGABLES HITO 1 -->
-    <section class="content-section" id="entregables" aria-labelledby="heading-entregables">
-      <div class="section-divider-bar"></div>
-      <div class="section-heading">
-        <span class="section-kicker">Instituto Técnico Río Tercero &middot; 6° B</span>
-        <h2 class="section-title" id="heading-entregables">Entregables — Hito 1</h2>
-      </div>
-      <div class="form-row">
-        <div>
-          <p style="color: var(--color-ink); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem;">1. DER del Sistema:</p>
-          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">Documentado en <a href="<?= site_url('../docs/DER.md') ?>">docs/DER.md</a> y Draw.io en <a href="<?= site_url('../docs/DER_drawio.xml') ?>">docs/DER_drawio.xml</a>.</p>
-        </div>
-        <div>
-          <p style="color: var(--color-ink); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem;">2. Modelo Relacional:</p>
-          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">Normalizado en 1FN, 2FN y 3FN en <a href="<?= site_url('../docs/MODELO_RELACIONAL.md') ?>">docs/MODELO_RELACIONAL.md</a> y script en <code>database.sql</code>.</p>
-        </div>
-        <div>
-          <p style="color: var(--color-ink); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem;">3. Login y Registro Seguro:</p>
-          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">Autenticación MVC con sesiones CodeIgniter 4 y hash seguro <code>password_hash()</code>.</p>
-        </div>
-        <div>
-          <p style="color: var(--color-ink); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.15rem;">4. Primer Módulo Funcional (CRUD de Lotes):</p>
-          <p style="font-size: 0.84rem; color: var(--color-ink-2); line-height: 1.45;">CRUD de entidad secundaria <strong>productos</strong> con confirmación de borrado server-side.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- CONTACTO INSTITUCIONAL -->
     <section class="content-section section-alt" id="contacto" aria-labelledby="heading-contacto">
       <div class="section-divider-bar"></div>
@@ -380,7 +352,6 @@
       </div>
       <p class="institution-desc">Proyecto desarrollado para 6° B. Base de datos normalizada y arquitectura Zero-JavaScript.</p>
       <div class="institution-actions">
-        <a href="#entregables" class="btn btn-secondary btn-sm institution-btn">Ver Hito 1</a>
         <a href="<?= site_url('../docs/DER.md') ?>" class="btn btn-secondary btn-sm institution-btn">docs/DER.md</a>
       </div>
     </div>

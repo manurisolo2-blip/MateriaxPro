@@ -14,11 +14,12 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
     public function testCriticalSectionsExist(): void
     {
         $html = view('welcome_message');
-        $sections = ['id="inicio"', 'id="feed"', 'id="categorias"', 'id="ecosistema"', 'id="metricas"', 'id="entregables"', 'id="contacto"'];
+        $sections = ['id="inicio"', 'id="feed"', 'id="categorias"', 'id="ecosistema"', 'id="metricas"', 'id="contacto"'];
 
         foreach ($sections as $sec) {
             $this->assertStringContainsString($sec, $html, "Falta la sección {$sec} en la página.");
         }
+        $this->assertStringNotContainsString('id="entregables"', $html, 'La sección entregables no debe estar presente.');
     }
 
     public function testPolymerLotsAndMetricsExist(): void
@@ -45,7 +46,6 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
         $html = view('welcome_message');
         $this->assertStringContainsString('Instituto Técnico Río Tercero', $html);
         $this->assertStringContainsString('docs/DER.md', $html);
-        $this->assertStringContainsString('docs/MODELO_RELACIONAL.md', $html);
     }
 
     public function testNoB2BMentionsInRenderedHtml(): void
