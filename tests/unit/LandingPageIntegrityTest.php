@@ -39,6 +39,7 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
         foreach ($expectedTokens as $token) {
             $this->assertStringContainsString($token, $html, "Falta el dato de polímero/métrica '{$token}'");
         }
+        $this->assertStringNotContainsString('hero-stats-row', $html, 'Las tarjetas de métricas del hero deben ser removidas.');
     }
 
     public function testInstitutionalContentAndLinksExist(): void
