@@ -45,7 +45,7 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
     {
         $html = view('welcome_message');
         $this->assertStringContainsString('Instituto Técnico Río Tercero', $html);
-        $this->assertStringContainsString('docs/DER.md', $html);
+        $this->assertStringNotContainsString('institution-card-compact', $html, 'El widget institucional redundante no debe estar presente.');
     }
 
     public function testNoB2BMentionsInRenderedHtml(): void

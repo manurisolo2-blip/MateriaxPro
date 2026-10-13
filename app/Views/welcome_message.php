@@ -345,16 +345,6 @@
       </div>
     </div>
 
-    <div class="social-widget-card institution-card-compact">
-      <div class="institution-head">
-        <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" style="color: var(--color-success);" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-        <h4 class="institution-title">Instituto Técnico Río Tercero</h4>
-      </div>
-      <p class="institution-desc">Proyecto desarrollado para 6° B. Base de datos normalizada y arquitectura Zero-JavaScript.</p>
-      <div class="institution-actions">
-        <a href="<?= site_url('../docs/DER.md') ?>" class="btn btn-secondary btn-sm institution-btn">docs/DER.md</a>
-      </div>
-    </div>
   </aside>
 
 </div> <!-- /marketplace-layout -->
