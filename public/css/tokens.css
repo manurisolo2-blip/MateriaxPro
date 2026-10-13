@@ -20,7 +20,7 @@
   --color-focus: oklch(52% 0.14 188);
 
   /* --- RITMO DE SECCIONES & DIVISORES DE COLOR --- */
-  --container-max-width: 1560px;
+  --container-max-width: 100%;
   --color-section-divider: oklch(51.8% 0.112 188.4);
   --color-section-divider-cyan: oklch(56% 0.13 220);
   --color-section-bg-alt: color-mix(in oklch, var(--color-accent) 4.5%, var(--color-paper-2));
