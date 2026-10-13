@@ -14,15 +14,17 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
     public function testCriticalSectionsExist(): void
     {
         $html = view('welcome_message');
-        $sections = ['id="inicio"', 'id="feed"', 'id="categorias"', 'id="ecosistema"', 'id="metricas"', 'id="contacto"'];
+        $sections = ['id="inicio"', 'id="feed"', 'id="categorias"', 'id="ecosistema"', 'id="contacto"'];
 
         foreach ($sections as $sec) {
             $this->assertStringContainsString($sec, $html, "Falta la sección {$sec} en la página.");
         }
+        $this->assertStringNotContainsString('id="metricas"', $html, 'La sección métricas no debe estar presente.');
+        $this->assertStringNotContainsString('Impacto Acumulado', $html, 'El bloque Impacto Acumulado no debe estar presente.');
         $this->assertStringNotContainsString('id="entregables"', $html, 'La sección entregables no debe estar presente.');
     }
 
-    public function testPolymerLotsAndMetricsExist(): void
+    public function testPolymerLotsExistAndMetricsRemoved(): void
     {
         $html = view('welcome_message');
         $expectedTokens = [
@@ -30,15 +32,14 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
             '#ROT-204',
             '#MOD-019',
             '#FIL-092',
-            '24.800 kg',
-            '42',
             'PEAD',
             'PETG',
         ];
 
         foreach ($expectedTokens as $token) {
-            $this->assertStringContainsString($token, $html, "Falta el dato de polímero/métrica '{$token}'");
+            $this->assertStringContainsString($token, $html, "Falta el dato de polímero '{$token}'");
         }
+        $this->assertStringNotContainsString('24.800 kg', $html, 'El valor de métrica 24.800 kg debe ser removido.');
         $this->assertStringNotContainsString('hero-stats-row', $html, 'Las tarjetas de métricas del hero deben ser removidas.');
     }
 

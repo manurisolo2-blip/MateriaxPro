@@ -23,12 +23,6 @@
     ['tit' => 'Trazabilidad y Calidad', 'desc' => 'Homologación formal y control de especificaciones técnicas para garantizar material apto para producción.'],
   ];
 
-  $metricas = [
-    ['num' => '24.800 kg', 'lbl' => 'Material Reincorporado', 'sub' => 'Polímeros recirculados'],
-    ['num' => '42', 'lbl' => 'Plantas Activas', 'sub' => 'Empresas registradas'],
-    ['num' => '99.4%', 'lbl' => 'Conformidad Técnica', 'sub' => 'Fichas auditadas'],
-    ['num' => '100%', 'lbl' => 'Trazabilidad Fiscal', 'sub' => 'Operaciones directas'],
-  ];
 
   $contacto = [
     ['tit' => 'Mesa de Operaciones', 'desc' => 'Consultas técnicas y homologación de empresas', 'link' => 'mailto:contacto@materiax.com.ar', 'txt' => 'contacto@materiax.com.ar'],
@@ -72,7 +66,6 @@
       <span class="marketplace-filter-label">Secciones</span>
       <ul class="marketplace-sidebar-nav">
         <li><a href="#ecosistema" class="marketplace-nav-link">Cómo Funciona</a></li>
-        <li><a href="#metricas" class="marketplace-nav-link">Métricas</a></li>
         <li><a href="#contacto" class="marketplace-nav-link">Contacto</a></li>
       </ul>
     </div>
@@ -251,23 +244,6 @@
       </div>
     <?php endif; ?>
 
-    <!-- MÉTRICAS DE IMPACTO -->
-    <section class="content-section section-success" id="metricas" aria-labelledby="heading-metricas">
-      <div class="section-divider-bar"></div>
-      <div class="section-heading">
-        <span class="section-kicker">Métricas</span>
-        <h2 class="section-title" id="heading-metricas">Impacto Acumulado</h2>
-      </div>
-      <div class="grid-4">
-        <?php foreach ($metricas as $m): ?>
-          <div class="impact-card">
-            <div class="impact-num"><?= $m['num'] ?></div>
-            <div class="impact-label"><?= $m['lbl'] ?></div>
-            <div class="impact-sub"><?= $m['sub'] ?></div>
-          </div>
-        <?php endforeach; ?>
-      </div>
-    </section>
 
     <!-- CONTACTO INSTITUCIONAL -->
     <section class="content-section section-alt" id="contacto" aria-labelledby="heading-contacto">
