@@ -204,10 +204,22 @@ class App extends BaseConfig
     {
         parent::__construct();
 
-        // En Vercel o entornos cloud sin .env fijo, autodetectar el dominio
-        if (getenv('VERCEL') && isset($_SERVER['HTTP_HOST'])) {
-            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https://' : 'http://';
-            $this->baseURL = $protocol . $_SERVER['HTTP_HOST'] . '/';
+        // Autodetección dinámica de baseURL en entornos locales (XAMPP / subcarpetas) y cloud (Vercel)
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+            $protocol = $isHttps ? 'https://' : 'http://';
+            $host     = $_SERVER['HTTP_HOST'];
+
+            if (getenv('VERCEL') || str_contains($host, ':8080')) {
+                $this->baseURL = $protocol . $host . '/';
+            } else {
+                // En XAMPP (Apache en subcarpeta):
+                $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+                $subfolder = preg_replace('#/public$#', '', $scriptDir);
+                $subfolder = trim($subfolder, '/');
+                $this->baseURL = $protocol . $host . ($subfolder !== '' ? '/' . $subfolder : '') . '/';
+            }
         }
     }
 }

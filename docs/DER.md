@@ -12,30 +12,52 @@
 
 El objetivo es impulsar la **economía circular**: que el residuo o sobrante de una fábrica se convierta en la materia prima de otra, evitando que termine en basurales y reduciendo costos industriales.
 
+
+> [!TIP]
+> **Archivo para Draw.io:**  
+> Puedes abrir directamente [**`der.drawio`**](file:///c:/xampp/htdocs/MateriaX-main/der.drawio) o [**`docs/DER_drawio.xml`**](file:///c:/xampp/htdocs/MateriaX-main/docs/DER_drawio.xml) en [app.diagrams.net](https://app.diagrams.net) o en la extensión de Draw.io en VS Code. Contiene el DER completo de 4 entidades y el modelo relacional, todo en blanco y negro, sin colores, sin negrita y sin tipos de datos.
+
 ---
 
-## 2. Entidades del Sistema
+## 2. Entidades del Sistema (Basado en el Modelo Relacional)
 
-El modelo conceptual del proyecto se basa en dos entidades principales bien diferenciadas:
+El modelo conceptual del sistema contiene **4 entidades principales** que cubren todo el circuito de la plataforma:
 
 ```
-┌───────────────────────────────┐           (1,N)           ┌───────────────────────────────┐
-│            USUARIO            │ ◄───────────────────────► │           PRODUCTO            │
-│      (Empresa Registrada)     │          PUBLICA          │      (Lote de Polímero)       │
-└───────────────────────────────┘                           └───────────────────────────────┘
+┌─────────────────┐       (0,N)       ┌─────────────────┐       (1,1)       ┌─────────────────┐
+│     USUARIO     │ ◄───────────────► │     PUBLICA     │ ◄───────────────► │    PRODUCTO     │
+└────────┬────────┘                   └─────────────────┘                   └────────▲────────┘
+         │                                                                           │
+         │ (0,N)                                                               (0,N) │
+         ▼                                                                           ▼
+┌─────────────────┐                                                         ┌─────────────────┐
+│    SOLICITA     │                                                         │    CLASIFICA    │
+└────────┬────────┘                                                         └────────▲────────┘
+         │                                                                           │
+         │ (1,1)                                                               (1,1) │
+         ▼                                                                           ▼
+┌─────────────────┐                   ┌─────────────────┐                   ┌─────────────────┐
+│    SOLICITUD    │ ◄───────────────► │     GENERA      │ ◄───────────────► │ CATEGORIA_POL.  │
+└─────────────────┘       (1,1)       └─────────────────┘       (0,N)       └─────────────────┘
 ```
 
-### A. Entidad `USUARIO` (Empresas Participantes)
-Representa a las empresas, fábricas y recicladoras registradas en la plataforma.
-* **Tipo:** Entidad Regular (Fuerte), porque existe por sí misma en el sistema.
-* **Identificador Único (PK):** `id` (número asignado automáticamente a cada empresa).
-* **Identificador Alternativo (UK):** `email` (correo de acceso único para cada cuenta).
+### A. Entidad `USUARIO` (Empresas Oferentes y Compradoras)
+* **Identificador (PK):** `id`
+* **Atributos:** `nombre`, `email`, `password`, `cuit`, `telefono`, `rubro`, `direccion`, `ciudad`, `provincia`, `rol`, `estado`.
 
-### B. Entidad `PRODUCTO` (Lotes de Materiales)
-Representa los lotes físicos de polímeros que las empresas publican para vender o transferir.
-* **Tipo:** Entidad Débil por Existencia, porque un lote de material no puede existir en la plataforma sin una empresa titular responsable que lo publique (`user_id`).
-* **Identificador Único (PK):** `id` (número asignado a cada lote).
-* **Clave Foránea (FK):** `user_id` (hace referencia a la empresa dueña del lote).
+### B. Entidad `CATEGORIA_POLIMERO` (Catálogo Técnico de Resinas SPI)
+* **Identificador (PK):** `id`
+* **Atributos:** `sigla`, `nombre_tecnico`, `codigo_spi`, `reciclabilidad`, `descripcion`.
+
+### C. Entidad `PRODUCTO` (Lotes de Polímeros Publicados)
+* **Identificador (PK):** `id`
+* **Atributos:** `nombre`, `tipo_polimero`, `cantidad_kg`, `precio_unitario`, `ubicacion`, `descripcion`, `estado`.
+* *Relaciones:* Se vincula con `USUARIO` (a través de `PUBLICA`) y con `CATEGORIA_POLIMERO` (a través de `CLASIFICA`).
+
+### D. Entidad `SOLICITUD` (Pedidos de Retiro y Transacciones)
+* **Identificador (PK):** `id`
+* **Atributos:** `cantidad_kg`, `precio_total`, `estado`, `fecha`.
+* *Relaciones:* Se vincula con `USUARIO` comprador (a través de `SOLICITA`) y con `PRODUCTO` (a través de `GENERA`).
 
 ---
 

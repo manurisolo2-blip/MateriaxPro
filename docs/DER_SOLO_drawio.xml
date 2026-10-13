@@ -1,144 +1,324 @@
-<mxfile host="app.diagrams.net" modified="2026-10-09T17:35:00.000Z" agent="Antigravity" version="22.0.0" type="device">
-  <diagram id="tab-der-solo" name="DER Conceptual (Chen)">
-    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" background="#0b0f19">
+<mxfile host="app.diagrams.net" modified="2026-10-13T18:25:00.000Z" agent="Antigravity" version="22.0.0" type="device">
+  <!-- ======================================================================= -->
+  <!-- PAGINA 1: DER CONCEPTUAL COMPLETO (4 ENTIDADES - BASADO EN EL MODELO RELACIONAL) -->
+  <!-- ======================================================================= -->
+  <diagram id="tab-der-4" name="1. DER Conceptual (4 Entidades)">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1000" background="#ffffff" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
 
-        <!-- Encabezado Institucional -->
-        <mxCell id="der_header" value="&lt;b style=&quot;font-size: 18px; color: #38bdf8;&quot;&gt;MATERIAX PRO — RED INDUSTRIAL DE REUTILIZACIÓN CIRCULAR&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 13px; color: #94a3b8;&quot;&gt;Diagrama Entidad-Relación Conceptual (DER) · Instituto Técnico Río Tercero · 6° Año B&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#111827;strokeColor=#1e293b;align=center;verticalAlign=middle;" vertex="1" parent="1">
-          <mxGeometry x="350" y="30" width="880" height="60" as="geometry" />
+        <!-- Titulo Simple Sin Negrita -->
+        <mxCell id="der_title" value="MATERIAX — DIAGRAMA ENTIDAD-RELACIÓN (4 ENTIDADES)&#xa;Instituto Técnico Río Tercero · 6° B" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#000000;fontSize=14;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="435" y="25" width="880" height="40" as="geometry" />
         </mxCell>
 
-        <!-- ================= ENTIDAD 1: USUARIO ================= -->
-        <mxCell id="ent_user" value="&lt;b style=&quot;font-size: 15px;&quot;&gt;USUARIO&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 11px; color: #93c5fd;&quot;&gt;(Empresa Registrada)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#3b82f6;strokeWidth=2;fontColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry x="220" y="300" width="190" height="70" as="geometry" />
+        <!-- ================================================================= -->
+        <!-- ENTIDAD 1: USUARIO                                               -->
+        <!-- ================================================================= -->
+        <mxCell id="ent_u" value="USUARIO" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=13;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="330" width="160" height="50" as="geometry" />
         </mxCell>
 
         <!-- Atributos USUARIO -->
-        <mxCell id="att_u1" value="&lt;u&gt;&lt;b&gt;id (PK)&lt;/b&gt;&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e3a8a;strokeColor=#60a5fa;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="150" width="110" height="38" as="geometry" />
+        <mxCell id="u_att1" value="&lt;u&gt;id (PK)&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_u1" style="endArrow=none;html=1;exitX=0.1;exitY=0;entryX=0.9;entryY=1;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u1"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_u2" value="nombre" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="40" y="200" width="110" height="38" as="geometry" />
+        <mxCell id="e_u_att1" style="endArrow=none;html=1;exitX=0.1;exitY=0;entryX=0.9;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_u2" style="endArrow=none;html=1;exitX=0;exitY=0.15;entryX=1;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u2"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_u3" value="email (UK)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#38bdf8;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="40" y="250" width="110" height="38" as="geometry" />
+        <mxCell id="u_att2" value="nombre" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="160" y="160" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_u3" style="endArrow=none;html=1;exitX=0;exitY=0.4;entryX=1;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u3"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_u4" value="password" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="40" y="300" width="110" height="38" as="geometry" />
+        <mxCell id="e_u_att2" style="endArrow=none;html=1;exitX=0.3;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att2">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_u4" style="endArrow=none;html=1;exitX=0;exitY=0.65;entryX=1;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u4"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_u5" value="cuit" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="40" y="350" width="110" height="38" as="geometry" />
+        <mxCell id="u_att3" value="email" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="160" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_u5" style="endArrow=none;html=1;exitX=0;exitY=0.9;entryX=1;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u5"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_u6" value="telefono" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="40" y="405" width="110" height="38" as="geometry" />
+        <mxCell id="e_u_att3" style="endArrow=none;html=1;exitX=0.6;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att3">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_u6" style="endArrow=none;html=1;exitX=0.1;exitY=1;entryX=0.9;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u6"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_u_rubro" value="rubro" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="100" y="465" width="95" height="38" as="geometry" />
+        <mxCell id="u_att4" value="password" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="215" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_rubro" style="endArrow=none;html=1;exitX=0.25;exitY=1;entryX=0.5;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u_rubro"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_u_ciudad" value="ciudad" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#cbd5e1;" vertex="1" parent="1">
-          <mxGeometry x="205" y="465" width="95" height="38" as="geometry" />
+        <mxCell id="e_u_att4" style="endArrow=none;html=1;exitX=0.15;exitY=0;entryX=0.8;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att4">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_ciudad" style="endArrow=none;html=1;exitX=0.45;exitY=1;entryX=0.5;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u_ciudad"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_u_provincia" value="provincia" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#cbd5e1;" vertex="1" parent="1">
-          <mxGeometry x="310" y="465" width="95" height="38" as="geometry" />
+        <mxCell id="u_att5" value="cuit" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="160" y="215" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_provincia" style="endArrow=none;html=1;exitX=0.7;exitY=1;entryX=0.5;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u_provincia"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_u_dir" value="direccion" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#cbd5e1;" vertex="1" parent="1">
-          <mxGeometry x="415" y="465" width="95" height="38" as="geometry" />
+        <mxCell id="e_u_att5" style="endArrow=none;html=1;exitX=0.4;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att5">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_dir" style="endArrow=none;html=1;exitX=0.9;exitY=1;entryX=0.3;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u_dir"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_u7" value="rol (empresa/admin)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="175" y="150" width="125" height="38" as="geometry" />
+        <mxCell id="u_att6" value="telefono" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="280" y="215" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_u7" style="endArrow=none;html=1;exitX=0.35;exitY=0;entryX=0.5;entryY=1;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u7"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_u_estado" value="estado" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#34d399;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="310" y="150" width="95" height="38" as="geometry" />
+        <mxCell id="e_u_att6" style="endArrow=none;html=1;exitX=0.7;exitY=0;entryX=0.3;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att6">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_u_estado" style="endArrow=none;html=1;exitX=0.6;exitY=0;entryX=0.5;entryY=1;strokeColor=#64748b;" edge="1" parent="1" source="ent_user" target="att_u_estado"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-
-        <!-- ================= RELACIÓN: PUBLICA ================= -->
-        <mxCell id="rel_publica" value="&lt;b style=&quot;font-size: 13px; color: #ffffff;&quot;&gt;PUBLICA&lt;/b&gt;" style="rhombus;whiteSpace=wrap;html=1;fillColor=#2563eb;strokeColor=#60a5fa;strokeWidth=2;fontColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry x="580" y="305" width="140" height="60" as="geometry" />
+        <mxCell id="u_att7" value="rubro" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="270" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_rel_u" value="&lt;b style=&quot;color: #38bdf8; background-color: #0b0f19;&quot;&gt;(0, N)&lt;/b&gt;" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#38bdf8;strokeWidth=2;" edge="1" parent="1" source="ent_user" target="rel_publica"><mxGeometry relative="1" as="geometry" /></mxCell>
-        <mxCell id="e_rel_p" value="&lt;b style=&quot;color: #38bdf8; background-color: #0b0f19;&quot;&gt;(1, 1)&lt;/b&gt;" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#38bdf8;strokeWidth=2;" edge="1" parent="1" source="rel_publica" target="ent_prod"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_u_att7" style="endArrow=none;html=1;exitX=0;exitY=0.2;entryX=1;entryY=0.5;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
 
+        <mxCell id="u_att8" value="direccion" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="325" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_u_att8" style="endArrow=none;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
 
-        <!-- ================= ENTIDAD 2: PRODUCTO ================= -->
-        <mxCell id="ent_prod" value="&lt;b style=&quot;font-size: 15px;&quot;&gt;PRODUCTO&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;font-size: 11px; color: #a7f3d0;&quot;&gt;(Lote de Polímero)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#064e3b;strokeColor=#10b981;strokeWidth=2;fontColor=#ffffff;" vertex="1" parent="1">
-          <mxGeometry x="880" y="300" width="200" height="70" as="geometry" />
+        <mxCell id="u_att9" value="ciudad" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="380" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_u_att9" style="endArrow=none;html=1;exitX=0;exitY=0.8;entryX=1;entryY=0.5;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att9">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u_att10" value="provincia" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="435" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_u_att10" style="endArrow=none;html=1;exitX=0.1;exitY=1;entryX=0.8;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u_att11" value="rol" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="490" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_u_att11" style="endArrow=none;html=1;exitX=0.2;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="u_att12" value="estado" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="155" y="490" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_u_att12" style="endArrow=none;html=1;exitX=0.35;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_u" target="u_att12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- RELACION 1: PUBLICA (USUARIO - PRODUCTO)                          -->
+        <!-- ================================================================= -->
+        <mxCell id="rel_pub" value="PUBLICA" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="500" y="325" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_u_pub" value="(0, N)" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="ent_u" target="rel_pub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_pub_p" value="(1, 1)" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="rel_pub" target="ent_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- ENTIDAD 2: PRODUCTO                                              -->
+        <!-- ================================================================= -->
+        <mxCell id="ent_p" value="PRODUCTO" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=13;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="740" y="330" width="160" height="50" as="geometry" />
         </mxCell>
 
         <!-- Atributos PRODUCTO -->
-        <mxCell id="att_p1" value="&lt;u&gt;&lt;b&gt;id (PK)&lt;/b&gt;&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#065f46;strokeColor=#34d399;fontColor=#ffffff;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1140" y="150" width="110" height="38" as="geometry" />
+        <mxCell id="p_att1" value="&lt;u&gt;id (PK)&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="160" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_p1" style="endArrow=none;html=1;exitX=0.9;exitY=0;entryX=0;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p1"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_p2" value="nombre" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="200" width="110" height="38" as="geometry" />
+        <mxCell id="e_p_att1" style="endArrow=none;html=1;exitX=0.2;exitY=0;entryX=0.8;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att1">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_p2" style="endArrow=none;html=1;exitX=1;exitY=0.2;entryX=0;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p2"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_p3" value="tipo_polimero" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#60a5fa;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="250" width="115" height="38" as="geometry" />
+        <mxCell id="p_att2" value="nombre" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="160" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_p3" style="endArrow=none;html=1;exitX=1;exitY=0.45;entryX=0;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p3"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_p4" value="cantidad_kg" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="300" width="110" height="38" as="geometry" />
+        <mxCell id="e_p_att2" style="endArrow=none;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att2">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_p4" style="endArrow=none;html=1;exitX=1;exitY=0.7;entryX=0;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p4"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_p5" value="precio_unitario" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#34d399;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="350" width="115" height="38" as="geometry" />
+        <mxCell id="p_att3" value="tipo_polimero" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="900" y="160" width="115" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_p5" style="endArrow=none;html=1;exitX=1;exitY=0.9;entryX=0;entryY=0.5;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p5"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_p_derivado" value="valor_total&lt;br&gt;&lt;span style=&quot;font-size: 10px; color: #a7f3d0;&quot;&gt;(calculado)&lt;/span&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#10b981;strokeWidth=1;dashed=1;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="1150" y="405" width="115" height="42" as="geometry" />
+        <mxCell id="e_p_att3" style="endArrow=none;html=1;exitX=0.8;exitY=0;entryX=0.2;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att3">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_p_derivado" style="endArrow=none;html=1;dashed=1;exitX=0.9;exitY=1;entryX=0;entryY=0.5;strokeColor=#10b981;" edge="1" parent="1" source="ent_prod" target="att_p_derivado"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_p6" value="ubicacion" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f8fafc;" vertex="1" parent="1">
-          <mxGeometry x="1040" y="465" width="100" height="38" as="geometry" />
+        <mxCell id="p_att4" value="cantidad_kg" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="660" y="215" width="105" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_p6" style="endArrow=none;html=1;exitX=0.75;exitY=1;entryX=0.5;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p6"><mxGeometry relative="1" as="geometry" /></mxCell>
-
-        <mxCell id="att_p7" value="descripcion" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#94a3b8;" vertex="1" parent="1">
-          <mxGeometry x="930" y="465" width="100" height="38" as="geometry" />
+        <mxCell id="e_p_att4" style="endArrow=none;html=1;exitX=0.25;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att4">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="e_p7" style="endArrow=none;html=1;exitX=0.45;exitY=1;entryX=0.5;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p7"><mxGeometry relative="1" as="geometry" /></mxCell>
 
-        <mxCell id="att_p8" value="estado" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1e293b;strokeColor=#475569;fontColor=#f59e0b;fontStyle=1;" vertex="1" parent="1">
-          <mxGeometry x="820" y="465" width="100" height="38" as="geometry" />
+        <mxCell id="p_att5" value="precio_unitario" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="780" y="215" width="110" height="34" as="geometry" />
         </mxCell>
-        <mxCell id="e_p8" style="endArrow=none;html=1;exitX=0.15;exitY=1;entryX=0.5;entryY=0;strokeColor=#64748b;" edge="1" parent="1" source="ent_prod" target="att_p8"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e_p_att5" style="endArrow=none;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
 
-        <!-- Cuadro de Notas Explicativas -->
-        <mxCell id="der_legend" value="&lt;b style=&quot;color: #38bdf8; font-size: 13px;&quot;&gt;REGLAS DEL SISTEMA Y CONTROL DE PERMISOS:&lt;/b&gt;&lt;br&gt;&lt;br&gt;• &lt;b style=&quot;color: #ffffff;&quot;&gt;¿Por qué el usuario no puede ser administrador?&lt;/b&gt; Un usuario (logeado o no) solo puede tener permisos comerciales para operar su propia cuenta y sus publicaciones. El rol de Administrador es exclusivo del sistema para auditar empresas y moderar publicaciones.&lt;br&gt;• &lt;b style=&quot;color: #ffffff;&quot;&gt;Cardinalidad (0,N) a (1,1):&lt;/b&gt; Una empresa puede tener 0 o muchas publicaciones en la red. Pero cada publicación pertenece obligatoriamente a una sola empresa titular.&lt;br&gt;• &lt;b style=&quot;color: #ffffff;&quot;&gt;Integridad Referencial (ON DELETE CASCADE):&lt;/b&gt; Si se da de baja una cuenta de empresa, se eliminan sus lotes automáticamente para no dejar publicaciones huérfanas.&lt;br&gt;• &lt;b style=&quot;color: #10b981;&quot;&gt;Atributo Calculado:&lt;/b&gt; valor_total (borde punteado) = cantidad_kg × precio_unitario (se calcula en la vista, no se guarda repetido en la base de datos)." style="rounded=1;whiteSpace=wrap;html=1;fillColor=#111827;strokeColor=#334155;align=left;verticalAlign=top;spacing=12;fontColor=#cbd5e1;fontSize=11;" vertex="1" parent="1">
-          <mxGeometry x="220" y="550" width="860" height="155" as="geometry" />
+        <mxCell id="p_att6" value="ubicacion" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="900" y="215" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p_att6" style="endArrow=none;html=1;exitX=0.75;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p_att7" value="descripcion" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="720" y="270" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p_att7" style="endArrow=none;html=1;exitX=0.4;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="p_att8" value="estado" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="840" y="270" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p_att8" style="endArrow=none;html=1;exitX=0.65;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_p" target="p_att8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- RELACION 2: CLASIFICA (CATEGORIA_POLIMERO - PRODUCTO)             -->
+        <!-- ================================================================= -->
+        <mxCell id="rel_clas" value="CLASIFICA" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="325" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cat_clas" value="(0, N)" style="endArrow=none;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="ent_cat" target="rel_clas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_clas_p" value="(1, 1)" style="endArrow=none;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="rel_clas" target="ent_p">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- ENTIDAD 3: CATEGORIA_POLIMERO                                    -->
+        <!-- ================================================================= -->
+        <mxCell id="ent_cat" value="CATEGORIA_POLIMERO" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=13;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="330" width="190" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Atributos CATEGORIA_POLIMERO -->
+        <mxCell id="c_att1" value="&lt;u&gt;id (PK)&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="170" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c_att1" style="endArrow=none;html=1;exitX=0.2;exitY=0;entryX=0.8;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_cat" target="c_att1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_att2" value="sigla" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1340" y="170" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c_att2" style="endArrow=none;html=1;exitX=0.5;exitY=0;entryX=0.5;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_cat" target="c_att2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_att3" value="nombre_tecnico" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1460" y="170" width="115" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c_att3" style="endArrow=none;html=1;exitX=0.8;exitY=0;entryX=0.2;entryY=1;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_cat" target="c_att3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_att4" value="codigo_spi" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="240" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c_att4" style="endArrow=none;html=1;exitX=1;exitY=0.15;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_cat" target="c_att4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_att5" value="reciclabilidad" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="310" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c_att5" style="endArrow=none;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_cat" target="c_att5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="c_att6" value="descripcion" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1500" y="380" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_c_att6" style="endArrow=none;html=1;exitX=1;exitY=0.85;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_cat" target="c_att6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- RELACION 3: SOLICITA (USUARIO - SOLICITUD)                        -->
+        <!-- ================================================================= -->
+        <mxCell id="rel_sol" value="SOLICITA" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="270" y="490" width="110" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="e_u_sol" value="(0, N)" style="endArrow=none;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="ent_u" target="rel_sol">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_sol_s" value="(1, 1)" style="endArrow=none;html=1;exitX=0.5;exitY=1;entryX=0.2;entryY=0;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="rel_sol" target="ent_s">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- RELACION 4: GENERA (PRODUCTO - SOLICITUD)                         -->
+        <!-- ================================================================= -->
+        <mxCell id="rel_gen" value="GENERA" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="670" y="490" width="110" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="e_p_gen" value="(0, N)" style="endArrow=none;html=1;exitX=0.35;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="ent_p" target="rel_gen">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_gen_s" value="(1, 1)" style="endArrow=none;html=1;exitX=0.5;exitY=1;entryX=0.8;entryY=0;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="1" source="rel_gen" target="ent_s">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- ENTIDAD 4: SOLICITUD                                             -->
+        <!-- ================================================================= -->
+        <mxCell id="ent_s" value="SOLICITUD" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;fontColor=#000000;fontSize=13;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="440" y="610" width="170" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Atributos SOLICITUD -->
+        <mxCell id="s_att1" value="&lt;u&gt;id (PK)&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="260" y="720" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_att1" style="endArrow=none;html=1;exitX=0.15;exitY=1;entryX=0.8;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_s" target="s_att1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s_att2" value="cantidad_kg" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="380" y="720" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_att2" style="endArrow=none;html=1;exitX=0.35;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_s" target="s_att2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s_att3" value="precio_total" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="500" y="720" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_att3" style="endArrow=none;html=1;exitX=0.55;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_s" target="s_att3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s_att4" value="estado" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="620" y="720" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_att4" style="endArrow=none;html=1;exitX=0.75;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_s" target="s_att4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="s_att5" value="fecha" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="740" y="720" width="105" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="e_s_att5" style="endArrow=none;html=1;exitX=0.9;exitY=1;entryX=0.2;entryY=0;strokeColor=#000000;strokeWidth=1;" edge="1" parent="1" source="ent_s" target="s_att5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ================================================================= -->
+        <!-- CUADRO DE NOTAS Y REGLAS DEL SISTEMA                              -->
+        <!-- ================================================================= -->
+        <mxCell id="der_legend" value="REGLAS Y CARDINALIDADES (MODELO COMPLETO — 4 ENTIDADES):&#xa;&#xa;• USUARIO - PRODUCTO (0,N : 1,1): Una empresa oferente puede publicar 0 o muchos lotes. Cada lote pertenece a una sola empresa titular.&#xa;• CATEGORIA_POLIMERO - PRODUCTO (0,N : 1,1): Una categoría clasifica 0 o muchos lotes. Cada lote posee una categoría de resina asignada.&#xa;• USUARIO - SOLICITUD (0,N : 1,1): Un usuario comprador puede emitir 0 o muchas solicitudes. Cada solicitud pertenece a un comprador.&#xa;• PRODUCTO - SOLICITUD (0,N : 1,1): Un lote puede recibir 0 o muchas solicitudes de compra. Cada solicitud refiere a un único lote." style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1;align=left;verticalAlign=top;spacing=12;fontColor=#000000;fontSize=11;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="220" y="800" width="1230" height="110" as="geometry" />
         </mxCell>
 
       </root>

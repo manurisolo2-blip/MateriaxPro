@@ -1,0 +1,248 @@
+<mxfile host="app.diagrams.net" agent="Antigravity" pages="2">
+  <diagram id="tab-mr-simple-4" name="1. Modelo Relacional (4 Tablas)">
+    <mxGraphModel dx="1241" dy="635" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="mr_title" parent="1" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#000000;fontSize=14;fontStyle=0;" value="MATERIAX — MODELO RELACIONAL&#xa;Instituto Técnico Río Tercero · 6° B" vertex="1">
+          <mxGeometry height="40" width="360" x="380" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_u" parent="1" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" value="usuarios" vertex="1">
+          <mxGeometry height="316" width="220" x="60" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r1" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="id (PK)" vertex="1">
+          <mxGeometry height="24" width="220" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r2" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="nombre" vertex="1">
+          <mxGeometry height="24" width="220" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r3" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="email " vertex="1">
+          <mxGeometry height="24" width="220" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r4" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="password" vertex="1">
+          <mxGeometry height="24" width="220" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r5" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="cuit" vertex="1">
+          <mxGeometry height="24" width="220" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r6" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="telefono" vertex="1">
+          <mxGeometry height="24" width="220" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r7" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="rubro" vertex="1">
+          <mxGeometry height="24" width="220" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r8" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="direccion" vertex="1">
+          <mxGeometry height="24" width="220" y="196" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r9" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="ciudad" vertex="1">
+          <mxGeometry height="24" width="220" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r10" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="provincia" vertex="1">
+          <mxGeometry height="24" width="220" y="244" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r11" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="rol" vertex="1">
+          <mxGeometry height="24" width="220" y="268" as="geometry" />
+        </mxCell>
+        <mxCell id="u_r12" parent="tbl_u" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="estado" vertex="1">
+          <mxGeometry height="24" width="220" y="292" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_cat" parent="1" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" value="categorias_polimero" vertex="1">
+          <mxGeometry height="172" width="220" x="780" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="cat_r1" parent="tbl_cat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="id (PK)" vertex="1">
+          <mxGeometry height="24" width="220" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="cat_r2" parent="tbl_cat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="sigla " vertex="1">
+          <mxGeometry height="24" width="220" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="cat_r3" parent="tbl_cat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="nombre_tecnico" vertex="1">
+          <mxGeometry height="24" width="220" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="cat_r4" parent="tbl_cat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="codigo_spi" vertex="1">
+          <mxGeometry height="24" width="220" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="cat_r5" parent="tbl_cat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="reciclabilidad" vertex="1">
+          <mxGeometry height="24" width="220" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="cat_r6" parent="tbl_cat" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="descripcion" vertex="1">
+          <mxGeometry height="24" width="220" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_p" parent="1" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" value="productos" vertex="1">
+          <mxGeometry height="268" width="230" x="420" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r1" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="id (PK)" vertex="1">
+          <mxGeometry height="24" width="230" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r2" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="nombre" vertex="1">
+          <mxGeometry height="24" width="230" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r3" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="tipo_polimero" vertex="1">
+          <mxGeometry height="24" width="230" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r4" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="cantidad_kg" vertex="1">
+          <mxGeometry height="24" width="230" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r5" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="precio_unitario" vertex="1">
+          <mxGeometry height="24" width="230" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r6" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="ubicacion" vertex="1">
+          <mxGeometry height="24" width="230" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r7" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="descripcion" vertex="1">
+          <mxGeometry height="24" width="230" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="p_r8" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="estado" vertex="1">
+          <mxGeometry height="24" width="230" y="196" as="geometry" />
+        </mxCell>
+        <mxCell id="p_fk1" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="user_id (FK)" vertex="1">
+          <mxGeometry height="24" width="230" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="p_fk2" parent="tbl_p" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="categoria_id (FK)" vertex="1">
+          <mxGeometry height="24" width="230" y="244" as="geometry" />
+        </mxCell>
+        <mxCell id="tbl_s" parent="1" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" value="solicitudes" vertex="1">
+          <mxGeometry height="196" width="230" x="420" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="s_r1" parent="tbl_s" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="id (PK)" vertex="1">
+          <mxGeometry height="24" width="230" y="28" as="geometry" />
+        </mxCell>
+        <mxCell id="s_r2" parent="tbl_s" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="cantidad_kg" vertex="1">
+          <mxGeometry height="24" width="230" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="s_r3" parent="tbl_s" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="precio_total" vertex="1">
+          <mxGeometry height="24" width="230" y="76" as="geometry" />
+        </mxCell>
+        <mxCell id="s_r4" parent="tbl_s" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="estado" vertex="1">
+          <mxGeometry height="24" width="230" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="s_r5" parent="tbl_s" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="fecha" vertex="1">
+          <mxGeometry height="24" width="230" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fk1" parent="tbl_s" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="producto_id (FK)" vertex="1">
+          <mxGeometry height="24" width="230" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fk2" parent="tbl_s" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" value="comprador_id (FK)" vertex="1">
+          <mxGeometry height="24" width="230" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_1" edge="1" parent="1" source="u_r1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;startFill=0;endFill=0;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" target="p_fk1" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="350" y="130" />
+              <mxPoint x="350" y="322" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_2" edge="1" parent="1" source="cat_r1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;entryX=1;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;startFill=0;endFill=0;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" target="p_fk2" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="720" y="130" />
+              <mxPoint x="720" y="346" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel_3" edge="1" parent="1" source="tbl_p" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;strokeColor=#000000;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;startFill=0;endFill=0;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" target="tbl_s" value="1 : N">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel_4" edge="1" parent="1" source="tbl_u" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;startFill=0;endFill=0;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" target="s_fk2" value="1 : N">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="604" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="tab-mr-simple-2" name="2. Modelo Basico Hito 1 (2 Tablas)">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#ffffff">
+      <root>
+        <mxCell id="2_0" />
+        <mxCell id="2_1" parent="2_0" />
+        <!-- Título Simple Sin Negrita -->
+        <mxCell id="2_title" value="MATERIAX — MODELO RELACIONAL (HITO 1)&#xa;Instituto Técnico Río Tercero · 6° B" style="text;html=1;align=center;verticalAlign=middle;strokeColor=none;fillColor=none;fontColor=#000000;fontSize=14;fontStyle=0;" vertex="1" parent="2_1">
+          <mxGeometry x="380" y="30" width="360" height="40" as="geometry" />
+        </mxCell>
+        <!-- ================= TABLA: USUARIOS ================= -->
+        <mxCell id="2_tbl_u" value="usuarios" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="2_1">
+          <mxGeometry x="140" y="120" width="230" height="316" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r1" value="id (PK)" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="28" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r2" value="nombre" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="52" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r3" value="email (UK)" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="76" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r4" value="password" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="100" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r5" value="cuit" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="124" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r6" value="telefono" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="148" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r7" value="rubro" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="172" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r8" value="direccion" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="196" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r9" value="ciudad" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="220" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r10" value="provincia" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="244" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r11" value="rol" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="268" width="230" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_u_r12" value="estado" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_u">
+          <mxGeometry y="292" width="230" height="24" as="geometry" />
+        </mxCell>
+        <!-- ================= TABLA: PRODUCTOS (FK AL FINAL) ================= -->
+        <mxCell id="2_tbl_p" value="productos" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=28;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;fillColor=#ffffff;fontColor=#000000;strokeColor=#000000;strokeWidth=1.5;fontSize=13;" vertex="1" parent="2_1">
+          <mxGeometry x="540" y="120" width="240" height="244" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r1" value="id (PK)" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="28" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r3" value="nombre" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="52" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r4" value="tipo_polimero" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="76" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r5" value="cantidad_kg" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="100" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r6" value="precio_unitario" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="124" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r7" value="ubicacion" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="148" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r8" value="descripcion" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="172" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_r9" value="estado" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="196" width="240" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="2_p_fk" value="user_id (FK)" style="text;strokeColor=none;fillColor=#ffffff;align=left;verticalAlign=middle;spacingLeft=10;fontColor=#000000;fontSize=12;fontStyle=0;" vertex="1" parent="2_tbl_p">
+          <mxGeometry y="220" width="240" height="24" as="geometry" />
+        </mxCell>
+        <!-- ================= RELACIÓN: usuarios (1) -> productos (N) ================= -->
+        <mxCell id="2_rel_1" value="1 : N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;entryX=0;entryY=0.5;strokeColor=#000000;strokeWidth=1.5;startArrow=ERone;endArrow=ERmany;startFill=0;endFill=0;fontColor=#000000;labelBackgroundColor=#ffffff;fontSize=11;fontStyle=0;" edge="1" parent="2_1" source="2_u_r1" target="2_p_fk">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="460" y="160" />
+              <mxPoint x="460" y="352" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
