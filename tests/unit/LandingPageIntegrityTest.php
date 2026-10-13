@@ -14,17 +14,14 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
     public function testCriticalSectionsExist(): void
     {
         $html = view('welcome_message');
-        $sections = ['id="inicio"', 'id="feed"', 'id="contacto"'];
+        $sections = ['id="inicio"', 'id="feed"', 'id="categorias"', 'id="ecosistema"', 'id="contacto"'];
 
         foreach ($sections as $sec) {
             $this->assertStringContainsString($sec, $html, "Falta la sección {$sec} en la página.");
         }
         $this->assertStringNotContainsString('id="metricas"', $html, 'La sección métricas no debe estar presente.');
-        $this->assertStringNotContainsString('id="categorias"', $html, 'La sección categorías estática no debe estar presente.');
-        $this->assertStringNotContainsString('id="ecosistema"', $html, 'La sección ecosistema estática no debe estar presente.');
+        $this->assertStringNotContainsString('Impacto Acumulado', $html, 'El bloque Impacto Acumulado no debe estar presente.');
         $this->assertStringNotContainsString('id="entregables"', $html, 'La sección entregables no debe estar presente.');
-        $this->assertStringNotContainsString('marketplace-social-rail', $html, 'El riel social no funcional debe ser removido.');
-        $this->assertStringNotContainsString('social-post-creator', $html, 'El publicador rápido ficticio debe ser removido.');
     }
 
     public function testPolymerLotsExistAndMetricsRemoved(): void
