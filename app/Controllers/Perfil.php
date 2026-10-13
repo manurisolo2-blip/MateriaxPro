@@ -30,9 +30,38 @@ class Perfil extends BaseController
         $user = $this->getAuthUser();
         if ($user instanceof RedirectResponse) return $user;
 
+        $db = \Config\Database::connect();
+        $provincias = [];
+        $localidades = [];
+        try {
+            $provincias = $db->table('provincias')->orderBy('provincia', 'ASC')->get()->getResultArray();
+        } catch (\Throwable $e) {}
+
+        $userProv = old('provincia', $user['provincia'] ?? 'Córdoba');
+        $userCiudad = old('ciudad', $user['ciudad'] ?? 'Río Tercero');
+
+        if (!empty($provincias)) {
+            $provRow = null;
+            foreach ($provincias as $p) {
+                if ($p['provincia'] === $userProv) {
+                    $provRow = $p;
+                    break;
+                }
+            }
+            if ($provRow) {
+                try {
+                    $localidades = $db->table('localidades')->where('id_privincia', (int)$provRow['id'])->orderBy('localidad', 'ASC')->get()->getResultArray();
+                } catch (\Throwable $e) {}
+            }
+        }
+
         return view('perfil/index', [
             'pageTitle'    => 'Mi Cuenta Empresarial | MateriaX',
             'user'         => $user,
+            'provincias'   => $provincias,
+            'localidades'  => $localidades,
+            'userProv'     => $userProv,
+            'userCiudad'   => $userCiudad,
             'misProductos' => $this->productoModel->where('user_id', $user['id'])->orderBy('created_at', 'DESC')->findAll(),
         ]);
     }
@@ -42,12 +71,17 @@ class Perfil extends BaseController
         $user = $this->getAuthUser();
         if ($user instanceof RedirectResponse) return $user;
 
+        $ciudad = trim((string) $this->request->getPost('ciudad'));
+        $ciudadOtra = trim((string) $this->request->getPost('ciudad_otra'));
+        if ($ciudad === '__otra__') {
+            $ciudad = $ciudadOtra;
+        }
+
         $rules = [
             'nombre'    => ['rules' => 'required|min_length[3]|max_length[100]', 'errors' => ['required' => 'La razón social es obligatoria.', 'min_length' => 'El nombre debe tener al menos 3 caracteres.']],
             'cuit'      => ['rules' => 'required|min_length[10]|max_length[20]', 'errors' => ['required' => 'El CUIT es obligatorio.', 'min_length' => 'El CUIT debe tener al menos 10 caracteres.']],
             'telefono'  => ['rules' => 'required|min_length[6]|max_length[30]', 'errors' => ['required' => 'El teléfono de contacto es obligatorio.', 'min_length' => 'El teléfono debe tener al menos 6 caracteres.']],
             'rubro'     => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'El rubro industrial es obligatorio.']],
-            'ciudad'    => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'La ciudad es obligatoria.']],
             'provincia' => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'La provincia es obligatoria.']],
             'direccion' => ['rules' => 'required|max_length[150]', 'errors' => ['required' => 'El domicilio de planta es obligatorio.']],
         ];
@@ -56,8 +90,13 @@ class Perfil extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $fields = ['nombre', 'cuit', 'telefono', 'rubro', 'ciudad', 'provincia', 'direccion'];
+        if (empty($ciudad)) {
+            return redirect()->back()->withInput()->with('errors', ['ciudad' => 'La ciudad o localidad es obligatoria.']);
+        }
+
+        $fields = ['nombre', 'cuit', 'telefono', 'rubro', 'provincia', 'direccion'];
         $data   = array_map(fn($v) => trim((string)$v), $this->request->getPost($fields));
+        $data['ciudad'] = $ciudad;
 
         $this->userModel->update($user['id'], $data);
         session()->set($data);

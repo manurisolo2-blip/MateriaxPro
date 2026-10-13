@@ -124,30 +124,53 @@
 
         <div class="form-row">
           <div class="form-group">
-            <label for="ciudad" class="form-label">Ciudad / Localidad <span class="required-indicator" aria-hidden="true">*</span></label>
-            <input 
-              type="text" 
-              name="ciudad" 
-              id="ciudad" 
-              class="form-control" 
-              value="<?= old('ciudad') ?>" 
-              placeholder="Ej: Río Tercero" 
-              autocomplete="address-level2"
-              required
-            >
-          </div>
-
-          <div class="form-group">
             <label for="provincia" class="form-label">Provincia <span class="required-indicator" aria-hidden="true">*</span></label>
             <select name="provincia" id="provincia" class="form-select" required>
               <option value="">-- Seleccionar Provincia --</option>
               <?php 
-                $provincias = ['Córdoba', 'Buenos Aires', 'Ciudad Autónoma de Buenos Aires', 'Santa Fe', 'Mendoza', 'Entre Ríos', 'Tucumán', 'San Luis', 'Salta', 'Otra Provincia'];
-                foreach ($provincias as $prov): 
+                $selProv = $selectedProvincia ?? old('provincia', 'Córdoba');
+                if (!empty($provincias)): 
+                  foreach ($provincias as $prov): 
+                    $pNombre = is_array($prov) ? $prov['provincia'] : $prov;
+                    $pId = is_array($prov) ? $prov['id'] : '';
               ?>
-                <option value="<?= $prov ?>" <?= (old('provincia', 'Córdoba') === $prov) ? 'selected' : '' ?>><?= $prov ?></option>
-              <?php endforeach; ?>
+                <option value="<?= esc($pNombre) ?>" data-id="<?= esc($pId) ?>" <?= ($selProv === $pNombre) ? 'selected' : '' ?>>
+                  <?= esc($pNombre) ?>
+                </option>
+              <?php 
+                  endforeach; 
+                endif; 
+              ?>
             </select>
+          </div>
+
+          <div class="form-group">
+            <label for="ciudad" class="form-label">Ciudad / Localidad <span class="required-indicator" aria-hidden="true">*</span></label>
+            <?php $selCiudad = $selectedCiudad ?? old('ciudad', 'Río Tercero'); ?>
+            <select name="ciudad" id="ciudad" class="form-select" required>
+              <option value="">-- Seleccionar Localidad --</option>
+              <?php if (!empty($localidades)): ?>
+                <?php foreach ($localidades as $loc): ?>
+                  <?php $locNombre = is_array($loc) ? $loc['localidad'] : $loc; ?>
+                  <option value="<?= esc($locNombre) ?>" <?= ($selCiudad === $locNombre) ? 'selected' : '' ?>>
+                    <?= esc($locNombre) ?>
+                  </option>
+                <?php endforeach; ?>
+              <?php endif; ?>
+              <option value="__otra__" <?= ($selCiudad === '__otra__' || old('ciudad_otra')) ? 'selected' : '' ?>>
+                -- Otra localidad (ingresar manualmente) --
+              </option>
+            </select>
+            <input 
+              type="text" 
+              name="ciudad_otra" 
+              id="ciudad_otra" 
+              class="form-control" 
+              value="<?= esc(old('ciudad_otra')) ?>" 
+              placeholder="Escribe el nombre de tu localidad" 
+              style="<?= ($selCiudad === '__otra__' || old('ciudad_otra')) ? 'margin-top: 0.5rem;' : 'display: none; margin-top: 0.5rem;' ?>"
+            >
+            <p class="form-hint" id="hint-localidades">Selecciona tu localidad del listado oficial o ingresa una manualmente.</p>
           </div>
         </div>
 
@@ -196,5 +219,80 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const selectProvincia = document.getElementById('provincia');
+  const selectCiudad = document.getElementById('ciudad');
+  const inputCiudadOtra = document.getElementById('ciudad_otra');
+  const hintLocalidades = document.getElementById('hint-localidades');
+
+  function toggleManualInput() {
+    if (selectCiudad.value === '__otra__') {
+      inputCiudadOtra.style.display = 'block';
+      inputCiudadOtra.required = true;
+      inputCiudadOtra.focus();
+    } else {
+      inputCiudadOtra.style.display = 'none';
+      inputCiudadOtra.required = false;
+    }
+  }
+
+  selectCiudad.addEventListener('change', toggleManualInput);
+
+  selectProvincia.addEventListener('change', function () {
+    const selectedOption = this.options[this.selectedIndex];
+    const provId = selectedOption ? selectedOption.getAttribute('data-id') : null;
+    const provNombre = this.value;
+
+    if (!provNombre) {
+      selectCiudad.innerHTML = '<option value="">-- Seleccione una provincia primero --</option>';
+      toggleManualInput();
+      return;
+    }
+
+    selectCiudad.disabled = true;
+    selectCiudad.innerHTML = '<option value="">Cargando localidades de ' + provNombre + '...</option>';
+    if (hintLocalidades) hintLocalidades.textContent = 'Buscando localidades en la base de datos...';
+
+    const url = '<?= site_url('api/localidades') ?>?provincia_id=' + encodeURIComponent(provId || '') + '&provincia=' + encodeURIComponent(provNombre);
+
+    fetch(url)
+      .then(function (res) {
+        if (!res.ok) throw new Error('Error en la respuesta del servidor');
+        return res.json();
+      })
+      .then(function (data) {
+        selectCiudad.innerHTML = '<option value="">-- Seleccionar Localidad (' + data.length + ') --</option>';
+        data.forEach(function (item) {
+          const opt = document.createElement('option');
+          opt.value = item.localidad;
+          opt.textContent = item.localidad;
+          selectCiudad.appendChild(opt);
+        });
+
+        const optOtra = document.createElement('option');
+        optOtra.value = '__otra__';
+        optOtra.textContent = '-- Otra localidad (ingresar manualmente) --';
+        selectCiudad.appendChild(optOtra);
+
+        selectCiudad.disabled = false;
+        if (hintLocalidades) {
+          hintLocalidades.textContent = data.length + ' localidades disponibles en ' + provNombre + '.';
+        }
+        toggleManualInput();
+      })
+      .catch(function (err) {
+        console.error('Error al cargar localidades:', err);
+        selectCiudad.disabled = false;
+        selectCiudad.innerHTML = '<option value="">-- Error al cargar localidades --</option><option value="__otra__" selected>Ingresar manualmente</option>';
+        toggleManualInput();
+      });
+  });
+
+  // Toggle inicial por si ya estaba seleccionado __otra__
+  toggleManualInput();
+});
+</script>
 
 <?= view('templates/footer') ?>

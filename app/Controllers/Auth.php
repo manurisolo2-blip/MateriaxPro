@@ -90,18 +90,93 @@ class Auth extends BaseController
     public function register()
     {
         if ($redirect = $this->redirectIfLoggedIn()) return $redirect;
-        return view('auth/register', ['pageTitle' => 'Registro de Empresa | MateriaX']);
+
+        $db = \Config\Database::connect();
+        $provincias = [];
+        $localidades = [];
+
+        try {
+            $provincias = $db->table('provincias')->orderBy('provincia', 'ASC')->get()->getResultArray();
+        } catch (\Throwable $e) {
+            log_message('error', 'Error al cargar provincias: ' . $e->getMessage());
+        }
+
+        $selectedProvincia = (string) old('provincia', 'Córdoba');
+        $oldCiudad = (string) old('ciudad', 'Río Tercero');
+
+        if (!empty($provincias)) {
+            $provRow = null;
+            foreach ($provincias as $p) {
+                if ($p['provincia'] === $selectedProvincia) {
+                    $provRow = $p;
+                    break;
+                }
+            }
+            if ($provRow) {
+                try {
+                    $localidades = $db->table('localidades')
+                        ->where('id_privincia', (int) $provRow['id'])
+                        ->orderBy('localidad', 'ASC')
+                        ->get()
+                        ->getResultArray();
+                } catch (\Throwable $e) {
+                    log_message('error', 'Error al cargar localidades: ' . $e->getMessage());
+                }
+            }
+        }
+
+        return view('auth/register', [
+            'pageTitle'         => 'Registro de Empresa | MateriaX',
+            'provincias'        => $provincias,
+            'localidades'       => $localidades,
+            'selectedProvincia' => $selectedProvincia,
+            'selectedCiudad'    => $oldCiudad,
+        ]);
+    }
+
+    /**
+     * Endpoint API para consultar localidades por provincia (JSON)
+     */
+    public function localidades($provinciaId = null)
+    {
+        $id = $provinciaId ?? $this->request->getGet('provincia_id');
+        $provNombre = trim((string) $this->request->getGet('provincia'));
+
+        $db = \Config\Database::connect();
+        $builder = $db->table('localidades');
+
+        if (!empty($id)) {
+            $builder->where('id_privincia', (int) $id);
+        } elseif (!empty($provNombre)) {
+            $prov = $db->table('provincias')->where('provincia', $provNombre)->get()->getRowArray();
+            if ($prov) {
+                $builder->where('id_privincia', (int) $prov['id']);
+            } else {
+                return $this->response->setJSON([]);
+            }
+        } else {
+            return $this->response->setJSON([]);
+        }
+
+        $result = $builder->select('id, localidad')->orderBy('localidad', 'ASC')->get()->getResultArray();
+        return $this->response->setJSON($result);
     }
 
     public function attemptRegister()
     {
+        // Resolver localidad si seleccionó "Otra localidad"
+        $ciudad = trim((string) $this->request->getPost('ciudad'));
+        $ciudadOtra = trim((string) $this->request->getPost('ciudad_otra'));
+        if ($ciudad === '__otra__') {
+            $ciudad = $ciudadOtra;
+        }
+
         $rules = [
             'nombre'       => 'required|min_length[3]|max_length[100]',
             'email'        => 'required|valid_email|is_unique[usuarios.email]',
             'cuit'         => 'required|min_length[10]|max_length[20]',
             'telefono'     => 'required|min_length[6]|max_length[30]',
             'rubro'        => 'required|max_length[100]',
-            'ciudad'       => 'required|max_length[100]',
             'provincia'    => 'required|max_length[100]',
             'direccion'    => 'required|max_length[150]',
             'password'     => 'required|min_length[6]',
@@ -114,7 +189,6 @@ class Auth extends BaseController
             'cuit'         => ['required' => 'El CUIT de la empresa es obligatorio.', 'min_length' => 'El CUIT debe tener al menos 10 caracteres (ej: 30-XXXXXXXX-X).'],
             'telefono'     => ['required' => 'El teléfono institucional de contacto es obligatorio.', 'min_length' => 'El teléfono debe tener al menos 6 caracteres.'],
             'rubro'        => ['required' => 'Debe seleccionar el rubro o sector productivo principal.'],
-            'ciudad'       => ['required' => 'La ciudad o localidad de radicación es obligatoria.'],
             'provincia'    => ['required' => 'La provincia es obligatoria.'],
             'direccion'    => ['required' => 'El domicilio fiscal o de la planta es obligatorio.'],
             'password'     => ['required' => 'La contraseña es obligatoria.', 'min_length' => 'La contraseña debe tener un mínimo de 6 caracteres.'],
@@ -125,10 +199,15 @@ class Auth extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
+        if (empty($ciudad)) {
+            return redirect()->back()->withInput()->with('errors', ['ciudad' => 'La ciudad o localidad de radicación es obligatoria.']);
+        }
+
         $userModel = $this->getModel();
-        $fields    = ['nombre', 'cuit', 'telefono', 'rubro', 'ciudad', 'provincia', 'direccion'];
+        $fields    = ['nombre', 'cuit', 'telefono', 'rubro', 'provincia', 'direccion'];
         $data      = array_map(fn($v) => trim((string) $v), $this->request->getPost($fields));
 
+        $data['ciudad']       = $ciudad;
         $data['email']        = strtolower(trim((string) $this->request->getPost('email')));
         $data['password']     = password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT);
         $data['rol']          = 'empresa';

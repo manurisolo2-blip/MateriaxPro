@@ -15,6 +15,8 @@ $routes->post('login', 'Auth::attemptLogin');
 $routes->get('register', 'Auth::register');
 $routes->post('register', 'Auth::attemptRegister');
 $routes->get('logout', 'Auth::logout');
+$routes->get('api/localidades', 'Auth::localidades');
+$routes->get('api/localidades/(:num)', 'Auth::localidades/$1');
 
 // Panel de Control para Empresa Registrada (Protegido con 'auth')
 $routes->get('panel', 'Panel::index', ['filter' => 'auth']);
