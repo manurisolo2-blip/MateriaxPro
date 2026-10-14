@@ -30,39 +30,21 @@ class Perfil extends BaseController
         $user = $this->getAuthUser();
         if ($user instanceof RedirectResponse) return $user;
 
-        $db = \Config\Database::connect();
-        $provincias = [];
-        $localidades = [];
-        try {
-            $provincias = $db->table('provincias')->orderBy('provincia', 'ASC')->get()->getResultArray();
-        } catch (\Throwable $e) {}
+        $localidadModel = new \App\Models\LocalidadModel();
+        $provincias = $localidadModel->getProvincias();
+        $todasLocalidades = $localidadModel->getTodasConProvincia();
 
         $userProv = old('provincia', $user['provincia'] ?? 'Córdoba');
         $userCiudad = old('ciudad', $user['ciudad'] ?? 'Río Tercero');
 
-        if (!empty($provincias)) {
-            $provRow = null;
-            foreach ($provincias as $p) {
-                if ($p['provincia'] === $userProv) {
-                    $provRow = $p;
-                    break;
-                }
-            }
-            if ($provRow) {
-                try {
-                    $localidades = $db->table('localidades')->where('id_privincia', (int)$provRow['id'])->orderBy('localidad', 'ASC')->get()->getResultArray();
-                } catch (\Throwable $e) {}
-            }
-        }
-
         return view('perfil/index', [
-            'pageTitle'    => 'Mi Cuenta Empresarial | MateriaX',
-            'user'         => $user,
-            'provincias'   => $provincias,
-            'localidades'  => $localidades,
-            'userProv'     => $userProv,
-            'userCiudad'   => $userCiudad,
-            'misProductos' => $this->productoModel->where('user_id', $user['id'])->orderBy('created_at', 'DESC')->findAll(),
+            'pageTitle'        => 'Mi Cuenta Empresarial | MateriaX',
+            'user'             => $user,
+            'provincias'       => $provincias,
+            'todasLocalidades' => $todasLocalidades,
+            'userProv'         => $userProv,
+            'userCiudad'       => $userCiudad,
+            'misProductos'     => $this->productoModel->where('user_id', $user['id'])->orderBy('created_at', 'DESC')->findAll(),
         ]);
     }
 

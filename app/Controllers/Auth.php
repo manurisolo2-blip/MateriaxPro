@@ -91,44 +91,17 @@ class Auth extends BaseController
     {
         if ($redirect = $this->redirectIfLoggedIn()) return $redirect;
 
-        $db = \Config\Database::connect();
-        $provincias = [];
-        $localidades = [];
-
-        try {
-            $provincias = $db->table('provincias')->orderBy('provincia', 'ASC')->get()->getResultArray();
-        } catch (\Throwable $e) {
-            log_message('error', 'Error al cargar provincias: ' . $e->getMessage());
-        }
+        $localidadModel = new \App\Models\LocalidadModel();
+        $provincias = $localidadModel->getProvincias();
+        $todasLocalidades = $localidadModel->getTodasConProvincia();
 
         $selectedProvincia = (string) old('provincia', 'Córdoba');
         $oldCiudad = (string) old('ciudad', 'Río Tercero');
 
-        if (!empty($provincias)) {
-            $provRow = null;
-            foreach ($provincias as $p) {
-                if ($p['provincia'] === $selectedProvincia) {
-                    $provRow = $p;
-                    break;
-                }
-            }
-            if ($provRow) {
-                try {
-                    $localidades = $db->table('localidades')
-                        ->where('id_privincia', (int) $provRow['id'])
-                        ->orderBy('localidad', 'ASC')
-                        ->get()
-                        ->getResultArray();
-                } catch (\Throwable $e) {
-                    log_message('error', 'Error al cargar localidades: ' . $e->getMessage());
-                }
-            }
-        }
-
         return view('auth/register', [
             'pageTitle'         => 'Registro de Empresa | MateriaX',
             'provincias'        => $provincias,
-            'localidades'       => $localidades,
+            'todasLocalidades'  => $todasLocalidades,
             'selectedProvincia' => $selectedProvincia,
             'selectedCiudad'    => $oldCiudad,
         ]);
@@ -139,27 +112,13 @@ class Auth extends BaseController
      */
     public function localidades($provinciaId = null)
     {
-        $id = $provinciaId ?? $this->request->getGet('provincia_id');
+        $id = $provinciaId ? (int)$provinciaId : ($this->request->getGet('provincia_id') ? (int)$this->request->getGet('provincia_id') : null);
         $provNombre = trim((string) $this->request->getGet('provincia'));
         $search = trim((string) ($this->request->getGet('q') ?? $this->request->getGet('buscar')));
 
-        $db = \Config\Database::connect();
-        $builder = $db->table('localidades l')
-            ->select('l.id, l.id_privincia, l.localidad, p.provincia')
-            ->join('provincias p', 'p.id = l.id_privincia', 'left');
+        $localidadModel = new \App\Models\LocalidadModel();
+        $result = $localidadModel->buscar($search, $id, $provNombre, 100);
 
-        if (!empty($id)) {
-            $builder->where('l.id_privincia', (int) $id);
-        } elseif (!empty($provNombre)) {
-            $builder->where('p.provincia', $provNombre);
-        }
-
-        if ($search !== '') {
-            $builder->like('l.localidad', $search);
-            $builder->limit(50);
-        }
-
-        $result = $builder->orderBy('l.localidad', 'ASC')->get()->getResultArray();
         return $this->response->setJSON($result);
     }
 
