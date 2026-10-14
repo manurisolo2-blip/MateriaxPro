@@ -135,30 +135,31 @@ class Auth extends BaseController
     }
 
     /**
-     * Endpoint API para consultar localidades por provincia (JSON)
+     * Endpoint API para consultar localidades por provincia o búsqueda en tiempo real (JSON)
      */
     public function localidades($provinciaId = null)
     {
         $id = $provinciaId ?? $this->request->getGet('provincia_id');
         $provNombre = trim((string) $this->request->getGet('provincia'));
+        $search = trim((string) ($this->request->getGet('q') ?? $this->request->getGet('buscar')));
 
         $db = \Config\Database::connect();
-        $builder = $db->table('localidades');
+        $builder = $db->table('localidades l')
+            ->select('l.id, l.id_privincia, l.localidad, p.provincia')
+            ->join('provincias p', 'p.id = l.id_privincia', 'left');
 
         if (!empty($id)) {
-            $builder->where('id_privincia', (int) $id);
+            $builder->where('l.id_privincia', (int) $id);
         } elseif (!empty($provNombre)) {
-            $prov = $db->table('provincias')->where('provincia', $provNombre)->get()->getRowArray();
-            if ($prov) {
-                $builder->where('id_privincia', (int) $prov['id']);
-            } else {
-                return $this->response->setJSON([]);
-            }
-        } else {
-            return $this->response->setJSON([]);
+            $builder->where('p.provincia', $provNombre);
         }
 
-        $result = $builder->select('id, localidad')->orderBy('localidad', 'ASC')->get()->getResultArray();
+        if ($search !== '') {
+            $builder->like('l.localidad', $search);
+            $builder->limit(50);
+        }
+
+        $result = $builder->orderBy('l.localidad', 'ASC')->get()->getResultArray();
         return $this->response->setJSON($result);
     }
 

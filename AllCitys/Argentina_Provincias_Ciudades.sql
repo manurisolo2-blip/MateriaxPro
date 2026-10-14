@@ -2441,4 +2441,5 @@ INSERT INTO `localidades` (`id`, `id_privincia`, `localidad`) VALUES
 (2379, 25, 'Villa Quinteros'),
 (2380, 25, 'Yánima'),
 (2381, 25, 'Yerba Buena'),
-(2382, 25, 'Yerba Buena (S)');
+(2382, 25, 'Yerba Buena (S)'),
+(2383, 7, 'Tero Cojido');

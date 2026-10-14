@@ -144,32 +144,21 @@
               </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" style="position: relative;">
               <label for="ciudad" class="form-label">Ciudad / Localidad *</label>
-              <?php $selCiudad = $userCiudad ?? old('ciudad', $user['ciudad'] ?? 'Río Tercero'); ?>
-              <select name="ciudad" id="ciudad" class="form-select" required>
-                <option value="">-- Seleccionar Localidad --</option>
-                <?php if (!empty($localidades)): ?>
-                  <?php foreach ($localidades as $loc): ?>
-                    <?php $locNombre = is_array($loc) ? $loc['localidad'] : $loc; ?>
-                    <option value="<?= esc($locNombre) ?>" <?= ($selCiudad === $locNombre) ? 'selected' : '' ?>>
-                      <?= esc($locNombre) ?>
-                    </option>
-                  <?php endforeach; ?>
-                <?php endif; ?>
-                <option value="__otra__" <?= ($selCiudad === '__otra__' || old('ciudad_otra')) ? 'selected' : '' ?>>
-                  -- Otra localidad (ingresar manualmente) --
-                </option>
-              </select>
-              <input 
-                type="text" 
-                name="ciudad_otra" 
-                id="ciudad_otra" 
-                class="form-control" 
-                value="<?= esc(old('ciudad_otra')) ?>" 
-                placeholder="Escribe el nombre de tu localidad" 
-                style="<?= ($selCiudad === '__otra__' || old('ciudad_otra')) ? 'margin-top: 0.5rem;' : 'display: none; margin-top: 0.5rem;' ?>"
-              >
+              <div style="position: relative;">
+                <input 
+                  type="text" 
+                  name="ciudad" 
+                  id="ciudad" 
+                  class="form-control" 
+                  value="<?= esc($userCiudad ?? old('ciudad', $user['ciudad'] ?? 'Río Tercero')) ?>" 
+                  placeholder="Escribe para buscar (ej: Río Tercero, Tero Cojido)..." 
+                  autocomplete="off"
+                  required
+                >
+                <div id="autocomplete-list" class="autocomplete-dropdown" style="display: none;"></div>
+              </div>
             </div>
           </div>
 
@@ -284,72 +273,233 @@
   </div>
 </div>
 
+<style>
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1050;
+  background: var(--bg-surface, #ffffff);
+  border: 1px solid var(--border-color, #cbd5e1);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  max-height: 250px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+.autocomplete-item {
+  padding: 0.65rem 0.9rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-subtle, #f1f5f9);
+  color: var(--text-primary, #0f172a);
+  font-size: 0.9rem;
+  transition: background 0.12s ease;
+}
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+.autocomplete-item:hover,
+.autocomplete-item.active {
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--color-primary, #0f766e);
+}
+.autocomplete-badge {
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--color-primary, #0f766e);
+  font-weight: 500;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+.autocomplete-empty {
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary, #64748b);
+  text-align: center;
+}
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   const selectProvincia = document.getElementById('provincia');
-  const selectCiudad = document.getElementById('ciudad');
-  const inputCiudadOtra = document.getElementById('ciudad_otra');
+  const inputCiudad = document.getElementById('ciudad');
+  const listContainer = document.getElementById('autocomplete-list');
 
-  function toggleManualInput() {
-    if (selectCiudad.value === '__otra__') {
-      inputCiudadOtra.style.display = 'block';
-      inputCiudadOtra.required = true;
-      inputCiudadOtra.focus();
-    } else {
-      inputCiudadOtra.style.display = 'none';
-      inputCiudadOtra.required = false;
-    }
+  let activeIndex = -1;
+  let debounceTimer = null;
+  let currentItems = [];
+
+  function getSelectedProvId() {
+    const opt = selectProvincia.options[selectProvincia.selectedIndex];
+    return opt ? opt.getAttribute('data-id') : null;
   }
 
-  selectCiudad.addEventListener('change', toggleManualInput);
+  function getSelectedProvNombre() {
+    return selectProvincia.value || '';
+  }
 
-  selectProvincia.addEventListener('change', function () {
-    const selectedOption = this.options[this.selectedIndex];
-    const provId = selectedOption ? selectedOption.getAttribute('data-id') : null;
-    const provNombre = this.value;
+  function renderSuggestions(items, query) {
+    currentItems = items || [];
+    activeIndex = -1;
+    listContainer.innerHTML = '';
 
-    if (!provNombre) {
-      selectCiudad.innerHTML = '<option value="">-- Seleccione una provincia primero --</option>';
-      toggleManualInput();
+    if (!items || items.length === 0) {
+      if (query && query.length >= 2) {
+        listContainer.innerHTML = '<div class="autocomplete-empty">No se encontró "' + escapeHtml(query) + '". Puedes dejarlo escrito como localidad personalizada.</div>';
+        listContainer.style.display = 'block';
+      } else {
+        listContainer.style.display = 'none';
+      }
       return;
     }
 
-    selectCiudad.disabled = true;
-    selectCiudad.innerHTML = '<option value="">Cargando localidades de ' + provNombre + '...</option>';
+    items.forEach(function (item, idx) {
+      const div = document.createElement('div');
+      div.className = 'autocomplete-item';
+      div.setAttribute('data-index', idx);
 
-    const url = '<?= site_url('api/localidades') ?>?provincia_id=' + encodeURIComponent(provId || '') + '&provincia=' + encodeURIComponent(provNombre);
+      const spanName = document.createElement('span');
+      if (query && query.length > 0) {
+        const regex = new RegExp('(' + escapeRegex(query) + ')', 'gi');
+        spanName.innerHTML = escapeHtml(item.localidad).replace(regex, '<strong style="color:var(--color-primary, #0f766e);">$1</strong>');
+      } else {
+        spanName.textContent = item.localidad;
+      }
+
+      const spanProv = document.createElement('span');
+      spanProv.className = 'autocomplete-badge';
+      spanProv.textContent = item.provincia || getSelectedProvNombre();
+
+      div.appendChild(spanName);
+      div.appendChild(spanProv);
+
+      div.addEventListener('mousedown', function (e) {
+        e.preventDefault();
+        selectItem(item);
+      });
+
+      listContainer.appendChild(div);
+    });
+
+    listContainer.style.display = 'block';
+  }
+
+  function selectItem(item) {
+    inputCiudad.value = item.localidad;
+    listContainer.style.display = 'none';
+    listContainer.innerHTML = '';
+
+    if (item.provincia) {
+      for (let i = 0; i < selectProvincia.options.length; i++) {
+        if (selectProvincia.options[i].value.toLowerCase() === item.provincia.toLowerCase()) {
+          selectProvincia.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }
+
+  function fetchLocalidades(query) {
+    const provId = getSelectedProvId();
+    const provNombre = getSelectedProvNombre();
+
+    let url = '<?= site_url('api/localidades') ?>?';
+    const params = [];
+    if (provId) params.push('provincia_id=' + encodeURIComponent(provId));
+    else if (provNombre) params.push('provincia=' + encodeURIComponent(provNombre));
+    if (query) params.push('q=' + encodeURIComponent(query));
+
+    url += params.join('&');
 
     fetch(url)
-      .then(function (res) {
-        if (!res.ok) throw new Error('Error en la respuesta');
-        return res.json();
-      })
+      .then(function (res) { return res.json(); })
       .then(function (data) {
-        selectCiudad.innerHTML = '<option value="">-- Seleccionar Localidad (' + data.length + ') --</option>';
-        data.forEach(function (item) {
-          const opt = document.createElement('option');
-          opt.value = item.localidad;
-          opt.textContent = item.localidad;
-          selectCiudad.appendChild(opt);
-        });
-
-        const optOtra = document.createElement('option');
-        optOtra.value = '__otra__';
-        optOtra.textContent = '-- Otra localidad (ingresar manualmente) --';
-        selectCiudad.appendChild(optOtra);
-
-        selectCiudad.disabled = false;
-        toggleManualInput();
+        if ((!data || data.length === 0) && query && query.length >= 2 && provId) {
+          fetch('<?= site_url('api/localidades') ?>?q=' + encodeURIComponent(query))
+            .then(function (r) { return r.json(); })
+            .then(function (allData) {
+              renderSuggestions(allData, query);
+            });
+        } else {
+          renderSuggestions(data, query);
+        }
       })
       .catch(function (err) {
-        console.error('Error al cargar localidades:', err);
-        selectCiudad.disabled = false;
-        selectCiudad.innerHTML = '<option value="">-- Error al cargar localidades --</option><option value="__otra__" selected>Ingresar manualmente</option>';
-        toggleManualInput();
+        console.error('Error al autocompletar localidades:', err);
       });
+  }
+
+  inputCiudad.addEventListener('input', function () {
+    const q = this.value.trim();
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(function () {
+      fetchLocalidades(q);
+    }, 150);
   });
 
-  toggleManualInput();
+  inputCiudad.addEventListener('focus', function () {
+    const q = this.value.trim();
+    fetchLocalidades(q);
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!inputCiudad.contains(e.target) && !listContainer.contains(e.target)) {
+      listContainer.style.display = 'none';
+    }
+  });
+
+  inputCiudad.addEventListener('keydown', function (e) {
+    const items = listContainer.querySelectorAll('.autocomplete-item');
+    if (!items.length || listContainer.style.display === 'none') return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateActiveItem(items);
+    } else if (e.key === 'Enter') {
+      if (activeIndex >= 0 && activeIndex < currentItems.length) {
+        e.preventDefault();
+        selectItem(currentItems[activeIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      listContainer.style.display = 'none';
+    }
+  });
+
+  function updateActiveItem(items) {
+    items.forEach(function (el, idx) {
+      if (idx === activeIndex) {
+        el.classList.add('active');
+        el.scrollIntoView({ block: 'nearest' });
+      } else {
+        el.classList.remove('active');
+      }
+    });
+  }
+
+  selectProvincia.addEventListener('change', function () {
+    if (inputCiudad.value.trim() !== '') {
+      fetchLocalidades(inputCiudad.value.trim());
+    }
+  });
+
+  function escapeHtml(str) {
+    return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function escapeRegex(str) {
+    return (str || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
 });
 </script>
 
