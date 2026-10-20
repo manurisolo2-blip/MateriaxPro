@@ -23,8 +23,8 @@
   <section class="hero-wrapper" id="inicio" style="grid-template-columns: 1fr; text-align: center; padding: 2.5rem 1.5rem;" aria-label="Presentación MateriaX Pro">
     <div class="hero-content" style="max-width: 780px; margin: 0 auto;">
       <div class="hero-kicker">MateriaX Pro · Mercado Industrial</div>
-      <h1 class="hero-heading" style="font-size: 2.2rem; line-height: 1.25;">
-        Intercambio directo de <span style="color: var(--color-accent);">sobras de polímeros y filamentos</span>
+      <h1 class="hero-heading" style="font-size: clamp(3.2rem, 8vw, 4.8rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 0.75rem;">
+        Materia<span class="brand-accent">X</span>
       </h1>
       <p class="hero-desc" style="max-width: 620px; margin: 0.75rem auto 1.5rem;">
         Compra y venta de excedentes de tolva, bobinas de filamento 3D y matrices industriales con trato directo entre empresas.
