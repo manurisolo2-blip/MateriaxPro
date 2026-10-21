@@ -2,6 +2,7 @@
   $p = $producto ?? [];
   $selPol = old('tipo_polimero', $p['tipo_polimero'] ?? '');
   $selEst = old('estado', $p['estado'] ?? 'Disponible');
+  $selPlanta = old('planta_id', $p['planta_id'] ?? '');
   $polimeros = [
     'Polietileno (PE)'   => 'Polietileno (PE / HDPE / LDPE)',
     'Polipropileno (PP)' => 'Polipropileno (PP)',
@@ -57,10 +58,27 @@
     </div>
   </div>
 
-  <div class="form-group">
-    <label for="ubicacion" class="form-label">Ubicación de Origen / Planta de Retiro <span class="required-indicator" aria-hidden="true">*</span></label>
-    <input type="text" name="ubicacion" id="ubicacion" class="form-control" value="<?= old('ubicacion', $p['ubicacion'] ?? '') ?>" placeholder="Ej: Parque Industrial Río Tercero, Córdoba" required>
-    <span class="form-hint">Planta fabril, parque industrial o depósito habilitado para la carga.</span>
+  <div class="form-row">
+    <div class="form-group">
+      <label for="planta_id" class="form-label">Planta Fabril de Origen (Centro de Retiro)</label>
+      <select name="planta_id" id="planta_id" class="form-select">
+        <option value="">-- Sin planta asignada (Indicar en ubicación libre) --</option>
+        <?php if (!empty($plantas)): ?>
+          <?php foreach ($plantas as $pl): ?>
+            <option value="<?= $pl['id'] ?>" <?= ((string)$selPlanta === (string)$pl['id']) ? 'selected' : '' ?>>
+              <?= esc($pl['nombre_planta']) ?> &mdash; <?= esc($pl['localidad']) ?>, <?= esc($pl['provincia']) ?> (<?= !empty($pl['posee_bascula']) ? 'Báscula Sí' : 'Sin Báscula' ?>)
+            </option>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </select>
+      <span class="form-hint">Vínculo con la sede física de carga (<a href="<?= site_url('plantas/crear') ?>" target="_blank">Registrar nueva sede</a>).</span>
+    </div>
+
+    <div class="form-group">
+      <label for="ubicacion" class="form-label">Ubicación Visible / Ciudad de Retiro <span class="required-indicator" aria-hidden="true">*</span></label>
+      <input type="text" name="ubicacion" id="ubicacion" class="form-control" value="<?= old('ubicacion', $p['ubicacion'] ?? '') ?>" placeholder="Ej: Río Tercero, Córdoba" required>
+      <span class="form-hint">Ciudad o parque industrial visible para los compradores.</span>
+    </div>
   </div>
 
   <div class="form-group">

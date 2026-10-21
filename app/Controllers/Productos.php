@@ -3,12 +3,14 @@
 namespace App\Controllers;
 
 use App\Models\ProductoModel;
+use App\Models\PlantaModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 
 class Productos extends BaseController
 {
     protected ProductoModel $productoModel;
+    protected PlantaModel $plantaModel;
     protected $helpers = ['form', 'url'];
 
     protected array $rules = [
@@ -18,11 +20,13 @@ class Productos extends BaseController
         'precio_unitario' => 'required|numeric|greater_than_equal_to[0]',
         'ubicacion'       => 'required|min_length[2]|max_length[100]',
         'estado'          => 'required|in_list[Disponible,Reservado,Vendido]',
+        'planta_id'       => 'permit_empty|is_natural_no_zero',
     ];
 
     public function __construct()
     {
         $this->productoModel = new ProductoModel();
+        $this->plantaModel   = new PlantaModel();
     }
 
     public function index()
@@ -30,8 +34,13 @@ class Productos extends BaseController
         $tipoPolimero = $this->request->getGet('polimero');
         $busqueda     = $this->request->getGet('q');
 
-        $builder = $this->productoModel->select('productos.*, usuarios.nombre as empresa_nombre, usuarios.email as empresa_email, usuarios.telefono as empresa_telefono')
-                                       ->join('usuarios', 'usuarios.id = productos.user_id', 'left');
+        $builder = $this->productoModel->select('productos.*, 
+                                                usuarios.nombre as empresa_nombre, 
+                                                usuarios.email as empresa_email, 
+                                                usuarios.telefono as empresa_telefono,
+                                                plantas_industriales.nombre_planta')
+                                       ->join('usuarios', 'usuarios.id = productos.user_id', 'left')
+                                       ->join('plantas_industriales', 'plantas_industriales.id = productos.planta_id', 'left');
 
         if (!empty($tipoPolimero)) {
             $builder->where('productos.tipo_polimero', $tipoPolimero);
@@ -54,7 +63,13 @@ class Productos extends BaseController
 
     public function crear()
     {
-        return view('productos/crear', ['pageTitle' => 'Publicar Excedente Industrial | MateriaX']);
+        $userId = (int) session()->get('user_id');
+        $plantas = $this->plantaModel->getPlantasPorEmpresa($userId, true);
+
+        return view('productos/crear', [
+            'pageTitle' => 'Publicar Excedente Industrial | MateriaX',
+            'plantas'   => $plantas,
+        ]);
     }
 
     public function guardar()
@@ -90,9 +105,12 @@ class Productos extends BaseController
         $producto = $this->findOrNotFound($id);
         if ($redirect = $this->checkOwnership($producto, 'editar')) return $redirect;
 
+        $plantas = $this->plantaModel->getPlantasPorEmpresa((int) $producto['user_id']);
+
         return view('productos/editar', [
             'pageTitle' => 'Editar: ' . esc($producto['nombre']) . ' | MateriaX',
             'producto'  => $producto,
+            'plantas'   => $plantas,
         ]);
     }
 
@@ -154,12 +172,15 @@ class Productos extends BaseController
 
     protected function getFormData(): array
     {
+        $plantaId = $this->request->getPost('planta_id');
+
         return [
             'nombre'          => trim((string) $this->request->getPost('nombre')),
             'tipo_polimero'   => trim((string) $this->request->getPost('tipo_polimero')),
             'cantidad_kg'     => (float) $this->request->getPost('cantidad_kg'),
             'precio_unitario' => (float) $this->request->getPost('precio_unitario'),
             'ubicacion'       => trim((string) $this->request->getPost('ubicacion')),
+            'planta_id'       => (!empty($plantaId) && is_numeric($plantaId)) ? (int) $plantaId : null,
             'descripcion'     => trim((string) ($this->request->getPost('descripcion') ?? '')),
             'estado'          => trim((string) $this->request->getPost('estado')),
         ];

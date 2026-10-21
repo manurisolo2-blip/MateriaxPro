@@ -28,6 +28,34 @@ $routes->group('perfil', ['filter' => 'auth'], static function ($routes) {
     $routes->post('cambiar-password', 'Perfil::cambiarPassword');
 });
 
+// Módulo Funcional (Hito 2): Sedes y Plantas Industriales (Protegido con 'auth')
+$routes->group('plantas', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'Plantas::index');
+    $routes->get('crear', 'Plantas::crear');
+    $routes->post('guardar', 'Plantas::guardar');
+    $routes->get('editar/(:num)', 'Plantas::editar/$1');
+    $routes->post('actualizar/(:num)', 'Plantas::actualizar/$1');
+    $routes->post('cambiar-estado/(:num)', 'Plantas::cambiarEstado/$1');
+});
+
+// Módulo Funcional (Hito 2): Solicitudes de Compra y Transacciones (Protegido con 'auth')
+$routes->group('solicitudes', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'Solicitudes::index');
+    $routes->get('recibidas', 'Solicitudes::recibidas');
+    $routes->get('enviadas', 'Solicitudes::enviadas');
+    $routes->get('crear/(:num)', 'Solicitudes::crear/$1');
+    $routes->post('guardar', 'Solicitudes::guardar');
+    $routes->get('ver/(:num)', 'Solicitudes::ver/$1');
+    $routes->post('responder/(:num)', 'Solicitudes::responder/$1');
+    $routes->post('cancelar/(:num)', 'Solicitudes::cancelar/$1');
+});
+
+// Módulo Funcional (Hito 2): Certificados Ambientales y Huella Verde (Protegido con 'auth')
+$routes->group('certificados', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'Certificados::index');
+    $routes->get('ver/(:segment)', 'Certificados::ver/$1');
+});
+
 // Módulo Funcional: CRUD de Entidad Secundaria (Productos)
 // Protegido estrictamente con el filtro de autenticación 'auth' (Solo visible para usuarios logueados)
 $routes->group('productos', ['filter' => 'auth'], static function ($routes) {
@@ -51,4 +79,3 @@ $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('lotes', 'Admin::lotes');
     $routes->post('lotes/eliminar/(:num)', 'Admin::eliminarLote/$1');
 });
-

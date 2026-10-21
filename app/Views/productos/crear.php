@@ -11,10 +11,10 @@
 
 <div style="max-width: 760px; margin: 0 auto 2rem;">
   <div style="margin-bottom: 1.25rem;">
-    <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--text-primary); margin-top: 0.2rem;">
+    <h1 style="font-size: 1.8rem; font-weight: 700; color: var(--color-ink); margin-top: 0.2rem;">
       Publicar Nuevo Lote de Material
     </h1>
-    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+    <p style="color: var(--color-ink-2); font-size: 0.95rem;">
       Ingresa los datos técnicos del excedente polimérico para ofrecerlo a industrias de la red.
     </p>
   </div>
@@ -24,6 +24,7 @@
       <?= view('productos/_form', [
         'action'  => site_url('productos/guardar'),
         'btnText' => 'Publicar Lote',
+        'plantas' => $plantas ?? [],
       ]) ?>
     </div>
   </div>

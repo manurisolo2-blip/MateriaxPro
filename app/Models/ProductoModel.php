@@ -14,6 +14,7 @@ class ProductoModel extends Model
     protected $protectFields    = true;
     protected $allowedFields    = [
         'user_id',
+        'planta_id',
         'nombre',
         'tipo_polimero',
         'cantidad_kg',
@@ -37,6 +38,7 @@ class ProductoModel extends Model
         'precio_unitario' => 'required|numeric|greater_than_equal_to[0]',
         'ubicacion'       => 'required|min_length[2]|max_length[100]',
         'estado'          => 'required|in_list[Disponible,Reservado,Vendido]',
+        'planta_id'       => 'permit_empty|is_natural_no_zero',
     ];
 
     protected $validationMessages = [
@@ -71,15 +73,25 @@ class ProductoModel extends Model
     protected $skipValidation = false;
 
     /**
-     * Obtener productos con los datos de la empresa/usuario oferente
+     * Obtener productos con los datos de la empresa/usuario oferente y la planta asociada
      *
      * @param int|null $id
      * @return array|null
      */
     public function getProductosConUsuario($id = null)
     {
-        $builder = $this->select('productos.*, usuarios.nombre as empresa_nombre, usuarios.email as empresa_email, usuarios.telefono as empresa_telefono, usuarios.cuit as empresa_cuit')
-                        ->join('usuarios', 'usuarios.id = productos.user_id', 'left');
+        $builder = $this->select('productos.*, 
+                                  usuarios.nombre as empresa_nombre, 
+                                  usuarios.email as empresa_email, 
+                                  usuarios.telefono as empresa_telefono, 
+                                  usuarios.cuit as empresa_cuit,
+                                  plantas_industriales.nombre_planta,
+                                  plantas_industriales.direccion as planta_direccion,
+                                  plantas_industriales.localidad as planta_localidad,
+                                  plantas_industriales.provincia as planta_provincia,
+                                  plantas_industriales.posee_bascula as planta_posee_bascula')
+                        ->join('usuarios', 'usuarios.id = productos.user_id', 'left')
+                        ->join('plantas_industriales', 'plantas_industriales.id = productos.planta_id', 'left');
 
         if ($id !== null) {
             return $builder->where('productos.id', $id)->first();

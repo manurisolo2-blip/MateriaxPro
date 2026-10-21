@@ -42,6 +42,47 @@ if (! function_exists('badge_estado_class')) {
     }
 }
 
+if (! function_exists('badge_transaccion_class')) {
+    function badge_transaccion_class(string $estado): string
+    {
+        return match ($estado) {
+            'aprobada', 'completada' => 'badge-success',
+            'solicitada', 'en_evaluacion', 'pesaje_balanza', 'en_transito' => 'badge-warning',
+            'rechazada', 'cancelada' => 'badge-danger',
+            default => 'badge-polimero-default',
+        };
+    }
+}
+
+if (! function_exists('label_transaccion_estado')) {
+    function label_transaccion_estado(string $estado): string
+    {
+        return match ($estado) {
+            'solicitada'      => 'Solicitud Pendiente',
+            'en_evaluacion'   => 'En Evaluación',
+            'aprobada'        => 'Aprobada (Reservado)',
+            'pesaje_balanza'  => 'En Báscula',
+            'en_transito'     => 'En Tránsito',
+            'completada'      => 'Completada',
+            'rechazada'       => 'Rechazada',
+            'cancelada'       => 'Cancelada',
+            default           => ucfirst($estado),
+        };
+    }
+}
+
+if (! function_exists('label_modalidad_retiro')) {
+    function label_modalidad_retiro(string $modalidad): string
+    {
+        return match ($modalidad) {
+            'retiro_comprador_planta' => 'Retira Comprador en Planta',
+            'entrega_vendedor'        => 'Entrega Vendedor',
+            'flete_convenido'         => 'Flete a Convenir',
+            default                   => $modalidad,
+        };
+    }
+}
+
 if (! function_exists('format_kg')) {
     function format_kg(float|int|string|null $kg): string
     {
@@ -62,4 +103,3 @@ if (! function_exists('nav_attr')) {
         return $isActive ? 'class="active" aria-current="page"' : '';
     }
 }
-

@@ -39,6 +39,9 @@
             <li class="nav-item"><a href="<?= site_url('panel') ?>" <?= nav_attr(url_is('panel*')) ?>>Mi Panel</a></li>
             <li class="nav-item"><a href="<?= site_url('productos') ?>" <?= nav_attr(url_is('productos*') && !url_is('productos/crear*')) ?>>Mercado</a></li>
             <li class="nav-item"><a href="<?= site_url('productos/crear') ?>" <?= nav_attr(url_is('productos/crear*')) ?>>Publicar Lote</a></li>
+            <li class="nav-item"><a href="<?= site_url('plantas') ?>" <?= nav_attr(url_is('plantas*')) ?>>Mis Plantas</a></li>
+            <li class="nav-item"><a href="<?= site_url('solicitudes') ?>" <?= nav_attr(url_is('solicitudes*')) ?>>Solicitudes</a></li>
+            <li class="nav-item"><a href="<?= site_url('certificados') ?>" <?= nav_attr(url_is('certificados*')) ?>>Certificados</a></li>
           <?php endif; ?>
         <?php else: ?>
           <li class="nav-item"><a href="<?= site_url('/') ?>" <?= nav_attr(url_is('/') || url_is('')) ?>>Inicio</a></li>
