@@ -41,7 +41,168 @@ if (!file_exists($dbPath) || filesize($dbPath) === 0) {
     }
 }
 
-// Garantizar que todas las tablas y columnas necesarias existan (Hito 1 y Hito 2)
+// Si se configuró base de datos en la nube (TiDB Cloud, Aiven, Clever Cloud, etc.), auto-provisionar tablas
+$cloudHost = getenv('TIDB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQL_HOST');
+if (!empty($cloudHost)) {
+    try {
+        $cloudUser = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER') ?: 'root';
+        $cloudPass = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
+        $cloudName = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE') ?: 'materiax_db';
+        $cloudPort = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 4000);
+
+        $pdoOpts = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_TIMEOUT => 5,
+        ];
+        if (getenv('DB_SSL') || getenv('TIDB_HOST')) {
+            $pdoOpts[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+        }
+
+        $cloudPdo = new PDO("mysql:host={$cloudHost};port={$cloudPort};dbname={$cloudName};charset=utf8mb4", $cloudUser, $cloudPass, $pdoOpts);
+
+        $cloudPdo->exec("CREATE TABLE IF NOT EXISTS usuarios (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(100) NOT NULL,
+            email VARCHAR(150) NOT NULL UNIQUE,
+            password VARCHAR(255) NOT NULL,
+            cuit VARCHAR(20) NOT NULL,
+            telefono VARCHAR(30) NOT NULL,
+            rubro VARCHAR(100) NULL,
+            ciudad VARCHAR(100) NULL,
+            provincia VARCHAR(100) NULL,
+            direccion VARCHAR(150) NULL,
+            rol VARCHAR(50) NOT NULL DEFAULT 'empresa',
+            estado VARCHAR(20) NOT NULL DEFAULT 'activo',
+            created_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            ultimo_login DATETIME NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $cloudPdo->exec("CREATE TABLE IF NOT EXISTS plantas_industriales (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            empresa_id INT NOT NULL,
+            nombre_planta VARCHAR(100) NOT NULL,
+            direccion VARCHAR(150) NOT NULL,
+            localidad VARCHAR(100) NOT NULL,
+            provincia VARCHAR(100) NOT NULL DEFAULT 'Córdoba',
+            coordenadas_gps VARCHAR(50) DEFAULT NULL,
+            posee_bascula TINYINT(1) NOT NULL DEFAULT 1,
+            capacidad_carga_camiones VARCHAR(50) DEFAULT 'Hasta 45 Ton',
+            contacto_responsable VARCHAR(100) DEFAULT NULL,
+            telefono_planta VARCHAR(30) DEFAULT NULL,
+            activa TINYINT(1) NOT NULL DEFAULT 1,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $cloudPdo->exec("CREATE TABLE IF NOT EXISTS productos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            planta_id INT DEFAULT NULL,
+            categoria_id INT DEFAULT NULL,
+            nombre VARCHAR(150) NOT NULL,
+            tipo_polimero VARCHAR(50) NOT NULL,
+            cantidad_kg DECIMAL(10,2) NOT NULL,
+            cantidad_disp_kg DECIMAL(10,2) DEFAULT NULL,
+            precio_unitario DECIMAL(10,2) NOT NULL,
+            ubicacion VARCHAR(100) NOT NULL,
+            descripcion TEXT NULL,
+            estado VARCHAR(20) NOT NULL DEFAULT 'Disponible',
+            presentacion VARCHAR(50) DEFAULT 'scrap_molido',
+            color VARCHAR(50) DEFAULT 'Negro',
+            fluidez_mfi DECIMAL(6,2) DEFAULT NULL,
+            contaminacion_pct DECIMAL(5,2) DEFAULT 0.00,
+            pedido_minimo_kg DECIMAL(10,2) DEFAULT 100.00,
+            moneda VARCHAR(10) DEFAULT 'ARS',
+            acondicionamiento VARCHAR(100) DEFAULT 'Big Bags de 1.000 kg',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $cloudPdo->exec("CREATE TABLE IF NOT EXISTS transacciones (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            codigo_operacion VARCHAR(20) NOT NULL UNIQUE,
+            producto_id INT NOT NULL,
+            comprador_id INT NOT NULL,
+            vendedor_id INT NOT NULL,
+            planta_origen_id INT DEFAULT NULL,
+            cantidad_kg DECIMAL(10,2) NOT NULL,
+            precio_unitario_pactado DECIMAL(10,2) NOT NULL,
+            subtotal DECIMAL(12,2) NOT NULL,
+            costo_flete DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            monto_total DECIMAL(12,2) NOT NULL,
+            modalidad_retiro VARCHAR(50) NOT NULL DEFAULT 'retiro_comprador_planta',
+            estado VARCHAR(50) NOT NULL DEFAULT 'solicitada',
+            ticket_balanza_kg DECIMAL(10,2) DEFAULT NULL,
+            numero_remito VARCHAR(50) DEFAULT NULL,
+            observaciones TEXT DEFAULT NULL,
+            fecha_solicitud DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            fecha_acuerdo DATETIME DEFAULT NULL,
+            fecha_despacho DATETIME DEFAULT NULL,
+            fecha_cierre DATETIME DEFAULT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $cloudPdo->exec("CREATE TABLE IF NOT EXISTS certificados_ambientales (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            codigo_certificado VARCHAR(40) NOT NULL UNIQUE,
+            transaccion_id INT NOT NULL UNIQUE,
+            generadora_id INT NOT NULL,
+            revalorizadora_id INT NOT NULL,
+            kg_recuperados DECIMAL(10,2) NOT NULL,
+            co2_evitado_kg DECIMAL(10,2) NOT NULL,
+            mwh_ahorrado DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+            norma_referencia VARCHAR(100) NOT NULL DEFAULT 'Economía Circular / Protocolo GHG Alcance 3',
+            fecha_emision DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            firmado_digitalmente TINYINT(1) NOT NULL DEFAULT 1
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $cloudPdo->exec("CREATE TABLE IF NOT EXISTS mensajes_negociacion (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            producto_id INT NOT NULL,
+            transaccion_id INT DEFAULT NULL,
+            emisor_id INT NOT NULL,
+            receptor_id INT NOT NULL,
+            mensaje TEXT NOT NULL,
+            leido TINYINT(1) NOT NULL DEFAULT 0,
+            fecha_lectura DATETIME DEFAULT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $cloudPdo->exec("CREATE TABLE IF NOT EXISTS categorias_polimero (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            codigo_spi INT NOT NULL,
+            sigla VARCHAR(10) NOT NULL UNIQUE,
+            nombre_tecnico VARCHAR(100) NOT NULL,
+            densidad_g_cm3 DECIMAL(5,3) NOT NULL,
+            temp_fusion_c INT DEFAULT NULL,
+            factor_co2_kg DECIMAL(4,2) NOT NULL DEFAULT 1.85,
+            reciclabilidad VARCHAR(20) NOT NULL DEFAULT 'alta',
+            descripcion_tecnica TEXT DEFAULT NULL,
+            activo TINYINT(1) NOT NULL DEFAULT 1
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        // Seed inicial si la base cloud está vacía
+        $uCount = (int) $cloudPdo->query("SELECT COUNT(*) FROM usuarios")->fetchColumn();
+        if ($uCount === 0) {
+            $uStmt = $cloudPdo->prepare("INSERT IGNORE INTO usuarios (id, nombre, email, password, cuit, telefono, rubro, ciudad, provincia, direccion, rol, estado, created_at, updated_at, ultimo_login) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            $initialUsers = [
+                [1, 'Petroquímica Río Tercero S.A.', 'admin@materiax.com', '$2y$12$GSgxOxpOEIMf6piuA5Ss9uVNGSoyVARb7TgY7xr/RKiXf8lU9mUa6', '30-50284912-8', '+54 3571 42-1500', 'Petroquímica & Polímeros', 'Río Tercero', 'Córdoba', 'Parque Industrial Química Sur, Lote 12', 'empresa', 'activo', '2026-09-16 16:38:41', '2026-09-22 16:41:26', null],
+                [2, 'Industrias Plásticas Río III', 'rio3@plastico.com', '$2y$10$tN23Ye.DfVln6.k/m7mGnOiVn141EczoDwIre6tndR62c0wZV/1YC', '30-71123456-9', '+54 3571 430000', null, null, null, null, 'empresa', 'activo', '2026-09-16 19:45:44', '2026-09-16 19:45:44', null],
+                [3, 'Plásticos del Valle Renovado S.A.', 'plastec4708@argentina.com', '$2y$10$6ssHN5X0hsCZ/PsxRmHHZ.e5j2HHp1YzLfxLQ79f/7D4HQmd..dPi', '30-71884708-2', '+54 3571 888888', 'Reciclado & Granza', 'Almafuerte', 'Córdoba', 'Ruta 36 Km 115', 'empresa', 'activo', '2026-09-22 19:46:58', '2026-09-22 19:47:00', '2026-09-22 19:47:00'],
+                [4, 'Administrador General MateriaX', 'myadminpro@gmail.com', '$2y$12$Z3IsqEqgyyjuMraeBb/./enYfY3KaHNmyznQNv7LdqoW3aVA/0Nfa', '20-00000000-0', '+54 3571 00-0000', 'Administración Central', 'Río Tercero', 'Córdoba', 'Sede Central MateriaX', 'admin', 'activo', '2026-09-22 20:31:35', '2026-09-22 22:02:31', '2026-09-22 22:02:31'],
+                [5, 'plasticoss', 'manurisolo2@gmail.com', '$2y$10$VoEZdsFNVtoQcDOr6q52FOhfe0RmDuLR3ns8KkcngfowtFPc0T3MK', '23492887269', '3571435390', 'Soplado de Cuerpos Huecos', 'riotercrereo', 'Córdoba', 'mm', 'empresa', 'activo', '2026-09-22 20:56:09', '2026-09-22 20:56:09', '2026-09-22 20:56:09'],
+                [6, 'Industrias pro', 'boongraxd@gmail.com', '$2y$10$D186hUo7jNvi4rHde.6JfOFRlIupy95DRLVsjYJVCpQGBuVTJbz3e', '23492887269', '3571345390', 'Compuestos & Masterbatch', 'rio tercero', 'Córdoba', 'aca en la 2 de arbil', 'empresa', 'activo', '2026-09-22 21:54:26', '2026-09-22 21:54:26', '2026-09-22 21:54:26']
+            ];
+            foreach ($initialUsers as $u) {
+                $uStmt->execute($u);
+            }
+        }
+    } catch (Throwable $e) {
+        error_log('Cloud database initialization error: ' . $e->getMessage());
+    }
+}
+
+// Garantizar que todas las tablas y columnas necesarias existan en SQLite (Fallback)
 try {
     $db = new PDO('sqlite:' . $dbPath);
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
