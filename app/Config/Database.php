@@ -201,13 +201,30 @@ class Database extends Config
             $this->defaultGroup = 'tests';
         }
 
+        // Helper para resolver variables de entorno en cualquier contexto (getenv, $_ENV, $_SERVER)
+        $resolveEnv = static function (array $keys): ?string {
+            foreach ($keys as $key) {
+                $val = getenv($key);
+                if ($val !== false && $val !== null && trim((string)$val) !== '') {
+                    return trim((string)$val);
+                }
+                if (!empty($_ENV[$key]) && trim((string)$_ENV[$key]) !== '') {
+                    return trim((string)$_ENV[$key]);
+                }
+                if (!empty($_SERVER[$key]) && trim((string)$_SERVER[$key]) !== '') {
+                    return trim((string)$_SERVER[$key]);
+                }
+            }
+            return null;
+        };
+
         // Detección de base de datos MySQL en la nube (TiDB Cloud, Aiven, Railway, Supabase o VPS)
-        $dbUrl     = getenv('DATABASE_URL');
-        $cloudHost = getenv('TIDB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQL_HOST');
-        $cloudUser = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER');
-        $cloudPass = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD');
-        $cloudName = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE');
-        $cloudPort = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 0);
+        $dbUrl     = $resolveEnv(['DATABASE_URL', 'TIDB_URL', 'MYSQL_URL', 'JAWSDB_URL', 'CLEARDB_DATABASE_URL']);
+        $cloudHost = $resolveEnv(['TIDB_HOST', 'DB_HOST', 'MYSQL_HOST', 'MYSQLHOST', 'DATABASE_HOST']);
+        $cloudUser = $resolveEnv(['TIDB_USER', 'DB_USER', 'MYSQL_USER', 'MYSQLUSER', 'DATABASE_USER']);
+        $cloudPass = $resolveEnv(['TIDB_PASSWORD', 'DB_PASSWORD', 'MYSQL_PASSWORD', 'MYSQLPASSWORD', 'DATABASE_PASSWORD']);
+        $cloudName = $resolveEnv(['TIDB_DATABASE', 'DB_DATABASE', 'MYSQL_DATABASE', 'MYSQLDATABASE', 'DATABASE_NAME']);
+        $cloudPort = (int) ($resolveEnv(['TIDB_PORT', 'DB_PORT', 'MYSQL_PORT', 'MYSQLPORT']) ?: 0);
 
         if (!empty($dbUrl) && (str_starts_with($dbUrl, 'mysql://') || str_starts_with($dbUrl, 'mysqli://'))) {
             $parsed = parse_url($dbUrl);
@@ -222,11 +239,17 @@ class Database extends Config
             $this->default['hostname'] = $cloudHost;
             $this->default['username'] = $cloudUser ?: 'root';
             $this->default['password'] = $cloudPass ?: '';
-            $this->default['database'] = $cloudName ?: (getenv('TIDB_HOST') ? 'test' : 'materiax_db');
+            $this->default['database'] = $cloudName ?: ($resolveEnv(['TIDB_HOST']) ? 'test' : 'materiax_db');
             $this->default['port']     = $cloudPort ?: 4000;
             $this->default['DBDriver'] = 'MySQLi';
-            if (getenv('DB_SSL') || getenv('TIDB_HOST') || (!empty($dbUrl) && str_contains($dbUrl, 'tidbcloud.com'))) {
-                $this->default['encrypt'] = ['ssl_verify' => false];
+
+            $needsSsl = $resolveEnv(['DB_SSL']) || $resolveEnv(['TIDB_HOST']) || (!empty($dbUrl) && str_contains($dbUrl, 'tidbcloud.com')) || (!empty($cloudHost) && str_contains($cloudHost, 'tidbcloud.com'));
+            if ($needsSsl) {
+                $caFile = realpath(__DIR__ . '/../../writable/cacert.pem');
+                $this->default['encrypt'] = [
+                    'ssl_ca'     => ($caFile && file_exists($caFile)) ? $caFile : null,
+                    'ssl_verify' => false,
+                ];
             }
         } elseif (getenv('VERCEL') && empty(getenv('database.default.hostname'))) {
             // Fallback SQLite en Vercel si no se configuró base de datos externa

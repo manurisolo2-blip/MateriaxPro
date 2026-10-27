@@ -41,13 +41,30 @@ if (!file_exists($dbPath) || filesize($dbPath) === 0) {
     }
 }
 
+// Helper para resolver variables de entorno en cualquier contexto (getenv, $_ENV, $_SERVER)
+$resolveEnv = static function (array $keys): ?string {
+    foreach ($keys as $key) {
+        $val = getenv($key);
+        if ($val !== false && $val !== null && trim((string)$val) !== '') {
+            return trim((string)$val);
+        }
+        if (!empty($_ENV[$key]) && trim((string)$_ENV[$key]) !== '') {
+            return trim((string)$_ENV[$key]);
+        }
+        if (!empty($_SERVER[$key]) && trim((string)$_SERVER[$key]) !== '') {
+            return trim((string)$_SERVER[$key]);
+        }
+    }
+    return null;
+};
+
 // Si se configuró base de datos en la nube (TiDB Cloud, Aiven, Clever Cloud, etc.), auto-provisionar tablas
-$dbUrl     = getenv('DATABASE_URL');
-$cloudHost = getenv('TIDB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQL_HOST');
-$cloudUser = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER');
-$cloudPass = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD');
-$cloudName = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE');
-$cloudPort = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 0);
+$dbUrl     = $resolveEnv(['DATABASE_URL', 'TIDB_URL', 'MYSQL_URL', 'JAWSDB_URL', 'CLEARDB_DATABASE_URL']);
+$cloudHost = $resolveEnv(['TIDB_HOST', 'DB_HOST', 'MYSQL_HOST', 'MYSQLHOST', 'DATABASE_HOST']);
+$cloudUser = $resolveEnv(['TIDB_USER', 'DB_USER', 'MYSQL_USER', 'MYSQLUSER', 'DATABASE_USER']);
+$cloudPass = $resolveEnv(['TIDB_PASSWORD', 'DB_PASSWORD', 'MYSQL_PASSWORD', 'MYSQLPASSWORD', 'DATABASE_PASSWORD']);
+$cloudName = $resolveEnv(['TIDB_DATABASE', 'DB_DATABASE', 'MYSQL_DATABASE', 'MYSQLDATABASE', 'DATABASE_NAME']);
+$cloudPort = (int) ($resolveEnv(['TIDB_PORT', 'DB_PORT', 'MYSQL_PORT', 'MYSQLPORT']) ?: 0);
 
 if (!empty($dbUrl) && (str_starts_with($dbUrl, 'mysql://') || str_starts_with($dbUrl, 'mysqli://'))) {
     $parsed = parse_url($dbUrl);
@@ -62,14 +79,19 @@ if (!empty($cloudHost)) {
     try {
         $cloudUser = $cloudUser ?: 'root';
         $cloudPass = $cloudPass ?: '';
-        $cloudName = $cloudName ?: (getenv('TIDB_HOST') ? 'test' : 'materiax_db');
+        $cloudName = $cloudName ?: ($resolveEnv(['TIDB_HOST']) ? 'test' : 'materiax_db');
         $cloudPort = $cloudPort ?: 4000;
 
         $pdoOpts = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_TIMEOUT => 5,
         ];
-        if (getenv('DB_SSL') || getenv('TIDB_HOST')) {
+        $needsSsl = $resolveEnv(['DB_SSL']) || $resolveEnv(['TIDB_HOST']) || (!empty($dbUrl) && str_contains($dbUrl, 'tidbcloud.com')) || (!empty($cloudHost) && str_contains($cloudHost, 'tidbcloud.com'));
+        if ($needsSsl) {
+            $caFile = realpath(__DIR__ . '/../writable/cacert.pem');
+            if ($caFile && file_exists($caFile)) {
+                $pdoOpts[PDO::MYSQL_ATTR_SSL_CA] = $caFile;
+            }
             $pdoOpts[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
         }
 
