@@ -42,13 +42,28 @@ if (!file_exists($dbPath) || filesize($dbPath) === 0) {
 }
 
 // Si se configuró base de datos en la nube (TiDB Cloud, Aiven, Clever Cloud, etc.), auto-provisionar tablas
+$dbUrl     = getenv('DATABASE_URL');
 $cloudHost = getenv('TIDB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQL_HOST');
+$cloudUser = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER');
+$cloudPass = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD');
+$cloudName = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE');
+$cloudPort = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 0);
+
+if (!empty($dbUrl) && (str_starts_with($dbUrl, 'mysql://') || str_starts_with($dbUrl, 'mysqli://'))) {
+    $parsed = parse_url($dbUrl);
+    $cloudHost = $cloudHost ?: ($parsed['host'] ?? null);
+    $cloudUser = $cloudUser ?: (isset($parsed['user']) ? urldecode($parsed['user']) : null);
+    $cloudPass = $cloudPass ?: (isset($parsed['pass']) ? urldecode($parsed['pass']) : null);
+    $cloudPort = $cloudPort ?: (int) ($parsed['port'] ?? 4000);
+    $cloudName = $cloudName ?: (!empty($parsed['path']) ? ltrim($parsed['path'], '/') : null);
+}
+
 if (!empty($cloudHost)) {
     try {
-        $cloudUser = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER') ?: 'root';
-        $cloudPass = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
-        $cloudName = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE') ?: 'materiax_db';
-        $cloudPort = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 4000);
+        $cloudUser = $cloudUser ?: 'root';
+        $cloudPass = $cloudPass ?: '';
+        $cloudName = $cloudName ?: (getenv('TIDB_HOST') ? 'test' : 'materiax_db');
+        $cloudPort = $cloudPort ?: 4000;
 
         $pdoOpts = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

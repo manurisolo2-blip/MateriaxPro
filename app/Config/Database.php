@@ -202,15 +202,30 @@ class Database extends Config
         }
 
         // Detección de base de datos MySQL en la nube (TiDB Cloud, Aiven, Railway, Supabase o VPS)
+        $dbUrl     = getenv('DATABASE_URL');
         $cloudHost = getenv('TIDB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQL_HOST');
+        $cloudUser = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER');
+        $cloudPass = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD');
+        $cloudName = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE');
+        $cloudPort = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 0);
+
+        if (!empty($dbUrl) && (str_starts_with($dbUrl, 'mysql://') || str_starts_with($dbUrl, 'mysqli://'))) {
+            $parsed = parse_url($dbUrl);
+            $cloudHost = $cloudHost ?: ($parsed['host'] ?? null);
+            $cloudUser = $cloudUser ?: (isset($parsed['user']) ? urldecode($parsed['user']) : null);
+            $cloudPass = $cloudPass ?: (isset($parsed['pass']) ? urldecode($parsed['pass']) : null);
+            $cloudPort = $cloudPort ?: (int) ($parsed['port'] ?? 4000);
+            $cloudName = $cloudName ?: (!empty($parsed['path']) ? ltrim($parsed['path'], '/') : null);
+        }
+
         if (!empty($cloudHost)) {
             $this->default['hostname'] = $cloudHost;
-            $this->default['username'] = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER') ?: 'root';
-            $this->default['password'] = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
-            $this->default['database'] = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE') ?: 'materiax_db';
-            $this->default['port']     = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 3306);
+            $this->default['username'] = $cloudUser ?: 'root';
+            $this->default['password'] = $cloudPass ?: '';
+            $this->default['database'] = $cloudName ?: (getenv('TIDB_HOST') ? 'test' : 'materiax_db');
+            $this->default['port']     = $cloudPort ?: 4000;
             $this->default['DBDriver'] = 'MySQLi';
-            if (getenv('DB_SSL') || getenv('TIDB_HOST')) {
+            if (getenv('DB_SSL') || getenv('TIDB_HOST') || (!empty($dbUrl) && str_contains($dbUrl, 'tidbcloud.com'))) {
                 $this->default['encrypt'] = ['ssl_verify' => false];
             }
         } elseif (getenv('VERCEL') && empty(getenv('database.default.hostname'))) {
