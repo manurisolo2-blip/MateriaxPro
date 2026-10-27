@@ -201,8 +201,20 @@ class Database extends Config
             $this->defaultGroup = 'tests';
         }
 
-        // Si se ejecuta en el entorno serverless de Vercel y no se configuró un host MySQL externo
-        if (getenv('VERCEL') && empty(getenv('database.default.hostname')) && empty(getenv('DB_HOST'))) {
+        // Detección de base de datos MySQL en la nube (TiDB Cloud, Aiven, Railway, Supabase o VPS)
+        $cloudHost = getenv('TIDB_HOST') ?: getenv('DB_HOST') ?: getenv('MYSQL_HOST');
+        if (!empty($cloudHost)) {
+            $this->default['hostname'] = $cloudHost;
+            $this->default['username'] = getenv('TIDB_USER') ?: getenv('DB_USER') ?: getenv('MYSQL_USER') ?: 'root';
+            $this->default['password'] = getenv('TIDB_PASSWORD') ?: getenv('DB_PASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
+            $this->default['database'] = getenv('TIDB_DATABASE') ?: getenv('DB_DATABASE') ?: getenv('MYSQL_DATABASE') ?: 'materiax_db';
+            $this->default['port']     = (int) (getenv('TIDB_PORT') ?: getenv('DB_PORT') ?: getenv('MYSQL_PORT') ?: 3306);
+            $this->default['DBDriver'] = 'MySQLi';
+            if (getenv('DB_SSL') || getenv('TIDB_HOST')) {
+                $this->default['encrypt'] = ['ssl_verify' => false];
+            }
+        } elseif (getenv('VERCEL') && empty(getenv('database.default.hostname'))) {
+            // Fallback SQLite en Vercel si no se configuró base de datos externa
             $tmp = sys_get_temp_dir();
             $baseWritable = (!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp';
             $dbPath = rtrim($baseWritable, '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable' . DIRECTORY_SEPARATOR . 'materiax_db.sqlite';

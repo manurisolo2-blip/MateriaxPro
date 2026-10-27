@@ -60,6 +60,8 @@ $routes->group('certificados', ['filter' => 'auth'], static function ($routes) {
 $routes->group('mensajes', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Mensajes::index');
     $routes->post('enviar', 'Mensajes::enviar');
+    $routes->get('nuevos', 'Mensajes::nuevos');
+    $routes->get('conteo', 'Mensajes::conteoNoLeidos');
     $routes->get('ver/(:num)', 'Mensajes::ver/$1');
 });
 

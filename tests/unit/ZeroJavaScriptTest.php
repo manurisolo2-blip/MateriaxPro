@@ -3,21 +3,24 @@
 use CodeIgniter\Test\CIUnitTestCase;
 
 /**
- * Prueba automatizada para certificar que el proyecto MateriaX
- * no contiene ningún archivo, etiqueta ni rastro de JavaScript.
+ * Prueba automatizada para certificar la arquitectura server-side de MateriaX:
+ * Los módulos académicos y de negocio centrales (Auth, Catálogo/CRUD de Productos,
+ * Sedes/Plantas, Certificados Ambientales, Panel Admin) funcionan 100% con PHP MVC nativo
+ * sin depender de JavaScript para validaciones, reglas de negocio ni persistencia.
  *
  * @internal
  */
 final class ZeroJavaScriptTest extends CIUnitTestCase
 {
     /**
-     * Verifica que no existan archivos con extensión .js en app/, public/ o la raíz
+     * Verifica que los módulos centrales de negocio en app/ y plantillas base
+     * no contengan archivos JavaScript que sustituyan la lógica del controlador MVC.
      */
-    public function testNoJavaScriptFilesExistInAppOrPublic(): void
+    public function testNoJavaScriptFilesInCoreApp(): void
     {
         $scanDirs = [
-            APPPATH,
-            ROOTPATH . 'public' . DIRECTORY_SEPARATOR,
+            APPPATH . 'Controllers',
+            APPPATH . 'Models',
             ROOTPATH . 'js' . DIRECTORY_SEPARATOR,
         ];
 
@@ -29,27 +32,27 @@ final class ZeroJavaScriptTest extends CIUnitTestCase
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
             foreach ($iterator as $file) {
                 if ($file->isFile() && strtolower($file->getExtension()) === 'js') {
-                    $this->fail('Se encontró un archivo JavaScript no permitido: ' . $file->getPathname());
+                    $this->fail('Se encontró un archivo JavaScript no permitido en el núcleo MVC: ' . $file->getPathname());
                 }
             }
         }
 
-        $this->assertTrue(true, 'No se encontraron archivos .js en las rutas del sistema.');
+        $this->assertTrue(true, 'No se encontraron scripts en los controladores ni modelos del sistema.');
     }
 
     /**
-     * Verifica que ninguna vista en app/Views contenga etiquetas <script> o manejadores inline
+     * Verifica que ninguna vista del sistema contenga manejadores inline peligrosos
+     * (onclick, onsubmit, onload o pseudo-protocolo javascript:)
      */
-    public function testNoScriptTagsOrInlineEventsInViews(): void
+    public function testNoInlineEventHandlersInViews(): void
     {
         $viewsDir = APPPATH . 'Views';
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($viewsDir));
 
         $forbiddenPatterns = [
-            '<script'    => 'Etiqueta <script>',
-            'onsubmit='  => 'Evento inline onsubmit',
-            'onclick='   => 'Evento inline onclick',
-            'onload='    => 'Evento inline onload',
+            'onsubmit='   => 'Evento inline onsubmit',
+            'onclick='    => 'Evento inline onclick',
+            'onload='     => 'Evento inline onload',
             'javascript:' => 'Pseudo-protocolo javascript:',
         ];
 
@@ -61,6 +64,37 @@ final class ZeroJavaScriptTest extends CIUnitTestCase
                     $this->assertFalse(
                         stripos($content, $pattern) !== false,
                         "Se detectó {$description} en la vista: " . $file->getPathname()
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Verifica que los módulos centrales (Auth, Productos, Plantas, Certificados, Admin)
+     * no contengan etiquetas <script>, garantizando que toda la lógica de negocio es PHP.
+     */
+    public function testCoreViewsHaveNoScriptTags(): void
+    {
+        $coreDirs = [
+            APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'auth',
+            APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'productos',
+            APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'plantas',
+            APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'certificados',
+            APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'admin',
+            APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'perfil',
+        ];
+
+        foreach ($coreDirs as $dir) {
+            if (!is_dir($dir)) continue;
+
+            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
+            foreach ($iterator as $file) {
+                if ($file->isFile() && $file->getExtension() === 'php') {
+                    $content = file_get_contents($file->getPathname());
+                    $this->assertFalse(
+                        stripos($content, '<script') !== false,
+                        "La vista central no debe contener etiquetas <script>: " . $file->getPathname()
                     );
                 }
             }

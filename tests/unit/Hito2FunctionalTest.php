@@ -160,4 +160,58 @@ final class Hito2FunctionalTest extends CIUnitTestCase
         // Limpiar registro de prueba
         $mensajeModel->delete($insertId);
     }
+
+    /**
+     * Valida la sincronización en tiempo real y polling de mensajes nuevos
+     */
+    public function testPollingMensajesNuevos(): void
+    {
+        $db = Database::connect('default');
+        $mensajeModel = new \App\Models\MensajeModel($db);
+
+        // Insertar mensaje inicial
+        $msg1 = $mensajeModel->insert([
+            'producto_id'    => 2,
+            'transaccion_id' => null,
+            'emisor_id'      => 1,
+            'receptor_id'    => 2,
+            'mensaje'        => 'Primer mensaje para probar polling',
+            'leido'          => 0,
+        ]);
+
+        // Insertar segundo mensaje
+        $msg2 = $mensajeModel->insert([
+            'producto_id'    => 2,
+            'transaccion_id' => null,
+            'emisor_id'      => 2,
+            'receptor_id'    => 1,
+            'mensaje'        => 'Respuesta instantánea simultánea',
+            'leido'          => 0,
+        ]);
+
+        // Consultar mensajes con id > msg1
+        $builder = $mensajeModel->builder();
+        $builder->where('id >', $msg1);
+        $builder->where('producto_id', 2);
+        $nuevos = $builder->get()->getResultArray();
+
+        $this->assertNotEmpty($nuevos, 'El polling debe recuperar los mensajes nuevos sin recargar página.');
+        $this->assertSame((int)$msg2, (int)$nuevos[0]['id'], 'El nuevo mensaje debe coincidir con el segundo emitido.');
+
+        // Limpiar
+        $mensajeModel->delete($msg1);
+        $mensajeModel->delete($msg2);
+    }
+
+    /**
+     * Valida que los usuarios registrados se mantengan permanentemente
+     */
+    public function testUsuariosPermanecenEnBaseDeDatos(): void
+    {
+        $db = Database::connect('default');
+        $userModel = new \App\Models\UserModel($db);
+
+        $totalUsuarios = $userModel->countAllResults();
+        $this->assertGreaterThanOrEqual(6, $totalUsuarios, 'La base de datos debe preservar permanentemente todas las cuentas de usuario registradas.');
+    }
 }

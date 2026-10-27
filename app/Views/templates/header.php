@@ -45,7 +45,7 @@
             <?php $noLeidos = contar_mensajes_no_leidos(); ?>
             <li class="nav-item">
               <a href="<?= site_url('mensajes') ?>" <?= nav_attr(url_is('mensajes*')) ?>>
-                Mensajes<?php if ($noLeidos > 0): ?> <span class="badge badge-success" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; vertical-align: middle; border-radius: 999px;"><?= $noLeidos ?></span><?php endif; ?>
+                Mensajes <span class="badge badge-success badge-mensajes-live" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; vertical-align: middle; border-radius: 999px; <?= ($noLeidos > 0) ? '' : 'display: none;' ?>"><?= $noLeidos ?></span>
               </a>
             </li>
           <?php endif; ?>

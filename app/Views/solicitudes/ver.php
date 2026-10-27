@@ -216,13 +216,13 @@
       </p>
 
       <!-- Historial de mensajes -->
-      <div class="chat-thread" style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 420px; overflow-y: auto; padding: 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+      <div id="chatContainer" class="chat-thread" data-transaccion-id="<?= esc($transaccion['id']) ?>" data-user-id="<?= esc($userId) ?>" data-base-url="<?= site_url('/') ?>" style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 420px; overflow-y: auto; padding: 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
         <?php if (!empty($mensajes)): ?>
           <?php foreach ($mensajes as $msg): ?>
             <?php 
               $esMio = ((int) $msg['emisor_id'] === $userId);
             ?>
-            <div style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
+            <div id="msg-<?= $msg['id'] ?>" data-msg-id="<?= $msg['id'] ?>" style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
               <div style="font-size: 0.78rem; color: var(--color-ink-2); margin-bottom: 0.2rem; padding: 0 0.25rem;">
                 <strong><?= $esMio ? 'Tú (' . esc($msg['emisor_nombre']) . ')' : esc($msg['emisor_nombre']) ?></strong>
                 &bull; <?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?>
@@ -249,7 +249,7 @@
         $receptorId = $esVendedor ? (int)$transaccion['comprador_id'] : (int)$transaccion['vendedor_id'];
         $receptorNombre = $esVendedor ? $transaccion['comprador_nombre'] : $transaccion['vendedor_nombre'];
       ?>
-      <form action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
+      <form id="chatForm" action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
         <?= csrf_field() ?>
         <input type="hidden" name="transaccion_id" value="<?= esc($transaccion['id']) ?>">
         <input type="hidden" name="producto_id" value="<?= esc($transaccion['producto_id']) ?>">
@@ -261,7 +261,7 @@
           </label>
           <textarea 
             name="mensaje" 
-            id="mensaje" 
+            id="chatInput" placeholder="Escribe tu mensaje o consulta de coordinación aquí (Enter para enviar, Shift+Enter para salto de línea)..." 
             rows="3" 
             class="form-control" 
             placeholder="Escribe tu mensaje o consulta de coordinación aquí..." 
@@ -288,5 +288,7 @@
   </div>
 
 </div>
+
+<script src="<?= base_url('assets/chat.js') ?>"></script>
 
 <?= view('templates/footer') ?>

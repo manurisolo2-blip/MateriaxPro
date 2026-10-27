@@ -10,10 +10,7 @@ USE `materiax_db`;
 -- ------------------------------------------------------------------------------
 -- 1. TABLA: usuarios (Cuentas Empresariales Completas)
 -- ------------------------------------------------------------------------------
-DROP TABLE IF EXISTS `productos`;
-DROP TABLE IF EXISTS `usuarios`;
-
-CREATE TABLE `usuarios` (
+CREATE TABLE IF NOT EXISTS `usuarios` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `nombre` VARCHAR(100) NOT NULL COMMENT 'Nombre completo o razón social de la empresa',
   `email` VARCHAR(150) NOT NULL UNIQUE COMMENT 'Correo electrónico corporativo para login',
@@ -36,7 +33,7 @@ CREATE TABLE `usuarios` (
 -- ------------------------------------------------------------------------------
 -- 2. TABLA: productos (Entidad Secundaria - Excedentes de Polímeros Industriales)
 -- ------------------------------------------------------------------------------
-CREATE TABLE `productos` (
+CREATE TABLE IF NOT EXISTS `productos` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `user_id` INT NOT NULL COMMENT 'Clave foránea que referencia al usuario que publicó el lote',
   `nombre` VARCHAR(150) NOT NULL COMMENT 'Denominación del material o lote',
