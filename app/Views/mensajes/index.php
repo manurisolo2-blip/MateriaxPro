@@ -57,8 +57,8 @@
         <?php 
           $tieneNoLeidos = ($conv['no_leidos'] > 0);
           $linkDestino   = !empty($conv['transaccion_id']) 
-            ? site_url('solicitudes/ver/' . $conv['transaccion_id'] . '#chat') 
-            : site_url('productos/ver/' . $conv['producto_id'] . '#consultas');
+            ? site_url('mensajes/chat/transaccion/' . $conv['transaccion_id']) 
+            : site_url('mensajes/chat/producto/' . $conv['producto_id'] . '/' . $conv['otra_empresa_id']);
         ?>
         <div class="card" style="padding: 1.25rem 1.5rem; transition: transform 0.15s ease; <?= $tieneNoLeidos ? 'border-left: 4px solid var(--color-primary); background-color: var(--color-paper-surface);' : '' ?>">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">

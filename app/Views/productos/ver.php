@@ -133,11 +133,14 @@
     </div>
   </div>
 
-  <!-- Consultas directas al oferente del lote -->
+  <!-- Consultas directas al oferente del lote (Comprador) -->
   <?php if ($isLogged && !$esPropio): ?>
     <div id="consultas" class="card" style="margin-top: 1.5rem;">
-      <div class="card-header">
-        <h3 class="card-title">💬 Consultar a <?= esc($producto['empresa_nombre'] ?? 'la Empresa Oferente') ?></h3>
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+        <h3 class="card-title" style="margin: 0;">💬 Consultar a <?= esc($producto['empresa_nombre'] ?? 'la Empresa Oferente') ?></h3>
+        <a href="<?= site_url('mensajes/chat/producto/' . $producto['id'] . '/' . $producto['user_id']) ?>" class="btn btn-secondary btn-sm">
+          Abrir Chat Completo &rarr;
+        </a>
       </div>
       <div class="card-body">
         <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-top: 0; margin-bottom: 1rem;">
@@ -178,11 +181,53 @@
             ></textarea>
           </div>
           <div style="display: flex; justify-content: flex-end;">
-            <button type="submit" class="btn btn-secondary btn-sm">
+            <button type="submit" class="btn btn-primary btn-sm">
               Enviar Consulta al Vendedor &rarr;
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  <?php elseif ($isLogged && $esPropio): ?>
+    <!-- Panel del Vendedor: Consultas recibidas de interesados sobre este lote -->
+    <div id="consultas" class="card" style="margin-top: 1.5rem;">
+      <div class="card-header">
+        <h3 class="card-title">💬 Consultas de Interesados Recibidas</h3>
+      </div>
+      <div class="card-body">
+        <?php if (!empty($consultasRecibidas)): ?>
+          <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-top: 0; margin-bottom: 1rem;">
+            Las siguientes empresas han enviado consultas sobre este lote. Haz clic en "Abrir Conversación" para responderles:
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <?php 
+              $agrupadas = [];
+              foreach ($consultasRecibidas as $cr) {
+                  if (!isset($agrupadas[$cr['emisor_id']])) {
+                      $agrupadas[$cr['emisor_id']] = $cr;
+                  }
+              }
+            ?>
+            <?php foreach ($agrupadas as $cr): ?>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); flex-wrap: wrap; gap: 0.5rem;">
+                <div>
+                  <strong style="color: var(--color-ink); font-size: 0.95rem;"><?= esc($cr['emisor_nombre']) ?></strong>
+                  <div style="font-size: 0.85rem; color: var(--color-ink-2); margin-top: 0.2rem;">
+                    "<?= esc(mb_strimwidth($cr['mensaje'], 0, 90, '...')) ?>"
+                  </div>
+                  <span style="font-size: 0.75rem; color: var(--color-ink-2);"><?= date('d/m/Y H:i', strtotime($cr['created_at'])) ?></span>
+                </div>
+                <a href="<?= site_url('mensajes/chat/producto/' . $producto['id'] . '/' . $cr['emisor_id']) ?>" class="btn btn-primary btn-sm">
+                  Abrir Conversación &rarr;
+                </a>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php else: ?>
+          <p style="font-size: 0.88rem; color: var(--color-ink-2); margin: 0;">
+            No has recibido consultas de otras empresas sobre este lote por el momento.
+          </p>
+        <?php endif; ?>
       </div>
     </div>
   <?php endif; ?>

@@ -153,12 +153,100 @@ class Mensajes extends BaseController
 
         // Redireccionar al hilo correspondiente en formulario tradicional
         if ($transaccionId) {
-            return redirect()->to(site_url("solicitudes/ver/{$transaccionId}#chat"))
+            return redirect()->to(site_url("mensajes/chat/transaccion/{$transaccionId}"))
                              ->with('success', '¡Mensaje enviado a la contraparte!');
         }
 
-        return redirect()->to(site_url("productos/ver/{$productoId}#consultas"))
+        return redirect()->to(site_url("mensajes/chat/producto/{$productoId}/{$receptorId}"))
                          ->with('success', '¡Consulta enviada al vendedor del lote!');
+    }
+
+    /**
+     * Vista de chat dedicada para una transacción comercial
+     */
+    public function chatTransaccion($transaccionId)
+    {
+        $userId = (int) session()->get('user_id');
+        $transaccion = $this->transaccionModel->select('transacciones.*, 
+                                                        p.nombre AS producto_nombre, 
+                                                        p.tipo_polimero,
+                                                        c.nombre AS comprador_nombre, 
+                                                        v.nombre AS vendedor_nombre')
+                                             ->join('productos p', 'p.id = transacciones.producto_id', 'left')
+                                             ->join('usuarios c', 'c.id = transacciones.comprador_id', 'left')
+                                             ->join('usuarios v', 'v.id = transacciones.vendedor_id', 'left')
+                                             ->find($transaccionId);
+
+        if (!$transaccion) {
+            throw PageNotFoundException::forPageNotFound('Operación comercial no encontrada.');
+        }
+
+        if ((int)$transaccion['comprador_id'] !== $userId && (int)$transaccion['vendedor_id'] !== $userId && session()->get('rol') !== 'admin') {
+            return redirect()->to(site_url('mensajes'))->with('error', 'Acceso denegado: no eres parte de esta operación.');
+        }
+
+        $esComprador       = ((int)$transaccion['comprador_id'] === $userId);
+        $otraEmpresaId     = $esComprador ? (int)$transaccion['vendedor_id'] : (int)$transaccion['comprador_id'];
+        $otraEmpresaNombre = $esComprador ? $transaccion['vendedor_nombre'] : $transaccion['comprador_nombre'];
+
+        // Marcar mensajes como leídos
+        $this->mensajeModel->marcarLeidosTransaccion((int)$transaccionId, $userId);
+
+        $mensajes = $this->mensajeModel->getMensajesPorTransaccion((int)$transaccionId);
+
+        return view('mensajes/conversacion', [
+            'pageTitle'     => 'Chat: ' . esc($otraEmpresaNombre) . ' | MateriaX',
+            'tipo'          => 'transaccion',
+            'transaccion'   => $transaccion,
+            'producto'      => null,
+            'otraEmpresa'   => ['id' => $otraEmpresaId, 'nombre' => $otraEmpresaNombre],
+            'mensajes'      => $mensajes,
+            'userId'        => $userId,
+            'transaccionId' => (int) $transaccionId,
+            'productoId'    => (int) $transaccion['producto_id'],
+            'receptorId'    => $otraEmpresaId,
+        ]);
+    }
+
+    /**
+     * Vista de chat dedicada para consultas sobre un lote de material
+     */
+    public function chatProducto($productoId, $otraEmpresaId)
+    {
+        $userId   = (int) session()->get('user_id');
+        $producto = $this->productoModel->getProductosConUsuario((int)$productoId);
+
+        if (!$producto) {
+            throw PageNotFoundException::forPageNotFound('Lote de polímero no encontrado.');
+        }
+
+        $otraEmpresa = $this->userModel->find($otraEmpresaId);
+        if (!$otraEmpresa) {
+            throw PageNotFoundException::forPageNotFound('Empresa de contacto no encontrada.');
+        }
+
+        $esDuenio = ((int)$producto['user_id'] === $userId);
+        if (!$esDuenio && $userId !== (int)$otraEmpresaId && session()->get('rol') !== 'admin') {
+            return redirect()->to(site_url('mensajes'))->with('error', 'Acceso denegado a esta consulta.');
+        }
+
+        // Marcar consultas como leídas
+        $this->mensajeModel->marcarLeidosProducto((int)$productoId, (int)$otraEmpresaId, $userId);
+
+        $mensajes = $this->mensajeModel->getMensajesPorProducto((int)$productoId, $userId, (int)$otraEmpresaId);
+
+        return view('mensajes/conversacion', [
+            'pageTitle'     => 'Consulta: ' . esc($producto['nombre']) . ' | MateriaX',
+            'tipo'          => 'producto',
+            'transaccion'   => null,
+            'producto'      => $producto,
+            'otraEmpresa'   => ['id' => (int)$otraEmpresa['id'], 'nombre' => $otraEmpresa['nombre']],
+            'mensajes'      => $mensajes,
+            'userId'        => $userId,
+            'transaccionId' => null,
+            'productoId'    => (int) $productoId,
+            'receptorId'    => (int) $otraEmpresaId,
+        ]);
     }
 
     /**
@@ -191,6 +279,7 @@ class Mensajes extends BaseController
             $builder->where('transaccion_id', $transaccionId);
         } else {
             $builder->where('producto_id', $productoId)
+                    ->where('transaccion_id', null)
                     ->groupStart()
                         ->where('emisor_id', $userId)
                         ->orWhere('receptor_id', $userId)
@@ -247,6 +336,6 @@ class Mensajes extends BaseController
             throw PageNotFoundException::forPageNotFound('Identificador de operación inválido.');
         }
 
-        return redirect()->to(site_url("solicitudes/ver/{$transaccionId}#chat"));
+        return redirect()->to(site_url("mensajes/chat/transaccion/{$transaccionId}"));
     }
 }

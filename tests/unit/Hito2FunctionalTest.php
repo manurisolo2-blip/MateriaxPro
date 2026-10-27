@@ -214,4 +214,17 @@ final class Hito2FunctionalTest extends CIUnitTestCase
         $totalUsuarios = $userModel->countAllResults();
         $this->assertGreaterThanOrEqual(6, $totalUsuarios, 'La base de datos debe preservar permanentemente todas las cuentas de usuario registradas.');
     }
+
+    /**
+     * Valida que getMensajesPorProducto ejecute la consulta SQL correctamente sin errores de sintaxis
+     */
+    public function testConsultaDirectaProductoSinSqlError(): void
+    {
+        $db = Database::connect('default');
+        $mensajeModel = new \App\Models\MensajeModel($db);
+
+        // Debe ejecutarse limpiamente sin lanzar DatabaseException
+        $mensajes = $mensajeModel->getMensajesPorProducto(2, 1, 2);
+        $this->assertIsArray($mensajes, 'getMensajesPorProducto debe retornar un array de consultas.');
+    }
 }

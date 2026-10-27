@@ -70,7 +70,7 @@ class MensajeModel extends Model
                     ->join('usuarios emisor', 'emisor.id = mensajes_negociacion.emisor_id', 'left')
                     ->join('usuarios receptor', 'receptor.id = mensajes_negociacion.receptor_id', 'left')
                     ->where('mensajes_negociacion.producto_id', $productoId)
-                    ->where('mensajes_negociacion.transaccion_id IS NULL')
+                    ->where('mensajes_negociacion.transaccion_id', null)
                     ->groupStart()
                         ->groupStart()
                             ->where('mensajes_negociacion.emisor_id', $userId1)
@@ -83,6 +83,20 @@ class MensajeModel extends Model
                     ->groupEnd()
                     ->orderBy('mensajes_negociacion.created_at', 'ASC')
                     ->findAll();
+    }
+
+    /**
+     * Marca como leídos los mensajes de consulta sobre un producto
+     */
+    public function marcarLeidosProducto(int $productoId, int $emisorId, int $receptorId): void
+    {
+        $this->where('producto_id', $productoId)
+             ->where('transaccion_id', null)
+             ->where('emisor_id', $emisorId)
+             ->where('receptor_id', $receptorId)
+             ->where('leido', 0)
+             ->set(['leido' => 1, 'fecha_lectura' => date('Y-m-d H:i:s')])
+             ->update();
     }
 
     /**
