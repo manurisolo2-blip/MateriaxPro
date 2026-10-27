@@ -132,6 +132,61 @@
       </div>
     </div>
   </div>
+
+  <!-- Consultas directas al oferente del lote -->
+  <?php if ($isLogged && !$esPropio): ?>
+    <div id="consultas" class="card" style="margin-top: 1.5rem;">
+      <div class="card-header">
+        <h3 class="card-title">💬 Consultar a <?= esc($producto['empresa_nombre'] ?? 'la Empresa Oferente') ?></h3>
+      </div>
+      <div class="card-body">
+        <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-top: 0; margin-bottom: 1rem;">
+          ¿Tienes dudas sobre la pureza del polímero, molienda, embalaje o logística antes de ofertar? Escríbele directamente.
+        </p>
+
+        <?php if (!empty($consultas)): ?>
+          <div class="chat-thread" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 280px; overflow-y: auto; padding: 0.85rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1rem;">
+            <?php foreach ($consultas as $msg): ?>
+              <?php $esMio = ((int)$msg['emisor_id'] === $userId); ?>
+              <div style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
+                <div style="font-size: 0.75rem; color: var(--color-ink-2); margin-bottom: 0.15rem;">
+                  <strong><?= $esMio ? 'Tú' : esc($msg['emisor_nombre']) ?></strong> &bull; <?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?>
+                </div>
+                <div style="max-width: 85%; padding: 0.6rem 0.85rem; border-radius: 10px; font-size: 0.88rem; <?= $esMio ? 'background-color: var(--color-primary); color: #fff;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule);' ?>">
+                  <?= esc($msg['mensaje']) ?>
+                </div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+
+        <form action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
+          <?= csrf_field() ?>
+          <input type="hidden" name="producto_id" value="<?= esc($producto['id']) ?>">
+          <input type="hidden" name="receptor_id" value="<?= esc($producto['user_id']) ?>">
+
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <textarea 
+              name="mensaje" 
+              rows="2" 
+              class="form-control" 
+              placeholder="Escribe tu consulta para el oferente aquí..." 
+              required 
+              minlength="2" 
+              maxlength="2000"
+              style="resize: vertical;"
+            ></textarea>
+          </div>
+          <div style="display: flex; justify-content: flex-end;">
+            <button type="submit" class="btn btn-secondary btn-sm">
+              Enviar Consulta al Vendedor &rarr;
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  <?php endif; ?>
+
 </div>
 
 <?= view('templates/footer') ?>

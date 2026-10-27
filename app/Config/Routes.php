@@ -56,6 +56,13 @@ $routes->group('certificados', ['filter' => 'auth'], static function ($routes) {
     $routes->get('ver/(:segment)', 'Certificados::ver/$1');
 });
 
+// Módulo de Comunicación B2B y Mensajería entre Empresas (Protegido con 'auth')
+$routes->group('mensajes', ['filter' => 'auth'], static function ($routes) {
+    $routes->get('/', 'Mensajes::index');
+    $routes->post('enviar', 'Mensajes::enviar');
+    $routes->get('ver/(:num)', 'Mensajes::ver/$1');
+});
+
 // Módulo Funcional: CRUD de Entidad Secundaria (Productos)
 // Protegido estrictamente con el filtro de autenticación 'auth' (Solo visible para usuarios logueados)
 $routes->group('productos', ['filter' => 'auth'], static function ($routes) {

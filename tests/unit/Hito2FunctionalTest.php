@@ -126,4 +126,38 @@ final class Hito2FunctionalTest extends CIUnitTestCase
             'La tabla productos debe poseer la columna planta_id para vincular la sede de retiro.'
         );
     }
+
+    /**
+     * Valida la mensajería B2B entre empresas, conteo de no leídos y marcado
+     */
+    public function testMensajeriaEntreEmpresas(): void
+    {
+        $db = Database::connect('default');
+        $mensajeModel = new \App\Models\MensajeModel($db);
+
+        // Crear un mensaje de prueba de empresa 2 a empresa 1
+        $msgData = [
+            'producto_id'    => 2,
+            'transaccion_id' => null,
+            'emisor_id'      => 2,
+            'receptor_id'    => 1,
+            'mensaje'        => 'Mensaje de prueba unitaria: ¿El scrap de PP viene en bolsones big bag?',
+            'leido'          => 0,
+        ];
+
+        $insertId = $mensajeModel->insert($msgData);
+        $this->assertIsNumeric($insertId, 'El mensaje entre empresas debe registrarse correctamente.');
+
+        // Empresa 1 debe tener al menos 1 no leído
+        $noLeidos = $mensajeModel->contarNoLeidos(1);
+        $this->assertGreaterThanOrEqual(1, $noLeidos, 'La empresa receptora debe registrar mensajes no leídos.');
+
+        // Marcar como leído
+        $mensajeModel->update($insertId, ['leido' => 1, 'fecha_lectura' => date('Y-m-d H:i:s')]);
+        $msgGuardado = $mensajeModel->find($insertId);
+        $this->assertSame(1, (int)$msgGuardado['leido'], 'El mensaje debe quedar marcado como leído.');
+
+        // Limpiar registro de prueba
+        $mensajeModel->delete($insertId);
+    }
 }

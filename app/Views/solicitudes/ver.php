@@ -200,6 +200,87 @@
     </div>
   </div>
 
+  <!-- Canal de Comunicación B2B y Negociación Directa -->
+  <div id="chat" class="card" style="margin-bottom: 1.5rem;">
+    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+      <h3 class="card-title" style="margin: 0;">
+        💬 Canal de Comunicación entre Empresas
+      </h3>
+      <span style="font-size: 0.85rem; color: var(--color-ink-2);">
+        <?= count($mensajes ?? []) ?> mensaje(s)
+      </span>
+    </div>
+    <div class="card-body">
+      <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-top: 0; margin-bottom: 1rem;">
+        Utilicen este canal directo para coordinar especificaciones del polímero, logística de flete, ingreso a báscula y fecha de retiro.
+      </p>
+
+      <!-- Historial de mensajes -->
+      <div class="chat-thread" style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 420px; overflow-y: auto; padding: 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+        <?php if (!empty($mensajes)): ?>
+          <?php foreach ($mensajes as $msg): ?>
+            <?php 
+              $esMio = ((int) $msg['emisor_id'] === $userId);
+            ?>
+            <div style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
+              <div style="font-size: 0.78rem; color: var(--color-ink-2); margin-bottom: 0.2rem; padding: 0 0.25rem;">
+                <strong><?= $esMio ? 'Tú (' . esc($msg['emisor_nombre']) . ')' : esc($msg['emisor_nombre']) ?></strong>
+                &bull; <?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?>
+                <?php if ($esMio): ?>
+                  <span style="font-size: 0.75rem; color: <?= $msg['leido'] ? 'var(--color-success-text)' : 'var(--color-ink-2)' ?>;">
+                    <?= $msg['leido'] ? '&check;&check; Leído' : '&check; Enviado' ?>
+                  </span>
+                <?php endif; ?>
+              </div>
+              <div style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.5; white-space: pre-line; word-break: break-word; <?= $esMio ? 'background-color: var(--color-primary); color: #ffffff; border-bottom-right-radius: 2px;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule); border-bottom-left-radius: 2px;' ?>">
+                <?= esc($msg['mensaje']) ?>
+              </div>
+            </div>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <div style="text-align: center; padding: 2rem 1rem; color: var(--color-ink-2); font-size: 0.9rem;">
+            Aún no se han enviado mensajes en esta operación. ¡Escribe el primero a continuación!
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <!-- Formulario para enviar mensaje nuevo -->
+      <?php 
+        $receptorId = $esVendedor ? (int)$transaccion['comprador_id'] : (int)$transaccion['vendedor_id'];
+        $receptorNombre = $esVendedor ? $transaccion['comprador_nombre'] : $transaccion['vendedor_nombre'];
+      ?>
+      <form action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
+        <?= csrf_field() ?>
+        <input type="hidden" name="transaccion_id" value="<?= esc($transaccion['id']) ?>">
+        <input type="hidden" name="producto_id" value="<?= esc($transaccion['producto_id']) ?>">
+        <input type="hidden" name="receptor_id" value="<?= esc($receptorId) ?>">
+
+        <div class="form-group" style="margin-bottom: 0.75rem;">
+          <label for="mensaje" class="form-label" style="font-size: 0.88rem;">
+            Enviar mensaje a <strong><?= esc($receptorNombre) ?></strong>:
+          </label>
+          <textarea 
+            name="mensaje" 
+            id="mensaje" 
+            rows="3" 
+            class="form-control" 
+            placeholder="Escribe tu mensaje o consulta de coordinación aquí..." 
+            required 
+            minlength="2" 
+            maxlength="2000"
+            style="resize: vertical;"
+          ></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end;">
+          <button type="submit" class="btn btn-primary">
+            Enviar Mensaje &rarr;
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div style="display: flex; gap: 0.75rem;">
     <a href="<?= site_url('solicitudes/' . ($esVendedor ? 'recibidas' : 'enviadas')) ?>" class="btn btn-secondary">
       &larr; Volver a Solicitudes

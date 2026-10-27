@@ -6,6 +6,7 @@ use App\Models\TransaccionModel;
 use App\Models\ProductoModel;
 use App\Models\UserModel;
 use App\Models\CertificadoModel;
+use App\Models\MensajeModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 
@@ -23,6 +24,7 @@ class Solicitudes extends BaseController
         $this->productoModel    = new ProductoModel();
         $this->userModel        = new UserModel();
         $this->certificadoModel = new CertificadoModel();
+        $this->mensajeModel     = new MensajeModel();
     }
 
     /**
@@ -176,10 +178,15 @@ class Solicitudes extends BaseController
 
         $certificado = $this->certificadoModel->where('transaccion_id', $trx['id'])->first();
 
+        $userId = (int) session()->get('user_id');
+        $this->mensajeModel->marcarLeidosTransaccion((int) $trx['id'], $userId);
+        $mensajes = $this->mensajeModel->getMensajesPorTransaccion((int) $trx['id']);
+
         return view('solicitudes/ver', [
             'pageTitle'   => "Operación {$trx['codigo_operacion']} | MateriaX",
             'transaccion' => $trx,
             'certificado' => $certificado,
+            'mensajes'    => $mensajes,
         ]);
     }
 

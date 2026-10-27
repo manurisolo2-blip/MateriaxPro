@@ -103,3 +103,19 @@ if (! function_exists('nav_attr')) {
         return $isActive ? 'class="active" aria-current="page"' : '';
     }
 }
+
+
+if (! function_exists('contar_mensajes_no_leidos')) {
+    function contar_mensajes_no_leidos(): int
+    {
+        $userId = (int) session()->get('user_id');
+        if ($userId <= 0) {
+            return 0;
+        }
+        try {
+            return (new \App\Models\MensajeModel())->contarNoLeidos($userId);
+        } catch (\Throwable $e) {
+            return 0;
+        }
+    }
+}

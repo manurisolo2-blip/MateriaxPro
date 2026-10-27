@@ -42,6 +42,12 @@
             <li class="nav-item"><a href="<?= site_url('plantas') ?>" <?= nav_attr(url_is('plantas*')) ?>>Mis Plantas</a></li>
             <li class="nav-item"><a href="<?= site_url('solicitudes') ?>" <?= nav_attr(url_is('solicitudes*')) ?>>Solicitudes</a></li>
             <li class="nav-item"><a href="<?= site_url('certificados') ?>" <?= nav_attr(url_is('certificados*')) ?>>Certificados</a></li>
+            <?php $noLeidos = contar_mensajes_no_leidos(); ?>
+            <li class="nav-item">
+              <a href="<?= site_url('mensajes') ?>" <?= nav_attr(url_is('mensajes*')) ?>>
+                Mensajes<?php if ($noLeidos > 0): ?> <span class="badge badge-success" style="font-size: 0.72rem; padding: 0.15rem 0.45rem; vertical-align: middle; border-radius: 999px;"><?= $noLeidos ?></span><?php endif; ?>
+              </a>
+            </li>
           <?php endif; ?>
         <?php else: ?>
           <li class="nav-item"><a href="<?= site_url('/') ?>" <?= nav_attr(url_is('/') || url_is('')) ?>>Inicio</a></li>

@@ -94,9 +94,17 @@ class Productos extends BaseController
             throw PageNotFoundException::forPageNotFound('El producto solicitado no existe o fue eliminado.');
         }
 
+        $userId = (int) session()->get('user_id');
+        $consultas = [];
+        if ($userId > 0 && $userId !== (int)$producto['user_id']) {
+            $mensajeModel = new \App\Models\MensajeModel();
+            $consultas = $mensajeModel->getMensajesPorProducto((int)$id, $userId, (int)$producto['user_id']);
+        }
+
         return view('productos/ver', [
             'pageTitle' => esc($producto['nombre']) . ' | MateriaX',
             'producto'  => $producto,
+            'consultas' => $consultas,
         ]);
     }
 

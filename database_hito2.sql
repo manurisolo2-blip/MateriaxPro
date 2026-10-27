@@ -113,4 +113,29 @@ CREATE TABLE IF NOT EXISTS `certificados_ambientales` (
   CONSTRAINT `fk_cert_revalorizadora` FOREIGN KEY (`revalorizadora_id`) REFERENCES `usuarios` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+-- ------------------------------------------------------------------------------
+-- 5. TABLA: mensajes_negociacion (Comunicación y Consultas entre Empresas)
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mensajes_negociacion` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `producto_id` INT(11) NOT NULL,
+  `transaccion_id` INT(11) DEFAULT NULL,
+  `emisor_id` INT(11) NOT NULL,
+  `receptor_id` INT(11) NOT NULL,
+  `mensaje` TEXT NOT NULL,
+  `leido` TINYINT(1) NOT NULL DEFAULT 0,
+  `fecha_lectura` DATETIME DEFAULT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_mensajes_producto` (`producto_id`),
+  KEY `idx_mensajes_transaccion` (`transaccion_id`),
+  KEY `idx_mensajes_emisor` (`emisor_id`),
+  KEY `idx_mensajes_receptor` (`receptor_id`),
+  CONSTRAINT `fk_msg_producto` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_msg_transaccion` FOREIGN KEY (`transaccion_id`) REFERENCES `transacciones` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_msg_emisor` FOREIGN KEY (`emisor_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_msg_receptor` FOREIGN KEY (`receptor_id`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

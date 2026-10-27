@@ -95,12 +95,21 @@ El proyecto está estructurado estrictamente bajo el patrón arquitectónico **M
   - Estimación de ahorro energético en MWh equivalente.
 - Constancia formal imprimible con código alfanumérico único (`CERT-MX-YYYY-XXXXXXXX`) y firma digital institucional.
 
-### 4. Soporte Multiplataforma (MySQL XAMPP + SQLite Vercel)
+### 5. Módulo de Comunicación y Negociación B2B (`/mensajes`)
+- **Entidad:** `mensajes_negociacion`.
+- Permite la comunicación directa y privada entre empresas interesadas y oferentes de materiales industriales:
+  - **Consultas previas sobre lotes (`/productos/ver/{id}`):** Las empresas interesadas pueden formular consultas técnicas y logísticas directamente al vendedor antes de formalizar una solicitud.
+  - **Negociación en transacciones (`/solicitudes/ver/{id}`):** Hilo conversacional bidireccional vinculado a cada operación para acordar fletes, fechas de retiro, certificados de calidad o contraofertas.
+  - **Bandeja de entrada centralizada (`/mensajes`):** Panel unificado de conversaciones activas con las contrapartes, con indicación de mensajes no leídos, últimos textos y accesos directos al lote o transacción.
+  - **Contador de no leídos en cabecera:** Notificación dinámica en la barra de navegación que alerta de mensajes nuevos pendientes de lectura.
+  - **Arquitectura 100% Cero JavaScript:** Mensajería server-side con protección CSRF, validación de permisos de remitente/destinatario y sanitización de contenido.
+
+### 6. Soporte Multiplataforma (MySQL XAMPP + SQLite Vercel)
 - Compatible para ejecución en entorno local con **MySQL en XAMPP** (`database_completa.sql`, `database_hito2.sql`).
 - Compatible para despliegues serverless en **Vercel** mediante SQLite (`writable/materiax_db.sqlite`, `api/index.php`) con autocreación y migración de esquemas en caliente.
 
-### 5. Suite de Pruebas Unitarias Integrada
-- Cobertura completa de modelos, filtros, autorización y arquitectura Cero JS (`tests/unit/Hito2FunctionalTest.php`, `ZeroJavaScriptTest.php`, `AdminModuleTest.php`, etc.) con **29 tests y 100% de éxito**.
+### 7. Suite de Pruebas Unitarias Integrada
+- Cobertura completa de modelos, filtros, autorización, circuitos B2B, mensajería y arquitectura Cero JS (`tests/unit/Hito2FunctionalTest.php`, `ZeroJavaScriptTest.php`, `AdminModuleTest.php`, etc.) con **30 tests, 252 aserciones y 100% de éxito**.
 
 ---
 

@@ -163,6 +163,18 @@ try {
         localidad VARCHAR(255) NOT NULL
     );");
 
+    $db->exec("CREATE TABLE IF NOT EXISTS mensajes_negociacion (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        producto_id INTEGER NOT NULL,
+        transaccion_id INTEGER DEFAULT NULL,
+        emisor_id INTEGER NOT NULL,
+        receptor_id INTEGER NOT NULL,
+        mensaje TEXT NOT NULL,
+        leido INTEGER NOT NULL DEFAULT 0,
+        fecha_lectura DATETIME DEFAULT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );");
+
     // Datos semilla de usuarios si está vacía
     $userCount = (int) $db->query("SELECT COUNT(*) FROM usuarios")->fetchColumn();
     if ($userCount === 0) {
