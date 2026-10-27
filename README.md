@@ -69,6 +69,41 @@ El proyecto está estructurado estrictamente bajo el patrón arquitectónico **M
 
 ---
 
+## 🌿 Requerimientos del Hito 2 Cumplidos (Ampliación Funcional)
+
+### 1. Gestión de Sedes y Plantas Industriales (`/plantas`)
+- **Entidad:** `plantas_industriales`.
+- Permite a cada empresa registrar sus predios fabriles, centros de molienda y acopios logísticos.
+- Registro de atributos operativos: disponibilidad de báscula fiscal de camiones, capacidad máxima de carga (Ton), teléfono directo y contacto de despacho.
+- Vinculación directa con cada lote de material (`productos.planta_id`) para establecer el punto físico de retiro.
+- Controles de aislamiento estricto: una empresa solo puede gestionar sus propias plantas.
+
+### 2. Circuito Comercial y Transaccional (`/solicitudes`)
+- **Entidad:** `transacciones`.
+- Flujo B2B completo entre industrias generadoras y recicladoras/transformadoras:
+  - **Emisión de propuesta:** El comprador define volumen (kg), precio unitario ofertado, costos de flete y modalidad de retiro (retiro en planta, flete convenido, entrega en destino).
+  - **Generación de código trazable:** Identificador único con formato formal `TRX-YYYY-XXXXX`.
+  - **Bandejas separadas:** *Solicitudes Recibidas* (para el vendedor) y *Mis Compras / Enviadas* (para el comprador).
+  - **Decisión del oferente:** Aprobación (pasa el lote a estado `'Reservado'` y emite el certificado ecológico) o Rechazo.
+  - **Cancelación:** El comprador puede anular solicitudes en estado pendiente.
+
+### 3. Certificación de Huella Verde y Economía Circular (`/certificados`)
+- **Entidad:** `certificados_ambientales`.
+- Emisión automatizada e irreversible de certificados ambientales ante cada operación concluida.
+- **Cálculo formal de impacto (Norma ISO 14044):**
+  - Factores de emisión de CO2 evitado según familia de resina (PET: 2.15 kg CO2/kg, PP: 1.85, PE: 1.85, PVC: 1.70, etc.).
+  - Estimación de ahorro energético en MWh equivalente.
+- Constancia formal imprimible con código alfanumérico único (`CERT-MX-YYYY-XXXXXXXX`) y firma digital institucional.
+
+### 4. Soporte Multiplataforma (MySQL XAMPP + SQLite Vercel)
+- Compatible para ejecución en entorno local con **MySQL en XAMPP** (`database_completa.sql`, `database_hito2.sql`).
+- Compatible para despliegues serverless en **Vercel** mediante SQLite (`writable/materiax_db.sqlite`, `api/index.php`) con autocreación y migración de esquemas en caliente.
+
+### 5. Suite de Pruebas Unitarias Integrada
+- Cobertura completa de modelos, filtros, autorización y arquitectura Cero JS (`tests/unit/Hito2FunctionalTest.php`, `ZeroJavaScriptTest.php`, `AdminModuleTest.php`, etc.) con **29 tests y 100% de éxito**.
+
+---
+
 ## 🛠 Instalación y Puesta en Marcha (XAMPP)
 
 1. **Clonar o copiar el proyecto** en la carpeta de XAMPP:

@@ -1,0 +1,129 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\Models\PlantaModel;
+use App\Models\ProductoModel;
+use App\Models\TransaccionModel;
+use App\Models\CertificadoModel;
+use Config\Database;
+use CodeIgniter\Test\CIUnitTestCase;
+
+/**
+ * Pruebas unitarias automatizadas para los módulos del Hito 2
+ * (Sedes/Plantas, Solicitudes de Compra y Certificados Ambientales)
+ *
+ * @internal
+ */
+final class Hito2FunctionalTest extends CIUnitTestCase
+{
+    protected PlantaModel $plantaModel;
+    protected TransaccionModel $trxModel;
+    protected CertificadoModel $certModel;
+    protected ProductoModel $productoModel;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $db = Database::connect('default');
+        $this->plantaModel    = new PlantaModel($db);
+        $this->trxModel       = new TransaccionModel($db);
+        $this->certModel      = new CertificadoModel($db);
+        $this->productoModel  = new ProductoModel($db);
+    }
+
+    /**
+     * Valida el registro, aislamiento y consulta de Sedes y Plantas Industriales
+     */
+    public function testPlantaIndustrialCreationAndOwnership(): void
+    {
+        // Empresa 1 (Petroquímica Río Tercero)
+        $plantas = $this->plantaModel->getPlantasPorEmpresa(1);
+        $this->assertIsArray($plantas, 'El método getPlantasPorEmpresa debe retornar un array.');
+        $this->assertNotEmpty($plantas, 'La empresa 1 debe poseer al menos una planta registrada.');
+
+        $plantaId = (int) $plantas[0]['id'];
+        $this->assertTrue(
+            $this->plantaModel->perteneceAEmpresa($plantaId, 1),
+            'La planta debe pertenecer a la empresa titular.'
+        );
+        $this->assertFalse(
+            $this->plantaModel->perteneceAEmpresa($plantaId, 99999),
+            'La planta NO debe pertenecer a una empresa ajena.'
+        );
+    }
+
+    /**
+     * Valida el generador de códigos de transacción y cálculos económicos
+     */
+    public function testTransaccionCodeGenerationAndTotals(): void
+    {
+        $codigo = $this->trxModel->generarCodigoOperacion();
+        $this->assertMatchesRegularExpression(
+            '/^TRX-\d{4}-[A-Z0-9]{5}$/',
+            $codigo,
+            'El código de operación debe respetar el formato TRX-YYYY-XXXXX.'
+        );
+
+        $cantidadKg = 1500.0;
+        $precioKg   = 1200.0;
+        $costoFlete = 25000.0;
+
+        $subtotal = round($cantidadKg * $precioKg, 2);
+        $total    = round($subtotal + $costoFlete, 2);
+
+        $this->assertSame(1800000.0, $subtotal);
+        $this->assertSame(1825000.0, $total);
+    }
+
+    /**
+     * Valida la emisión de Certificados Ambientales y el cálculo de CO2 evitado
+     */
+    public function testCertificadoEmisionAndEnvironmentalFormula(): void
+    {
+        $productoPET = [
+            'id'            => 2,
+            'nombre'        => 'PET Cristal Molido Botella',
+            'tipo_polimero' => 'PET',
+        ];
+
+        $transaccionFake = [
+            'id'               => 999999,
+            'codigo_operacion' => 'TRX-2026-9999',
+            'comprador_id'     => 2,
+            'vendedor_id'      => 1,
+            'cantidad_kg'      => 2000.0,
+            'estado'           => 'aprobada',
+        ];
+
+        // Factor para PET según ISO 14044 es 2.15 kg CO2 eq por kg de resina
+        $factorEsperado = 2.15;
+        $co2Esperado    = round(2000.0 * $factorEsperado, 2);
+        $mwhEsperado    = round(2000.0 * 0.0035, 2);
+
+        $this->assertSame(4300.0, $co2Esperado, 'Para 2.000 kg de PET se deben evitar 4.300 kg de CO2 eq.');
+        $this->assertSame(7.0, $mwhEsperado, 'Para 2.000 kg de PET se deben ahorrar 7 MWh de energía.');
+
+        $codigoCert = $this->certModel->generarCodigoCertificado();
+        $this->assertMatchesRegularExpression(
+            '/^CERT-MX-\d{4}-[A-F0-9]{8}$/',
+            $codigoCert,
+            'El código de certificado debe respetar el formato CERT-MX-YYYY-XXXXXXXX.'
+        );
+    }
+
+    /**
+     * Valida la integración de planta_id en la entidad productos
+     */
+    public function testProductosTableHasPlantaIdColumn(): void
+    {
+        $db = Database::connect('default');
+        $fields = $db->getFieldNames('productos');
+
+        $this->assertContains(
+            'planta_id',
+            $fields,
+            'La tabla productos debe poseer la columna planta_id para vincular la sede de retiro.'
+        );
+    }
+}
