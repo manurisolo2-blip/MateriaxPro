@@ -75,7 +75,8 @@ if (!empty($dbUrl) && (str_starts_with($dbUrl, 'mysql://') || str_starts_with($d
     $cloudName = $cloudName ?: (!empty($parsed['path']) ? ltrim($parsed['path'], '/') : null);
 }
 
-if (!empty($cloudHost)) {
+$cloudInitMarker = !empty($cloudHost) ? ($targetDir . DIRECTORY_SEPARATOR . '.cloud_init_' . md5($cloudHost . ($cloudName ?? ''))) : '';
+if (!empty($cloudHost) && !file_exists($cloudInitMarker)) {
     try {
         $cloudUser = $cloudUser ?: 'root';
         $cloudPass = $cloudPass ?: '';
@@ -234,15 +235,18 @@ if (!empty($cloudHost)) {
                 $uStmt->execute($u);
             }
         }
+        @file_put_contents($cloudInitMarker, (string) time());
     } catch (Throwable $e) {
         error_log('Cloud database initialization error: ' . $e->getMessage());
     }
 }
 
-// Garantizar que todas las tablas y columnas necesarias existan en SQLite (Fallback)
-try {
-    $db = new PDO('sqlite:' . $dbPath);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+// Garantizar que todas las tablas y columnas necesarias existan en SQLite (Fallback, solo 1 vez por contenedor)
+$sqliteInitMarker = $targetDir . DIRECTORY_SEPARATOR . '.sqlite_init_v2';
+if (empty($cloudHost) && (!file_exists($sqliteInitMarker) || !file_exists($dbPath) || filesize($dbPath) === 0)) {
+    try {
+        $db = new PDO('sqlite:' . $dbPath);
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $db->exec("CREATE TABLE IF NOT EXISTS usuarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -445,8 +449,10 @@ try {
             $catStmt->execute($cat);
         }
     }
+    @file_put_contents($sqliteInitMarker, (string) time());
 } catch (Throwable $e) {
     error_log('Database initialization error: ' . $e->getMessage());
+}
 }
 
 // Redirigir la ejecución al controlador de CodeIgniter 4

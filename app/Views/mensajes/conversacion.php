@@ -70,9 +70,14 @@
   <!-- Contenedor del Chat en Tiempo Real -->
   <div class="card" style="margin-bottom: 1.5rem;">
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-      <h3 class="card-title" style="margin: 0; font-size: 1.05rem;">
-        Historial de Conversación
-      </h3>
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <h3 class="card-title" style="margin: 0; font-size: 1.05rem;">
+          Historial de Conversación
+        </h3>
+        <span id="chatMsgCount" style="font-size: 0.8rem; color: var(--color-ink-2);">
+          <?= count($mensajes ?? []) ?> mensaje(s)
+        </span>
+      </div>
       <span style="font-size: 0.82rem; color: var(--color-success-text); display: flex; align-items: center; gap: 0.35rem;">
         <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-success-text);"></span>
         Sincronización en vivo activa
@@ -84,8 +89,9 @@
       <div 
         id="chatContainer" 
         class="chat-thread" 
-        data-transaccion-id="<?= esc($transaccionId ?? '') ?>" 
+        data-transaccion-id="<?= $tipo === 'transaccion' ? esc($transaccionId ?? '') : '' ?>" 
         data-producto-id="<?= esc($productoId ?? '') ?>" 
+        data-receptor-id="<?= esc($receptorId ?? '') ?>" 
         data-user-id="<?= esc($userId) ?>" 
         data-base-url="<?= site_url('/') ?>" 
         style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 460px; overflow-y: auto; padding: 1.25rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1.25rem;"
@@ -93,24 +99,24 @@
         <?php if (!empty($mensajes)): ?>
           <?php foreach ($mensajes as $msg): ?>
             <?php $esMio = ((int)$msg['emisor_id'] === $userId); ?>
-            <div id="msg-<?= $msg['id'] ?>" data-msg-id="<?= $msg['id'] ?>" style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
-              <div style="font-size: 0.75rem; color: var(--color-ink-2); margin-bottom: 0.25rem; padding: 0 0.25rem; text-transform: uppercase; font-weight: 600;">
+            <div id="msg-<?= $msg['id'] ?>" data-msg-id="<?= $msg['id'] ?>" class="chat-bubble-row" style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
+              <div style="font-size: 0.75rem; color: var(--color-ink-2); margin-bottom: 0.2rem; padding: 0 0.25rem; text-transform: uppercase; font-weight: 600;">
                 <?= $esMio ? 'Tú' : esc($msg['emisor_nombre']) ?>
               </div>
-              <div style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.5; white-space: pre-line; word-break: break-word; <?= $esMio ? 'background-color: var(--color-primary); color: #ffffff; border-bottom-right-radius: 2px;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule); border-bottom-left-radius: 2px;' ?>">
-                <?= esc($msg['mensaje']) ?>
-                <div style="font-size: 0.7rem; color: <?= $esMio ? 'rgba(255,255,255,0.75)' : 'var(--color-ink-2)' ?>; text-align: right; margin-top: 0.35rem;">
-                  <?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?>
+              <div class="chat-bubble-box" style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.5; word-break: break-word; <?= $esMio ? 'background-color: var(--color-primary); color: #ffffff; border-bottom-right-radius: 2px;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule); border-bottom-left-radius: 2px;' ?>">
+                <div class="chat-bubble-text"><?= nl2br(esc($msg['mensaje'])) ?></div>
+                <div class="chat-bubble-meta" style="font-size: 0.7rem; color: <?= $esMio ? 'rgba(255,255,255,0.82)' : 'var(--color-ink-2)' ?>; text-align: right; margin-top: 0.35rem;">
+                  <span class="msg-time"><?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?></span>
                   <?php if ($esMio): ?>
-                    <?= $msg['leido'] ? '&check;&check;' : '&check;' ?>
+                    <span class="msg-status-tick" style="margin-left: 0.25rem;"><?= $msg['leido'] ? '&check;&check; Leído' : '&check; Enviado' ?></span>
                   <?php endif; ?>
                 </div>
               </div>
             </div>
           <?php endforeach; ?>
         <?php else: ?>
-          <div style="text-align: center; padding: 3rem 1rem; color: var(--color-ink-2); font-size: 0.92rem;">
-            Aún no hay mensajes en esta conversación. ¡Escribe el primero a continuación!
+          <div id="emptyChatPlaceholder" style="text-align: center; padding: 3rem 1rem; color: var(--color-ink-2); font-size: 0.92rem;">
+            Aún no hay mensajes en esta conversación. Escribe el primero a continuación.
           </div>
         <?php endif; ?>
       </div>
@@ -130,18 +136,19 @@
               Enviar mensaje a <strong><?= esc($otraEmpresa['nombre']) ?></strong>:
             </label>
             <span style="font-size: 0.75rem; color: var(--color-ink-2);">
-              Presiona <kbd style="background: var(--color-paper-surface); border: 1px solid var(--color-rule); padding: 1px 4px; border-radius: 4px;">Enter</kbd> para enviar
+              Presiona <kbd style="background: var(--color-paper-surface); border: 1px solid var(--color-rule); padding: 1px 4px; border-radius: 4px;">Enter</kbd> para envío instantáneo
             </span>
           </div>
           <textarea 
             name="mensaje" 
             id="chatInput" 
-            rows="3" 
+            rows="2" 
             class="form-control" 
-            placeholder="Escribe tu mensaje o consulta aquí..." 
+            placeholder="Escribe tu mensaje aquí y presiona Enter..." 
             required 
-            minlength="2" 
+            minlength="1" 
             maxlength="2000"
+            autofocus
             style="resize: vertical;"
           ></textarea>
         </div>
@@ -157,6 +164,6 @@
 
 </div>
 
-<script src="<?= base_url('assets/chat.js') ?>"></script>
+<script src="<?= base_url('assets/chat.js') ?>?v=2.1"></script>
 
 <?= view('templates/footer') ?>

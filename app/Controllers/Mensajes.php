@@ -38,52 +38,44 @@ class Mensajes extends BaseController
             'pageTitle'      => 'Bandeja de Mensajes y Consultas | MateriaX',
             'conversaciones' => $conversaciones,
             'totalNoLeidos'  => $totalNoLeidos,
+            'userId'         => $userId,
         ]);
     }
 
     /**
-     * Procesa y guarda un nuevo mensaje enviado (compatible con AJAX y formulario tradicional)
+     * Procesa y guarda un nuevo mensaje enviado (compatible con AJAX instantáneo y formulario tradicional)
      */
     public function enviar()
     {
-        $userId = (int) session()->get('user_id');
-        $isAjax = $this->request->isAJAX() 
+        $userId     = (int) session()->get('user_id');
+        $userRol    = (string) session()->get('rol');
+        $userNombre = (string) session()->get('nombre');
+
+        $isAjax = $this->request->isAJAX()
                   || strpos($this->request->getHeaderLine('Accept'), 'application/json') !== false
                   || $this->request->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
 
-        $rules = [
-            'mensaje'     => 'required|min_length[2]|max_length[2000]',
-            'producto_id' => 'required|is_natural_no_zero',
-            'receptor_id' => 'required|is_natural_no_zero',
-        ];
-
-        if (!$this->validate($rules)) {
-            if ($isAjax) {
-                return $this->response->setJSON([
-                    'status'  => 'error',
-                    'message' => 'El mensaje debe tener entre 2 y 2000 caracteres.',
-                ])->setStatusCode(400);
-            }
-            return redirect()->back()->withInput()->with('error', 'El mensaje debe tener entre 2 y 2000 caracteres.');
+        // Liberar el bloqueo de archivo de sesión en peticiones AJAX para permitir envío y polling simultáneos sin espera
+        if ($isAjax && session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
         }
 
+        $mensajeTexto  = trim((string) $this->request->getPost('mensaje'));
         $productoId    = (int) $this->request->getPost('producto_id');
         $receptorId    = (int) $this->request->getPost('receptor_id');
         $transaccionId = $this->request->getPost('transaccion_id') ? (int) $this->request->getPost('transaccion_id') : null;
-        $mensajeTexto  = trim((string) $this->request->getPost('mensaje'));
 
-        // Seguridad: No enviarse mensajes a sí mismo
-        if ($receptorId === $userId) {
+        if ($mensajeTexto === '' || mb_strlen($mensajeTexto) > 2000 || $productoId <= 0 || $receptorId <= 0) {
             if ($isAjax) {
                 return $this->response->setJSON([
                     'status'  => 'error',
-                    'message' => 'No puedes enviarte mensajes a tu propia cuenta.',
+                    'message' => 'El mensaje no puede estar vacío ni superar los 2000 caracteres.',
                 ])->setStatusCode(400);
             }
-            return redirect()->back()->with('error', 'No puedes enviarte mensajes a tu propia cuenta.');
+            return redirect()->back()->withInput()->with('error', 'El mensaje no puede estar vacío ni superar los 2000 caracteres.');
         }
 
-        // Si el mensaje está asociado a una transacción, validar pertenencia
+        // Si el mensaje está asociado a una transacción, validar pertenencia y resolver contraparte automáticamente
         if ($transaccionId) {
             $trx = $this->transaccionModel->find($transaccionId);
             if (!$trx) {
@@ -93,17 +85,15 @@ class Mensajes extends BaseController
                 throw PageNotFoundException::forPageNotFound('Transacción no encontrada.');
             }
 
-            // El emisor debe ser el comprador o el vendedor
-            if ((int)$trx['comprador_id'] !== $userId && (int)$trx['vendedor_id'] !== $userId && session()->get('rol') !== 'admin') {
+            if ((int)$trx['comprador_id'] !== $userId && (int)$trx['vendedor_id'] !== $userId && $userRol !== 'admin') {
                 if ($isAjax) {
                     return $this->response->setJSON(['status' => 'error', 'message' => 'Acceso denegado.'])->setStatusCode(403);
                 }
                 return redirect()->to(site_url('solicitudes'))->with('error', 'Acceso denegado: no formas parte de esta operación.');
             }
 
-            // El receptor debe ser la contraparte
             $contraparteEsperada = ((int)$trx['comprador_id'] === $userId) ? (int)$trx['vendedor_id'] : (int)$trx['comprador_id'];
-            if ($receptorId !== $contraparteEsperada && session()->get('rol') !== 'admin') {
+            if ($receptorId !== $contraparteEsperada && $userRol !== 'admin') {
                 $receptorId = $contraparteEsperada;
             }
         } else {
@@ -115,6 +105,17 @@ class Mensajes extends BaseController
                 }
                 throw PageNotFoundException::forPageNotFound('Lote de polímero no encontrado.');
             }
+        }
+
+        // Seguridad: No enviarse mensajes a sí mismo
+        if ($receptorId === $userId) {
+            if ($isAjax) {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => 'No puedes enviarte mensajes a tu propia cuenta.',
+                ])->setStatusCode(400);
+            }
+            return redirect()->back()->with('error', 'No puedes enviarte mensajes a tu propia cuenta.');
         }
 
         $nuevoMensaje = [
@@ -136,19 +137,26 @@ class Mensajes extends BaseController
         }
 
         if ($isAjax) {
-            $emisor = $this->userModel->find($userId);
-            return $this->response->setJSON([
-                'status'  => 'success',
-                'message' => 'Mensaje enviado correctamente.',
-                'data'    => [
-                    'id'            => (int) $insertId,
-                    'mensaje'       => esc($mensajeTexto),
-                    'emisor_id'     => $userId,
-                    'emisor_nombre' => esc($emisor['nombre'] ?? 'Tú'),
-                    'created_at'    => date('d/m/Y H:i'),
-                    'es_propio'     => true,
-                ],
-            ]);
+            if ($userNombre === '') {
+                $emisor     = $this->userModel->find($userId);
+                $userNombre = $emisor['nombre'] ?? 'Tú';
+            }
+
+            return $this->response
+                ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+                ->setJSON([
+                    'status'  => 'success',
+                    'message' => 'Mensaje enviado correctamente.',
+                    'data'    => [
+                        'id'            => (int) $insertId,
+                        'mensaje'       => $mensajeTexto,
+                        'emisor_id'     => $userId,
+                        'emisor_nombre' => $userNombre,
+                        'created_at'    => date('d/m/Y H:i'),
+                        'es_propio'     => true,
+                        'leido'         => 0,
+                    ],
+                ]);
         }
 
         // Redireccionar al hilo correspondiente en formulario tradicional
@@ -220,32 +228,56 @@ class Mensajes extends BaseController
             throw PageNotFoundException::forPageNotFound('Lote de polímero no encontrado.');
         }
 
+        $esDuenio = ((int)$producto['user_id'] === $userId);
+
+        // Si el dueño del lote abre un link donde otraEmpresaId es su propio ID, redirigir al último interesado real
+        if ($esDuenio && (int)$otraEmpresaId === $userId) {
+            $ultimoInteresado = $this->mensajeModel
+                ->where('producto_id', (int)$productoId)
+                ->where('transaccion_id', null)
+                ->where('emisor_id !=', $userId)
+                ->orderBy('id', 'DESC')
+                ->first();
+
+            if ($ultimoInteresado) {
+                return redirect()->to(site_url('mensajes/chat/producto/' . (int)$productoId . '/' . (int)$ultimoInteresado['emisor_id']));
+            }
+
+            return redirect()->to(site_url('productos/ver/' . (int)$productoId . '#consultas'))
+                             ->with('error', 'Este lote te pertenece. Aquí verás las consultas cuando otra empresa te escriba.');
+        }
+
         $otraEmpresa = $this->userModel->find($otraEmpresaId);
         if (!$otraEmpresa) {
             throw PageNotFoundException::forPageNotFound('Empresa de contacto no encontrada.');
         }
 
-        $esDuenio = ((int)$producto['user_id'] === $userId);
         if (!$esDuenio && $userId !== (int)$otraEmpresaId && session()->get('rol') !== 'admin') {
             return redirect()->to(site_url('mensajes'))->with('error', 'Acceso denegado a esta consulta.');
         }
 
-        // Marcar consultas como leídas
-        $this->mensajeModel->marcarLeidosProducto((int)$productoId, (int)$otraEmpresaId, $userId);
+        // Si no soy el dueño, mi contraparte siempre es el dueño del producto
+        $contraparteId = $esDuenio ? (int)$otraEmpresa['id'] : (int)$producto['user_id'];
+        if (!$esDuenio && $contraparteId !== (int)$otraEmpresa['id']) {
+            $otraEmpresa = $this->userModel->find($contraparteId) ?: $otraEmpresa;
+        }
 
-        $mensajes = $this->mensajeModel->getMensajesPorProducto((int)$productoId, $userId, (int)$otraEmpresaId);
+        // Marcar consultas como leídas
+        $this->mensajeModel->marcarLeidosProducto((int)$productoId, $contraparteId, $userId);
+
+        $mensajes = $this->mensajeModel->getMensajesPorProducto((int)$productoId, $userId, $contraparteId);
 
         return view('mensajes/conversacion', [
             'pageTitle'     => 'Consulta: ' . esc($producto['nombre']) . ' | MateriaX',
             'tipo'          => 'producto',
             'transaccion'   => null,
             'producto'      => $producto,
-            'otraEmpresa'   => ['id' => (int)$otraEmpresa['id'], 'nombre' => $otraEmpresa['nombre']],
+            'otraEmpresa'   => ['id' => $contraparteId, 'nombre' => $otraEmpresa['nombre']],
             'mensajes'      => $mensajes,
             'userId'        => $userId,
             'transaccionId' => null,
             'productoId'    => (int) $productoId,
-            'receptorId'    => (int) $otraEmpresaId,
+            'receptorId'    => $contraparteId,
         ]);
     }
 
@@ -254,9 +286,17 @@ class Mensajes extends BaseController
      */
     public function nuevos()
     {
-        $userId        = (int) session()->get('user_id');
+        $userId  = (int) session()->get('user_id');
+        $userRol = (string) session()->get('rol');
+
+        // Liberar sesión inmediatamente para no bloquear otras peticiones concurrentes
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
         $transaccionId = $this->request->getGet('transaccion_id') ? (int) $this->request->getGet('transaccion_id') : null;
         $productoId    = $this->request->getGet('producto_id') ? (int) $this->request->getGet('producto_id') : null;
+        $otraEmpresaId = $this->request->getGet('otra_empresa_id') ? (int) $this->request->getGet('otra_empresa_id') : null;
         $ultimoId      = (int) ($this->request->getGet('ultimo_id') ?? 0);
 
         if (!$transaccionId && !$productoId) {
@@ -269,52 +309,143 @@ class Mensajes extends BaseController
             if (!$trx) {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'Transacción no encontrada.'])->setStatusCode(404);
             }
-            if ((int)$trx['comprador_id'] !== $userId && (int)$trx['vendedor_id'] !== $userId && session()->get('rol') !== 'admin') {
+            if ((int)$trx['comprador_id'] !== $userId && (int)$trx['vendedor_id'] !== $userId && $userRol !== 'admin') {
                 return $this->response->setJSON(['status' => 'error', 'message' => 'No autorizado.'])->setStatusCode(403);
             }
         }
 
         $builder = $this->mensajeModel->builder();
+        $builder->select('mensajes_negociacion.*, emisor.nombre AS emisor_nombre');
+        $builder->join('usuarios emisor', 'emisor.id = mensajes_negociacion.emisor_id', 'left');
+
         if ($transaccionId) {
-            $builder->where('transaccion_id', $transaccionId);
+            $builder->where('mensajes_negociacion.transaccion_id', $transaccionId);
         } else {
-            $builder->where('producto_id', $productoId)
-                    ->where('transaccion_id', null)
-                    ->groupStart()
-                        ->where('emisor_id', $userId)
-                        ->orWhere('receptor_id', $userId)
-                    ->groupEnd();
+            $builder->where('mensajes_negociacion.producto_id', $productoId)
+                    ->where('mensajes_negociacion.transaccion_id', null);
+
+            if ($otraEmpresaId && $otraEmpresaId > 0) {
+                $builder->groupStart()
+                            ->groupStart()
+                                ->where('mensajes_negociacion.emisor_id', $userId)
+                                ->where('mensajes_negociacion.receptor_id', $otraEmpresaId)
+                            ->groupEnd()
+                            ->orGroupStart()
+                                ->where('mensajes_negociacion.emisor_id', $otraEmpresaId)
+                                ->where('mensajes_negociacion.receptor_id', $userId)
+                            ->groupEnd()
+                        ->groupEnd();
+            } else {
+                $builder->groupStart()
+                            ->where('mensajes_negociacion.emisor_id', $userId)
+                            ->orWhere('mensajes_negociacion.receptor_id', $userId)
+                        ->groupEnd();
+            }
         }
 
-        $builder->where('id >', $ultimoId);
-        $builder->orderBy('id', 'ASC');
+        $builder->where('mensajes_negociacion.id >', $ultimoId);
+        $builder->orderBy('mensajes_negociacion.id', 'ASC');
         $mensajesNuevos = $builder->get()->getResultArray();
 
         $nuevosFormateados = [];
+        $idsParaMarcarLeidos = [];
+
         foreach ($mensajesNuevos as $msg) {
+            $msgId = (int) $msg['id'];
             if ((int)$msg['receptor_id'] === $userId && (int)$msg['leido'] === 0) {
-                $this->mensajeModel->update($msg['id'], [
-                    'leido'         => 1,
-                    'fecha_lectura' => date('Y-m-d H:i:s'),
-                ]);
+                $idsParaMarcarLeidos[] = $msgId;
+                $msg['leido'] = 1;
             }
 
-            $emisor = $this->userModel->find($msg['emisor_id']);
             $nuevosFormateados[] = [
-                'id'            => (int) $msg['id'],
-                'mensaje'       => esc($msg['mensaje']),
+                'id'            => $msgId,
+                'mensaje'       => (string) $msg['mensaje'],
                 'emisor_id'     => (int) $msg['emisor_id'],
-                'emisor_nombre' => esc($emisor['nombre'] ?? 'Empresa'),
-                'created_at'    => date('d/m/Y H:i', strtotime($msg['created_at'])),
+                'emisor_nombre' => (string) ($msg['emisor_nombre'] ?? 'Empresa'),
+                'created_at'    => !empty($msg['created_at']) ? date('d/m/Y H:i', strtotime($msg['created_at'])) : date('d/m/Y H:i'),
                 'es_propio'     => ((int)$msg['emisor_id'] === $userId),
+                'leido'         => (int) $msg['leido'],
             ];
         }
 
-        return $this->response->setJSON([
-            'status'          => 'success',
-            'nuevos'          => $nuevosFormateados,
-            'total_no_leidos' => $this->mensajeModel->contarNoLeidos($userId),
-        ]);
+        if (!empty($idsParaMarcarLeidos)) {
+            $this->mensajeModel->whereIn('id', $idsParaMarcarLeidos)
+                               ->set(['leido' => 1, 'fecha_lectura' => date('Y-m-d H:i:s')])
+                               ->update();
+        }
+
+        // Consultar cuál es el último mensaje propio que ya fue leído por la contraparte
+        $leidoBuilder = $this->mensajeModel->builder();
+        $leidoBuilder->selectMax('id', 'max_leido_id')
+                     ->where('emisor_id', $userId)
+                     ->where('leido', 1);
+        if ($transaccionId) {
+            $leidoBuilder->where('transaccion_id', $transaccionId);
+        } else {
+            $leidoBuilder->where('producto_id', $productoId)->where('transaccion_id', null);
+            if ($otraEmpresaId && $otraEmpresaId > 0) {
+                $leidoBuilder->where('receptor_id', $otraEmpresaId);
+            }
+        }
+        $leidoRow   = $leidoBuilder->get()->getRowArray();
+        $maxLeidoId = (int) ($leidoRow['max_leido_id'] ?? 0);
+
+        return $this->response
+            ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->setJSON([
+                'status'          => 'success',
+                'nuevos'          => $nuevosFormateados,
+                'max_leido_id'    => $maxLeidoId,
+                'total_no_leidos' => $this->mensajeModel->contarNoLeidos($userId),
+            ]);
+    }
+
+    /**
+     * Endpoint AJAX para actualizar en vivo la Bandeja de Entrada (/mensajes) sin recargar
+     */
+    public function bandeja()
+    {
+        $userId = (int) session()->get('user_id');
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        $conversaciones = $this->mensajeModel->getConversacionesUsuario($userId);
+        $totalNoLeidos  = $this->mensajeModel->contarNoLeidos($userId);
+
+        $items = [];
+        foreach ($conversaciones as $conv) {
+            $linkDestino = !empty($conv['transaccion_id'])
+                ? site_url('mensajes/chat/transaccion/' . $conv['transaccion_id'])
+                : site_url('mensajes/chat/producto/' . $conv['producto_id'] . '/' . $conv['otra_empresa_id']);
+
+            $items[] = [
+                'clave'               => $conv['clave'],
+                'transaccion_id'      => $conv['transaccion_id'] ? (int) $conv['transaccion_id'] : null,
+                'producto_id'         => (int) $conv['producto_id'],
+                'producto_nombre'     => (string) $conv['producto_nombre'],
+                'tipo_polimero'       => (string) ($conv['tipo_polimero'] ?? ''),
+                'codigo_operacion'    => $conv['codigo_operacion'],
+                'transaccion_estado'  => $conv['transaccion_estado'],
+                'otra_empresa_id'     => (int) $conv['otra_empresa_id'],
+                'otra_empresa_nombre' => (string) $conv['otra_empresa_nombre'],
+                'ultimo_mensaje'      => mb_strimwidth((string) $conv['ultimo_mensaje'], 0, 110, '...'),
+                'es_ultimo_mio'       => ((int) $conv['ultimo_emisor_id'] === $userId),
+                'ultima_fecha'        => !empty($conv['ultima_fecha']) ? date('d/m/Y H:i', strtotime($conv['ultima_fecha'])) : '',
+                'no_leidos'           => (int) $conv['no_leidos'],
+                'link_destino'        => $linkDestino,
+            ];
+        }
+
+        return $this->response
+            ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->setJSON([
+                'status'          => 'success',
+                'total_no_leidos' => $totalNoLeidos,
+                'total_hilos'     => count($items),
+                'conversaciones'  => $items,
+            ]);
     }
 
     /**
@@ -323,8 +454,15 @@ class Mensajes extends BaseController
     public function conteoNoLeidos()
     {
         $userId = (int) session()->get('user_id');
-        $total  = $this->mensajeModel->contarNoLeidos($userId);
-        return $this->response->setJSON(['status' => 'success', 'no_leidos' => $total]);
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        $total = $this->mensajeModel->contarNoLeidos($userId);
+        return $this->response
+            ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0')
+            ->setJSON(['status' => 'success', 'no_leidos' => $total]);
     }
 
     /**

@@ -33,13 +33,13 @@ class MensajeModel extends Model
         'producto_id'    => 'required|is_natural_no_zero',
         'emisor_id'      => 'required|is_natural_no_zero',
         'receptor_id'    => 'required|is_natural_no_zero',
-        'mensaje'        => 'required|min_length[2]|max_length[2000]',
+        'mensaje'        => 'required|min_length[1]|max_length[2000]',
     ];
 
     protected $validationMessages = [
         'mensaje' => [
             'required'   => 'El mensaje no puede estar vacío.',
-            'min_length' => 'El mensaje debe tener al menos 2 caracteres.',
+            'min_length' => 'El mensaje debe contener al menos 1 carácter.',
             'max_length' => 'El mensaje no puede superar los 2000 caracteres.',
         ],
     ];
@@ -56,22 +56,25 @@ class MensajeModel extends Model
                     ->join('usuarios receptor', 'receptor.id = mensajes_negociacion.receptor_id', 'left')
                     ->where('mensajes_negociacion.transaccion_id', $transaccionId)
                     ->orderBy('mensajes_negociacion.created_at', 'ASC')
+                    ->orderBy('mensajes_negociacion.id', 'ASC')
                     ->findAll();
     }
 
     /**
-     * Obtiene mensajes de consulta directa sobre un lote entre dos empresas
+     * Obtiene mensajes de consulta directa sobre un lote entre dos empresas (o todos los del lote si no se especifican usuarios)
      */
-    public function getMensajesPorProducto(int $productoId, int $userId1, int $userId2): array
+    public function getMensajesPorProducto(int $productoId, int $userId1 = 0, int $userId2 = 0): array
     {
-        return $this->select('mensajes_negociacion.*, 
-                              emisor.nombre AS emisor_nombre, 
-                              receptor.nombre AS receptor_nombre')
-                    ->join('usuarios emisor', 'emisor.id = mensajes_negociacion.emisor_id', 'left')
-                    ->join('usuarios receptor', 'receptor.id = mensajes_negociacion.receptor_id', 'left')
-                    ->where('mensajes_negociacion.producto_id', $productoId)
-                    ->where('mensajes_negociacion.transaccion_id', null)
-                    ->groupStart()
+        $builder = $this->select('mensajes_negociacion.*, 
+                                  emisor.nombre AS emisor_nombre, 
+                                  receptor.nombre AS receptor_nombre')
+                        ->join('usuarios emisor', 'emisor.id = mensajes_negociacion.emisor_id', 'left')
+                        ->join('usuarios receptor', 'receptor.id = mensajes_negociacion.receptor_id', 'left')
+                        ->where('mensajes_negociacion.producto_id', $productoId)
+                        ->where('mensajes_negociacion.transaccion_id', null);
+
+        if ($userId1 > 0 && $userId2 > 0) {
+            $builder->groupStart()
                         ->groupStart()
                             ->where('mensajes_negociacion.emisor_id', $userId1)
                             ->where('mensajes_negociacion.receptor_id', $userId2)
@@ -82,7 +85,13 @@ class MensajeModel extends Model
                         ->groupEnd()
                     ->groupEnd()
                     ->orderBy('mensajes_negociacion.created_at', 'ASC')
-                    ->findAll();
+                    ->orderBy('mensajes_negociacion.id', 'ASC');
+        } else {
+            $builder->orderBy('mensajes_negociacion.created_at', 'DESC')
+                    ->orderBy('mensajes_negociacion.id', 'DESC');
+        }
+
+        return $builder->findAll();
     }
 
     /**
@@ -143,6 +152,7 @@ class MensajeModel extends Model
                              ->orWhere('mensajes_negociacion.receptor_id', $userId)
                          ->groupEnd()
                          ->orderBy('mensajes_negociacion.created_at', 'DESC')
+                         ->orderBy('mensajes_negociacion.id', 'DESC')
                          ->findAll();
 
         $hilos = [];

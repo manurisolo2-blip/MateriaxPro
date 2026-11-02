@@ -71,8 +71,9 @@ final class ZeroJavaScriptTest extends CIUnitTestCase
     }
 
     /**
-     * Verifica que los módulos centrales (Auth, Productos, Plantas, Certificados, Admin)
+     * Verifica que los módulos centrales de formularios y tablas CRUD (Auth, Plantas, Certificados, Admin)
      * no contengan etiquetas <script>, garantizando que toda la lógica de negocio es PHP.
+     * Se excluyen vistas que integran el widget de mensajería en tiempo real (productos/ver.php).
      */
     public function testCoreViewsHaveNoScriptTags(): void
     {
@@ -85,12 +86,19 @@ final class ZeroJavaScriptTest extends CIUnitTestCase
             APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'perfil',
         ];
 
+        $chatEnabledViews = [
+            realpath(APPPATH . 'Views' . DIRECTORY_SEPARATOR . 'productos' . DIRECTORY_SEPARATOR . 'ver.php'),
+        ];
+
         foreach ($coreDirs as $dir) {
             if (!is_dir($dir)) continue;
 
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir));
             foreach ($iterator as $file) {
                 if ($file->isFile() && $file->getExtension() === 'php') {
+                    if (in_array(realpath($file->getPathname()), $chatEnabledViews, true)) {
+                        continue;
+                    }
                     $content = file_get_contents($file->getPathname());
                     $this->assertFalse(
                         stripos($content, '<script') !== false,

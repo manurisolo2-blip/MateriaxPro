@@ -96,15 +96,22 @@ class Productos extends BaseController
 
         $userId = (int) session()->get('user_id');
         $consultas = [];
-        if ($userId > 0 && $userId !== (int)$producto['user_id']) {
+        $consultasRecibidas = [];
+        if ($userId > 0) {
             $mensajeModel = new \App\Models\MensajeModel();
-            $consultas = $mensajeModel->getMensajesPorProducto((int)$id, $userId, (int)$producto['user_id']);
+            if ($userId !== (int)$producto['user_id']) {
+                $consultas = $mensajeModel->getMensajesPorProducto((int)$id, $userId, (int)$producto['user_id']);
+            } else {
+                $consultasRecibidas = $mensajeModel->getMensajesPorProducto((int)$id);
+            }
         }
 
         return view('productos/ver', [
-            'pageTitle' => esc($producto['nombre']) . ' | MateriaX',
-            'producto'  => $producto,
-            'consultas' => $consultas,
+            'pageTitle'          => esc($producto['nombre']) . ' | MateriaX',
+            'producto'           => $producto,
+            'userId'             => $userId,
+            'consultas'          => $consultas,
+            'consultasRecibidas' => $consultasRecibidas,
         ]);
     }
 

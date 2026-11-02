@@ -137,52 +137,73 @@
   <?php if ($isLogged && !$esPropio): ?>
     <div id="consultas" class="card" style="margin-top: 1.5rem;">
       <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-        <h3 class="card-title" style="margin: 0;">💬 Consultar a <?= esc($producto['empresa_nombre'] ?? 'la Empresa Oferente') ?></h3>
+        <div>
+          <h3 class="card-title" style="margin: 0;">Consultar a <?= esc($producto['empresa_nombre'] ?? 'la Empresa Oferente') ?></h3>
+          <span id="chatMsgCount" data-count="<?= count($consultas ?? []) ?>" style="font-size: 0.78rem; color: var(--color-ink-2);">
+            <?= count($consultas ?? []) ?> mensaje(s)
+          </span>
+        </div>
         <a href="<?= site_url('mensajes/chat/producto/' . $producto['id'] . '/' . $producto['user_id']) ?>" class="btn btn-secondary btn-sm">
-          Abrir Chat Completo &rarr;
+          Abrir Sala Completa &rarr;
         </a>
       </div>
       <div class="card-body">
         <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-top: 0; margin-bottom: 1rem;">
-          ¿Tienes dudas sobre la pureza del polímero, molienda, embalaje o logística antes de ofertar? Escríbele directamente.
+          ¿Tienes dudas sobre la pureza del polímero, molienda, embalaje o logística antes de ofertar? Escríbele directamente en tiempo real.
         </p>
 
-        <?php if (!empty($consultas)): ?>
-          <div class="chat-thread" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 280px; overflow-y: auto; padding: 0.85rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1rem;">
+        <div id="chatContainer"
+             data-producto-id="<?= esc($producto['id']) ?>"
+             data-receptor-id="<?= esc($producto['user_id']) ?>"
+             data-user-id="<?= esc($userId) ?>"
+             data-base-url="<?= site_url('/') ?>"
+             class="chat-thread"
+             style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 290px; overflow-y: auto; padding: 0.85rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1rem;">
+          <?php if (!empty($consultas)): ?>
             <?php foreach ($consultas as $msg): ?>
-              <?php $esMio = ((int)$msg['emisor_id'] === $userId); ?>
-              <div style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
-                <div style="font-size: 0.75rem; color: var(--color-ink-2); margin-bottom: 0.15rem;">
+              <?php $esMio = ((int)$msg['emisor_id'] === (int)$userId); ?>
+              <div id="msg-<?= esc($msg['id']) ?>" data-msg-id="<?= esc($msg['id']) ?>" class="chat-bubble-row" style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
+                <div style="font-size: 0.74rem; color: var(--color-ink-2); margin-bottom: 0.2rem; padding: 0 0.2rem;">
                   <strong><?= $esMio ? 'Tú' : esc($msg['emisor_nombre']) ?></strong> &bull; <?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?>
+                  <?php if ($esMio): ?>
+                    <span class="chat-read-status" style="margin-left: 0.3rem; color: <?= !empty($msg['leido']) ? 'var(--color-primary)' : 'var(--color-ink-3)' ?>;">
+                      <?= !empty($msg['leido']) ? '&#10003;&#10003; Leído' : '&#10003; Enviado' ?>
+                    </span>
+                  <?php endif; ?>
                 </div>
-                <div style="max-width: 85%; padding: 0.6rem 0.85rem; border-radius: 10px; font-size: 0.88rem; <?= $esMio ? 'background-color: var(--color-primary); color: #fff;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule);' ?>">
+                <div style="max-width: 85%; padding: 0.65rem 0.9rem; border-radius: <?= $esMio ? '12px 12px 2px 12px' : '12px 12px 12px 2px' ?>; font-size: 0.9rem; line-height: 1.45; white-space: pre-line; <?= $esMio ? 'background-color: var(--color-primary); color: #ffffff;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule);' ?>">
                   <?= esc($msg['mensaje']) ?>
                 </div>
               </div>
             <?php endforeach; ?>
-          </div>
-        <?php endif; ?>
+          <?php else: ?>
+            <div id="emptyChatPlaceholder" style="text-align: center; padding: 1.25rem; color: var(--color-ink-2); font-size: 0.85rem;">
+              Aún no hay mensajes sobre este lote. Escribe tu consulta abajo.
+            </div>
+          <?php endif; ?>
+        </div>
 
-        <form action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
+        <form id="chatForm" action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
           <?= csrf_field() ?>
           <input type="hidden" name="producto_id" value="<?= esc($producto['id']) ?>">
           <input type="hidden" name="receptor_id" value="<?= esc($producto['user_id']) ?>">
 
-          <div class="form-group" style="margin-bottom: 0.75rem;">
-            <textarea 
-              name="mensaje" 
-              rows="2" 
-              class="form-control" 
-              placeholder="Escribe tu consulta para el oferente aquí..." 
-              required 
-              minlength="2" 
-              maxlength="2000"
-              style="resize: vertical;"
-            ></textarea>
-          </div>
-          <div style="display: flex; justify-content: flex-end;">
-            <button type="submit" class="btn btn-primary btn-sm">
-              Enviar Consulta al Vendedor &rarr;
+          <div style="display: flex; gap: 0.65rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 220px;">
+              <textarea 
+                id="chatInput"
+                name="mensaje" 
+                rows="2" 
+                class="form-control" 
+                placeholder="Escribe tu consulta (Enter para enviar)..." 
+                required 
+                minlength="1" 
+                maxlength="2000"
+                style="resize: vertical; margin: 0;"
+              ></textarea>
+            </div>
+            <button id="chatSubmitBtn" type="submit" class="btn btn-primary" style="height: 52px; padding: 0 1.25rem;">
+              Enviar Consulta &rarr;
             </button>
           </div>
         </form>
@@ -192,32 +213,37 @@
     <!-- Panel del Vendedor: Consultas recibidas de interesados sobre este lote -->
     <div id="consultas" class="card" style="margin-top: 1.5rem;">
       <div class="card-header">
-        <h3 class="card-title">💬 Consultas de Interesados Recibidas</h3>
+        <h3 class="card-title">Consultas de Interesados Recibidas</h3>
       </div>
       <div class="card-body">
         <?php if (!empty($consultasRecibidas)): ?>
           <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-top: 0; margin-bottom: 1rem;">
-            Las siguientes empresas han enviado consultas sobre este lote. Haz clic en "Abrir Conversación" para responderles:
+            Las siguientes empresas han enviado consultas sobre este lote. Haz clic en "Abrir Conversación" para responderles en vivo:
           </p>
           <div style="display: flex; flex-direction: column; gap: 0.75rem;">
             <?php 
               $agrupadas = [];
               foreach ($consultasRecibidas as $cr) {
-                  if (!isset($agrupadas[$cr['emisor_id']])) {
-                      $agrupadas[$cr['emisor_id']] = $cr;
+                  $esMioCr = ((int)$cr['emisor_id'] === (int)$userId);
+                  $interesadoId = $esMioCr ? (int)$cr['receptor_id'] : (int)$cr['emisor_id'];
+                  $interesadoNombre = $esMioCr ? ($cr['receptor_nombre'] ?? 'Empresa Interesada') : ($cr['emisor_nombre'] ?? 'Empresa Interesada');
+                  if ($interesadoId > 0 && !isset($agrupadas[$interesadoId])) {
+                      $cr['interesado_id'] = $interesadoId;
+                      $cr['interesado_nombre'] = $interesadoNombre;
+                      $agrupadas[$interesadoId] = $cr;
                   }
               }
             ?>
             <?php foreach ($agrupadas as $cr): ?>
               <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); flex-wrap: wrap; gap: 0.5rem;">
                 <div>
-                  <strong style="color: var(--color-ink); font-size: 0.95rem;"><?= esc($cr['emisor_nombre']) ?></strong>
+                  <strong style="color: var(--color-ink); font-size: 0.95rem;"><?= esc($cr['interesado_nombre']) ?></strong>
                   <div style="font-size: 0.85rem; color: var(--color-ink-2); margin-top: 0.2rem;">
                     "<?= esc(mb_strimwidth($cr['mensaje'], 0, 90, '...')) ?>"
                   </div>
                   <span style="font-size: 0.75rem; color: var(--color-ink-2);"><?= date('d/m/Y H:i', strtotime($cr['created_at'])) ?></span>
                 </div>
-                <a href="<?= site_url('mensajes/chat/producto/' . $producto['id'] . '/' . $cr['emisor_id']) ?>" class="btn btn-primary btn-sm">
+                <a href="<?= site_url('mensajes/chat/producto/' . $producto['id'] . '/' . $cr['interesado_id']) ?>" class="btn btn-primary btn-sm">
                   Abrir Conversación &rarr;
                 </a>
               </div>
@@ -233,5 +259,9 @@
   <?php endif; ?>
 
 </div>
+
+<?php if ($isLogged && !$esPropio): ?>
+<script src="<?= base_url('assets/chat.js') ?>?v=2.1"></script>
+<?php endif; ?>
 
 <?= view('templates/footer') ?>

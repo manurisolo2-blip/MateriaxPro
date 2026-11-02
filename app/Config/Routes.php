@@ -126,6 +126,7 @@ $routes->group('mensajes', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Mensajes::index');
     $routes->post('enviar', 'Mensajes::enviar');
     $routes->get('nuevos', 'Mensajes::nuevos');
+    $routes->get('bandeja', 'Mensajes::bandeja');
     $routes->get('conteo', 'Mensajes::conteoNoLeidos');
     $routes->get('chat/transaccion/(:num)', 'Mensajes::chatTransaccion/$1');
     $routes->get('chat/producto/(:num)/(:num)', 'Mensajes::chatProducto/$1/$2');

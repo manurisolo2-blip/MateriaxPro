@@ -1,10 +1,12 @@
 <?= view('templates/header', ['pageTitle' => $pageTitle ?? 'Ficha de Operación | MateriaX']) ?>
 
 <?php
-  $userId   = (int) session()->get('user_id');
+  $userId      = (int) session()->get('user_id');
   $esVendedor  = ((int) $transaccion['vendedor_id'] === $userId);
   $esComprador = ((int) $transaccion['comprador_id'] === $userId);
   $esAdmin     = (session()->get('rol') === 'admin');
+  $receptorId  = $esVendedor ? (int)$transaccion['comprador_id'] : (int)$transaccion['vendedor_id'];
+  $receptorNombre = $esVendedor ? $transaccion['comprador_nombre'] : $transaccion['vendedor_nombre'];
 ?>
 
 <!-- Migas de pan -->
@@ -206,7 +208,7 @@
       <h3 class="card-title" style="margin: 0;">
         💬 Canal de Comunicación entre Empresas
       </h3>
-      <span style="font-size: 0.85rem; color: var(--color-ink-2);">
+      <span id="chatMsgCount" style="font-size: 0.85rem; color: var(--color-ink-2);">
         <?= count($mensajes ?? []) ?> mensaje(s)
       </span>
     </div>
@@ -216,39 +218,42 @@
       </p>
 
       <!-- Historial de mensajes -->
-      <div id="chatContainer" class="chat-thread" data-transaccion-id="<?= esc($transaccion['id']) ?>" data-user-id="<?= esc($userId) ?>" data-base-url="<?= site_url('/') ?>" style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 420px; overflow-y: auto; padding: 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+      <div 
+        id="chatContainer" 
+        class="chat-thread" 
+        data-transaccion-id="<?= esc($transaccion['id']) ?>" 
+        data-producto-id="<?= esc($transaccion['producto_id']) ?>" 
+        data-receptor-id="<?= esc($receptorId) ?>" 
+        data-user-id="<?= esc($userId) ?>" 
+        data-base-url="<?= site_url('/') ?>" 
+        style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 420px; overflow-y: auto; padding: 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1.25rem;"
+      >
         <?php if (!empty($mensajes)): ?>
           <?php foreach ($mensajes as $msg): ?>
-            <?php 
-              $esMio = ((int) $msg['emisor_id'] === $userId);
-            ?>
-            <div id="msg-<?= $msg['id'] ?>" data-msg-id="<?= $msg['id'] ?>" style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
-              <div style="font-size: 0.78rem; color: var(--color-ink-2); margin-bottom: 0.2rem; padding: 0 0.25rem;">
-                <strong><?= $esMio ? 'Tú (' . esc($msg['emisor_nombre']) . ')' : esc($msg['emisor_nombre']) ?></strong>
-                &bull; <?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?>
-                <?php if ($esMio): ?>
-                  <span style="font-size: 0.75rem; color: <?= $msg['leido'] ? 'var(--color-success-text)' : 'var(--color-ink-2)' ?>;">
-                    <?= $msg['leido'] ? '&check;&check; Leído' : '&check; Enviado' ?>
-                  </span>
-                <?php endif; ?>
+            <?php $esMio = ((int) $msg['emisor_id'] === $userId); ?>
+            <div id="msg-<?= $msg['id'] ?>" data-msg-id="<?= $msg['id'] ?>" class="chat-bubble-row" style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
+              <div style="font-size: 0.75rem; color: var(--color-ink-2); margin-bottom: 0.2rem; padding: 0 0.25rem; text-transform: uppercase; font-weight: 600;">
+                <?= $esMio ? 'Tú' : esc($msg['emisor_nombre']) ?>
               </div>
-              <div style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.5; white-space: pre-line; word-break: break-word; <?= $esMio ? 'background-color: var(--color-primary); color: #ffffff; border-bottom-right-radius: 2px;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule); border-bottom-left-radius: 2px;' ?>">
-                <?= esc($msg['mensaje']) ?>
+              <div class="chat-bubble-box" style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.5; word-break: break-word; <?= $esMio ? 'background-color: var(--color-primary); color: #ffffff; border-bottom-right-radius: 2px;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule); border-bottom-left-radius: 2px;' ?>">
+                <div class="chat-bubble-text"><?= nl2br(esc($msg['mensaje'])) ?></div>
+                <div class="chat-bubble-meta" style="font-size: 0.7rem; color: <?= $esMio ? 'rgba(255,255,255,0.82)' : 'var(--color-ink-2)' ?>; text-align: right; margin-top: 0.35rem;">
+                  <span class="msg-time"><?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?></span>
+                  <?php if ($esMio): ?>
+                    <span class="msg-status-tick" style="margin-left: 0.25rem;"><?= $msg['leido'] ? '&check;&check; Leído' : '&check; Enviado' ?></span>
+                  <?php endif; ?>
+                </div>
               </div>
             </div>
           <?php endforeach; ?>
         <?php else: ?>
-          <div style="text-align: center; padding: 2rem 1rem; color: var(--color-ink-2); font-size: 0.9rem;">
-            Aún no se han enviado mensajes en esta operación. ¡Escribe el primero a continuación!
+          <div id="emptyChatPlaceholder" style="text-align: center; padding: 2rem 1rem; color: var(--color-ink-2); font-size: 0.9rem;">
+            Aún no se han enviado mensajes en esta operación. Escribe el primero a continuación.
           </div>
         <?php endif; ?>
       </div>
 
       <!-- Formulario para enviar mensaje nuevo -->
-      <?php 
-        $receptorId = $esVendedor ? (int)$transaccion['comprador_id'] : (int)$transaccion['vendedor_id'];
-        $receptorNombre = $esVendedor ? $transaccion['comprador_nombre'] : $transaccion['vendedor_nombre'];
-      ?>
       <form id="chatForm" action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
         <?= csrf_field() ?>
         <input type="hidden" name="transaccion_id" value="<?= esc($transaccion['id']) ?>">
@@ -256,17 +261,22 @@
         <input type="hidden" name="receptor_id" value="<?= esc($receptorId) ?>">
 
         <div class="form-group" style="margin-bottom: 0.75rem;">
-          <label for="mensaje" class="form-label" style="font-size: 0.88rem;">
-            Enviar mensaje a <strong><?= esc($receptorNombre) ?></strong>:
-          </label>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+            <label for="chatInput" class="form-label" style="font-size: 0.88rem; margin: 0;">
+              Enviar mensaje a <strong><?= esc($receptorNombre) ?></strong>:
+            </label>
+            <span style="font-size: 0.75rem; color: var(--color-ink-2);">
+              Presiona <kbd style="background: var(--color-paper-surface); border: 1px solid var(--color-rule); padding: 1px 4px; border-radius: 4px;">Enter</kbd> para envío instantáneo
+            </span>
+          </div>
           <textarea 
             name="mensaje" 
-            id="chatInput" placeholder="Escribe tu mensaje o consulta de coordinación aquí (Enter para enviar, Shift+Enter para salto de línea)..." 
-            rows="3" 
+            id="chatInput" 
+            rows="2" 
             class="form-control" 
-            placeholder="Escribe tu mensaje o consulta de coordinación aquí..." 
+            placeholder="Escribe tu mensaje de coordinación aquí y presiona Enter..." 
             required 
-            minlength="2" 
+            minlength="1" 
             maxlength="2000"
             style="resize: vertical;"
           ></textarea>
@@ -289,6 +299,6 @@
 
 </div>
 
-<script src="<?= base_url('assets/chat.js') ?>"></script>
+<script src="<?= base_url('assets/chat.js') ?>?v=2.1"></script>
 
 <?= view('templates/footer') ?>
