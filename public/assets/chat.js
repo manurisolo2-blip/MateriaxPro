@@ -1,5 +1,5 @@
 /**
- * MateriaX Pro — Motor de Chat y Negociación en Tiempo Real (B2B Live Messaging v2.1)
+ * MateriaX Pro — Motor de Chat y Negociación en Tiempo Real (B2B Live Messaging v2.2)
  * Envío optimista instantáneo (0ms), sincronización entre pestañas (BroadcastChannel)
  * y polling ligero sin bloqueos ni recargas de página.
  */
@@ -403,6 +403,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const sendUrl   = toSameOriginUrl(inboxContainer.dataset.sendUrl || `${baseUrl}mensajes/enviar`);
         const inboxList = document.getElementById('inboxList');
 
+        const renderRecentMessagesHtml = (conv) => {
+            if (Array.isArray(conv.mensajes_recientes) && conv.mensajes_recientes.length > 0) {
+                return conv.mensajes_recientes.map(rm => {
+                    const rowBg = rm.es_mio
+                        ? 'background-color: rgba(25, 95, 65, 0.08);'
+                        : 'background-color: var(--color-paper-surface); border: 1px solid var(--color-rule);';
+                    const nameColor = rm.es_mio ? 'var(--color-primary)' : 'var(--color-ink)';
+                    const label = rm.es_mio ? 'Tú:' : `${escapeHtml(rm.emisor_nombre || conv.otra_empresa_nombre)}:`;
+                    return `
+                        <div style="font-size: 0.88rem; line-height: 1.4; display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.25rem 0.45rem; border-radius: 6px; ${rowBg}">
+                            <div style="word-break: break-word;">
+                                <strong style="color: ${nameColor}; font-size: 0.8rem;">${label}</strong>
+                                <span style="color: var(--color-ink);">${escapeHtml(rm.mensaje)}</span>
+                            </div>
+                            <span style="font-size: 0.72rem; color: var(--color-ink-2); white-space: nowrap; flex-shrink: 0;">
+                                ${escapeHtml(rm.fecha || '')}
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            const prefix = conv.es_ultimo_mio ? 'Tú: ' : `${escapeHtml(conv.otra_empresa_nombre)}: `;
+            return `<div style="font-size: 0.88rem; color: var(--color-ink);"><strong style="color: var(--color-ink-2); font-size: 0.8rem;">${prefix}</strong>${escapeHtml(conv.ultimo_mensaje)}</div>`;
+        };
+
         // Delegación de eventos para formularios de respuesta rápida dentro de /mensajes
         inboxContainer.addEventListener('submit', async (e) => {
             const form = e.target.closest('.quick-reply-form');
@@ -426,9 +451,20 @@ document.addEventListener('DOMContentLoaded', () => {
             // Actualizar vista previa de la tarjeta de conversación al instante (0ms)
             const card = form.closest('.inbox-conv-card');
             if (card) {
-                const previewEl = card.querySelector('.inbox-last-msg');
+                const previewEl = card.querySelector('.inbox-recent-messages') || card.querySelector('.inbox-last-msg');
                 if (previewEl) {
-                    previewEl.innerHTML = `<strong style="color: var(--color-ink-2); font-size: 0.8rem;">Tú: </strong>${escapeHtml(texto)}`;
+                    const nowShort = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const rowDiv = document.createElement('div');
+                    rowDiv.style.cssText = 'font-size: 0.88rem; line-height: 1.4; display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.25rem 0.45rem; border-radius: 6px; background-color: rgba(25, 95, 65, 0.08);';
+                    rowDiv.innerHTML = `
+                        <div style="word-break: break-word;">
+                            <strong style="color: var(--color-primary); font-size: 0.8rem;">Tú:</strong>
+                            <span style="color: var(--color-ink);">${escapeHtml(texto)}</span>
+                        </div>
+                        <span style="font-size: 0.72rem; color: var(--color-ink-2); white-space: nowrap; flex-shrink: 0;">${escapeHtml(nowShort)}</span>
+                    `;
+                    previewEl.appendChild(rowDiv);
+                    previewEl.scrollTop = previewEl.scrollHeight;
                 }
                 const timeEl = card.querySelector('.inbox-last-time');
                 if (timeEl) {
@@ -513,18 +549,29 @@ document.addEventListener('DOMContentLoaded', () => {
                             totalNoLeidosEl.style.color = (data.total_no_leidos > 0) ? 'var(--color-primary)' : 'var(--color-ink-2)';
                         }
 
-                        // Actualizar cada tarjeta existente o recargar la lista si llegó un hilo nuevo
-                        data.conversaciones.forEach(conv => {
+                        // Actualizar cada tarjeta existente o insertar las nuevas manteniendo el orden cronológico
+                        const reversedConvs = [...data.conversaciones].reverse();
+                        reversedConvs.forEach(conv => {
+                            const safeLink = toSameOriginUrl(conv.link_destino);
                             const existingCard = document.querySelector(`[data-conv-key="${conv.clave}"]`);
                             if (existingCard) {
-                                const previewEl = existingCard.querySelector('.inbox-last-msg');
+                                const previewEl = existingCard.querySelector('.inbox-recent-messages') || existingCard.querySelector('.inbox-last-msg');
                                 if (previewEl) {
-                                    const prefix = conv.es_ultimo_mio ? 'Tú: ' : `${escapeHtml(conv.otra_empresa_nombre)}: `;
-                                    previewEl.innerHTML = `<strong style="color: var(--color-ink-2); font-size: 0.8rem;">${prefix}</strong>${escapeHtml(conv.ultimo_mensaje)}`;
+                                    previewEl.innerHTML = renderRecentMessagesHtml(conv);
+                                    previewEl.scrollTop = previewEl.scrollHeight;
+                                }
+                                const totalCountEl = existingCard.querySelector('.inbox-total-count');
+                                if (totalCountEl && conv.total_mensajes) {
+                                    totalCountEl.innerHTML = `&bull; ${conv.total_mensajes} mensaje(s)`;
                                 }
                                 const timeEl = existingCard.querySelector('.inbox-last-time');
                                 if (timeEl && conv.ultima_fecha) {
                                     timeEl.textContent = conv.ultima_fecha;
+                                }
+                                const openBtn = existingCard.querySelector('.inbox-open-btn');
+                                if (openBtn && safeLink) {
+                                    openBtn.href = safeLink;
+                                    openBtn.className = `btn ${conv.no_leidos > 0 ? 'btn-primary' : 'btn-secondary'} btn-sm inbox-open-btn`;
                                 }
                                 const unreadBadge = existingCard.querySelector('.inbox-unread-badge');
                                 if (unreadBadge) {
@@ -538,32 +585,44 @@ document.addEventListener('DOMContentLoaded', () => {
                                     }
                                 }
                             } else if (inboxList) {
-                                // Si apareció una conversación completamente nueva que no estaba en el DOM, insertarla arriba
+                                // Si apareció una conversación completamente nueva que no estaba en el DOM, insertarla completa arriba
                                 const emptyInbox = document.getElementById('emptyInboxPlaceholder');
                                 if (emptyInbox) emptyInbox.remove();
 
                                 const newCard = document.createElement('div');
                                 newCard.className = 'card inbox-conv-card';
                                 newCard.dataset.convKey = conv.clave;
-                                newCard.style.cssText = `padding: 1.25rem 1.5rem; margin-bottom: 0.85rem; ${conv.no_leidos > 0 ? 'border-left: 4px solid var(--color-primary); background-color: var(--color-paper-surface);' : ''}`;
-                                const prefix = conv.es_ultimo_mio ? 'Tú: ' : `${escapeHtml(conv.otra_empresa_nombre)}: `;
+                                newCard.style.cssText = `padding: 1.25rem 1.5rem; transition: transform 0.15s ease; ${conv.no_leidos > 0 ? 'border-left: 4px solid var(--color-primary); background-color: var(--color-paper-surface);' : ''}`;
+                                const trxInput = conv.transaccion_id ? `<input type="hidden" name="transaccion_id" value="${escapeHtml(conv.transaccion_id)}">` : '';
+                                const trxBadge = conv.codigo_operacion ? `<span class="badge badge-info" style="font-size: 0.78rem;">${escapeHtml(conv.codigo_operacion)}</span>` : '';
+                                const polBadge = conv.tipo_polimero ? `<span class="badge badge-secondary" style="font-size: 0.72rem; margin-left: 0.35rem;">${escapeHtml(conv.tipo_polimero)}</span>` : '';
                                 newCard.innerHTML = `
                                     <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
                                         <div style="flex: 1; min-width: 260px;">
                                             <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap;">
                                                 <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--color-ink); margin: 0;">${escapeHtml(conv.otra_empresa_nombre)}</h3>
+                                                ${trxBadge}
                                                 <span class="badge badge-success inbox-unread-badge" style="font-size: 0.78rem; ${conv.no_leidos > 0 ? '' : 'display: none;'}">${conv.no_leidos} nuevo(s)</span>
+                                                <span class="inbox-total-count" style="font-size: 0.78rem; color: var(--color-ink-2);">&bull; ${conv.total_mensajes || 1} mensaje(s)</span>
                                             </div>
-                                            <div style="font-size: 0.88rem; color: var(--color-ink-2); margin-bottom: 0.5rem;">
-                                                Lote vinculado: <strong>${escapeHtml(conv.producto_nombre)}</strong>
+                                            <div style="font-size: 0.88rem; color: var(--color-ink-2); margin-bottom: 0.65rem;">
+                                                Lote vinculado: <strong>${escapeHtml(conv.producto_nombre)}</strong>${polBadge}
                                             </div>
-                                            <div class="inbox-last-msg" style="font-size: 0.9rem; color: var(--color-ink); background-color: var(--color-paper-2); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--color-rule); max-width: 650px;">
-                                                <strong style="color: var(--color-ink-2); font-size: 0.8rem;">${prefix}</strong>${escapeHtml(conv.ultimo_mensaje)}
+                                            <div class="inbox-recent-messages inbox-last-msg" style="display: flex; flex-direction: column; gap: 0.4rem; background-color: var(--color-paper-2); padding: 0.75rem 0.9rem; border-radius: var(--radius-sm); border: 1px solid var(--color-rule); max-width: 680px; margin-bottom: 0.75rem; max-height: 185px; overflow-y: auto;">
+                                                ${renderRecentMessagesHtml(conv)}
                                             </div>
+                                            <form class="quick-reply-form" action="${escapeHtml(sendUrl)}" method="POST" style="display: flex; gap: 0.5rem; align-items: center; max-width: 680px; margin: 0;">
+                                                ${trxInput}
+                                                <input type="hidden" name="producto_id" value="${escapeHtml(conv.producto_id)}">
+                                                <input type="hidden" name="receptor_id" value="${escapeHtml(conv.otra_empresa_id)}">
+                                                <input type="text" name="mensaje" class="form-control quick-reply-input" placeholder="Respuesta rápida a ${escapeHtml(conv.otra_empresa_nombre)} (Enter para enviar)..." required minlength="1" maxlength="2000" style="flex: 1; padding: 0.45rem 0.75rem; font-size: 0.86rem;">
+                                                <button type="submit" class="btn btn-secondary btn-sm" style="white-space: nowrap;">Enviar</button>
+                                                <span class="quick-reply-status" style="font-size: 0.78rem; font-weight: 600; white-space: nowrap;"></span>
+                                            </form>
                                         </div>
                                         <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem;">
                                             <span class="inbox-last-time" style="font-size: 0.8rem; color: var(--color-ink-2);">${escapeHtml(conv.ultima_fecha)}</span>
-                                            <a href="${escapeHtml(conv.link_destino)}" class="btn btn-primary btn-sm">Abrir Conversación &rarr;</a>
+                                            <a href="${escapeHtml(safeLink)}" class="btn ${conv.no_leidos > 0 ? 'btn-primary' : 'btn-secondary'} btn-sm inbox-open-btn">Abrir Conversación &rarr;</a>
                                         </div>
                                     </div>
                                 `;

@@ -157,9 +157,14 @@ class MensajeModel extends Model
 
         $hilos = [];
         foreach ($mensajes as $m) {
+            if ((int)$m['emisor_id'] === (int)$m['receptor_id']) {
+                continue;
+            }
+
             // Clave del hilo: por transaccion_id o por producto_id + otra empresa
-            $otraEmpresaId = ($m['emisor_id'] == $userId) ? (int)$m['receptor_id'] : (int)$m['emisor_id'];
-            $otraEmpresaNombre = ($m['emisor_id'] == $userId) ? $m['receptor_nombre'] : $m['emisor_nombre'];
+            $esMio             = ((int)$m['emisor_id'] === $userId);
+            $otraEmpresaId     = $esMio ? (int)$m['receptor_id'] : (int)$m['emisor_id'];
+            $otraEmpresaNombre = $esMio ? ($m['receptor_nombre'] ?? 'Empresa Registrada') : ($m['emisor_nombre'] ?? 'Empresa Registrada');
 
             $clave = !empty($m['transaccion_id']) 
                 ? 'trx_' . $m['transaccion_id'] 
@@ -180,6 +185,21 @@ class MensajeModel extends Model
                     'ultimo_emisor_id'   => $m['emisor_id'],
                     'ultima_fecha'       => $m['created_at'],
                     'no_leidos'          => 0,
+                    'total_mensajes'     => 0,
+                    'mensajes_recientes' => [],
+                ];
+            }
+
+            $hilos[$clave]['total_mensajes']++;
+
+            if (count($hilos[$clave]['mensajes_recientes']) < 4) {
+                $hilos[$clave]['mensajes_recientes'][] = [
+                    'id'            => (int) $m['id'],
+                    'emisor_id'     => (int) $m['emisor_id'],
+                    'emisor_nombre' => $esMio ? 'Tú' : ($m['emisor_nombre'] ?? $otraEmpresaNombre),
+                    'es_mio'        => $esMio,
+                    'mensaje'       => (string) $m['mensaje'],
+                    'fecha'         => !empty($m['created_at']) ? date('d/m H:i', strtotime($m['created_at'])) : '',
                 ];
             }
 
@@ -188,6 +208,11 @@ class MensajeModel extends Model
                 $hilos[$clave]['no_leidos']++;
             }
         }
+
+        foreach ($hilos as &$hilo) {
+            $hilo['mensajes_recientes'] = array_reverse($hilo['mensajes_recientes']);
+        }
+        unset($hilo);
 
         return array_values($hilos);
     }

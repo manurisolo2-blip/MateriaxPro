@@ -299,6 +299,6 @@
 
 </div>
 
-<script src="<?= base_url('assets/chat.js') ?>?v=2.1"></script>
+<script src="<?= base_url('assets/chat.js') ?>?v=2.2"></script>
 
 <?= view('templates/footer') ?>

@@ -228,38 +228,44 @@ class Mensajes extends BaseController
             throw PageNotFoundException::forPageNotFound('Lote de polímero no encontrado.');
         }
 
-        $esDuenio = ((int)$producto['user_id'] === $userId);
+        $duenioId = (int) $producto['user_id'];
+        $esDuenio = ($duenioId === $userId);
+        $otraId   = (int) $otraEmpresaId;
 
-        // Si el dueño del lote abre un link donde otraEmpresaId es su propio ID, redirigir al último interesado real
-        if ($esDuenio && (int)$otraEmpresaId === $userId) {
-            $ultimoInteresado = $this->mensajeModel
-                ->where('producto_id', (int)$productoId)
-                ->where('transaccion_id', null)
-                ->where('emisor_id !=', $userId)
-                ->orderBy('id', 'DESC')
-                ->first();
+        if ($esDuenio) {
+            // Si el dueño del lote abre un link donde otraEmpresaId es su propio ID, redirigir al último interesado real
+            if ($otraId === $userId || $otraId <= 0) {
+                $ultimoInteresado = $this->mensajeModel
+                    ->where('producto_id', (int)$productoId)
+                    ->where('transaccion_id', null)
+                    ->groupStart()
+                        ->where('emisor_id !=', $userId)
+                        ->orWhere('receptor_id !=', $userId)
+                    ->groupEnd()
+                    ->orderBy('id', 'DESC')
+                    ->first();
 
-            if ($ultimoInteresado) {
-                return redirect()->to(site_url('mensajes/chat/producto/' . (int)$productoId . '/' . (int)$ultimoInteresado['emisor_id']));
+                if ($ultimoInteresado) {
+                    $interesadoRealId = ((int)$ultimoInteresado['emisor_id'] === $userId)
+                        ? (int)$ultimoInteresado['receptor_id']
+                        : (int)$ultimoInteresado['emisor_id'];
+                    if ($interesadoRealId > 0 && $interesadoRealId !== $userId) {
+                        return redirect()->to(site_url('mensajes/chat/producto/' . (int)$productoId . '/' . $interesadoRealId));
+                    }
+                }
+
+                return redirect()->to(site_url('productos/ver/' . (int)$productoId . '#consultas'))
+                                 ->with('error', 'Este lote te pertenece. Aquí verás las consultas cuando otra empresa te escriba.');
             }
-
-            return redirect()->to(site_url('productos/ver/' . (int)$productoId . '#consultas'))
-                             ->with('error', 'Este lote te pertenece. Aquí verás las consultas cuando otra empresa te escriba.');
+            $contraparteId = $otraId;
+        } else {
+            // Si no soy el dueño del lote, mi contraparte siempre es el titular del lote ($duenioId)
+            $contraparteId = $duenioId;
         }
 
-        $otraEmpresa = $this->userModel->find($otraEmpresaId);
+        $otraEmpresa = $this->userModel->find($contraparteId);
         if (!$otraEmpresa) {
             throw PageNotFoundException::forPageNotFound('Empresa de contacto no encontrada.');
-        }
-
-        if (!$esDuenio && $userId !== (int)$otraEmpresaId && session()->get('rol') !== 'admin') {
-            return redirect()->to(site_url('mensajes'))->with('error', 'Acceso denegado a esta consulta.');
-        }
-
-        // Si no soy el dueño, mi contraparte siempre es el dueño del producto
-        $contraparteId = $esDuenio ? (int)$otraEmpresa['id'] : (int)$producto['user_id'];
-        if (!$esDuenio && $contraparteId !== (int)$otraEmpresa['id']) {
-            $otraEmpresa = $this->userModel->find($contraparteId) ?: $otraEmpresa;
         }
 
         // Marcar consultas como leídas
@@ -434,6 +440,8 @@ class Mensajes extends BaseController
                 'es_ultimo_mio'       => ((int) $conv['ultimo_emisor_id'] === $userId),
                 'ultima_fecha'        => !empty($conv['ultima_fecha']) ? date('d/m/Y H:i', strtotime($conv['ultima_fecha'])) : '',
                 'no_leidos'           => (int) $conv['no_leidos'],
+                'total_mensajes'      => (int) ($conv['total_mensajes'] ?? 1),
+                'mensajes_recientes'  => $conv['mensajes_recientes'] ?? [],
                 'link_destino'        => $linkDestino,
             ];
         }
