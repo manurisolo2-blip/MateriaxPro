@@ -51,112 +51,6 @@ class Database extends Config
         ],
     ];
 
-    //    /**
-    //     * Sample database connection for SQLite3.
-    //     *
-    //     * @var array<string, mixed>
-    //     */
-    //    public array $default = [
-    //        'database'    => 'database.db',
-    //        'DBDriver'    => 'SQLite3',
-    //        'DBPrefix'    => '',
-    //        'DBDebug'     => true,
-    //        'swapPre'     => '',
-    //        'failover'    => [],
-    //        'foreignKeys' => true,
-    //        'busyTimeout' => 1000,
-    //        'synchronous' => null,
-    //        'dateFormat'  => [
-    //            'date'     => 'Y-m-d',
-    //            'datetime' => 'Y-m-d H:i:s',
-    //            'time'     => 'H:i:s',
-    //        ],
-    //    ];
-
-    //    /**
-    //     * Sample database connection for Postgre.
-    //     *
-    //     * @var array<string, mixed>
-    //     */
-    //    public array $default = [
-    //        'DSN'        => '',
-    //        'hostname'   => 'localhost',
-    //        'username'   => 'root',
-    //        'password'   => 'root',
-    //        'database'   => 'ci4',
-    //        'schema'     => 'public',
-    //        'DBDriver'   => 'Postgre',
-    //        'DBPrefix'   => '',
-    //        'pConnect'   => false,
-    //        'DBDebug'    => true,
-    //        'charset'    => 'utf8',
-    //        'swapPre'    => '',
-    //        'failover'   => [],
-    //        'port'       => 5432,
-    //        'dateFormat' => [
-    //            'date'     => 'Y-m-d',
-    //            'datetime' => 'Y-m-d H:i:s',
-    //            'time'     => 'H:i:s',
-    //        ],
-    //    ];
-
-    //    /**
-    //     * Sample database connection for SQLSRV.
-    //     *
-    //     * @var array<string, mixed>
-    //     */
-    //    public array $default = [
-    //        'DSN'        => '',
-    //        'hostname'   => 'localhost',
-    //        'username'   => 'root',
-    //        'password'   => 'root',
-    //        'database'   => 'ci4',
-    //        'schema'     => 'dbo',
-    //        'DBDriver'   => 'SQLSRV',
-    //        'DBPrefix'   => '',
-    //        'pConnect'   => false,
-    //        'DBDebug'    => true,
-    //        'charset'    => 'utf8',
-    //        'swapPre'    => '',
-    //        'encrypt'    => false,
-    //        'failover'   => [],
-    //        'port'       => 1433,
-    //        'dateFormat' => [
-    //            'date'     => 'Y-m-d',
-    //            'datetime' => 'Y-m-d H:i:s',
-    //            'time'     => 'H:i:s',
-    //        ],
-    //    ];
-
-    //    /**
-    //     * Sample database connection for OCI8.
-    //     *
-    //     * You may need the following environment variables:
-    //     *   NLS_LANG                = 'AMERICAN_AMERICA.UTF8'
-    //     *   NLS_DATE_FORMAT         = 'YYYY-MM-DD HH24:MI:SS'
-    //     *   NLS_TIMESTAMP_FORMAT    = 'YYYY-MM-DD HH24:MI:SS'
-    //     *   NLS_TIMESTAMP_TZ_FORMAT = 'YYYY-MM-DD HH24:MI:SS'
-    //     *
-    //     * @var array<string, mixed>
-    //     */
-    //    public array $default = [
-    //        'DSN'        => 'localhost:1521/FREEPDB1',
-    //        'username'   => 'root',
-    //        'password'   => 'root',
-    //        'DBDriver'   => 'OCI8',
-    //        'DBPrefix'   => '',
-    //        'pConnect'   => false,
-    //        'DBDebug'    => true,
-    //        'charset'    => 'AL32UTF8',
-    //        'swapPre'    => '',
-    //        'failover'   => [],
-    //        'dateFormat' => [
-    //            'date'     => 'Y-m-d',
-    //            'datetime' => 'Y-m-d H:i:s',
-    //            'time'     => 'H:i:s',
-    //        ],
-    //    ];
-
     /**
      * This database connection is used when running PHPUnit database tests.
      *
@@ -218,7 +112,62 @@ class Database extends Config
             return null;
         };
 
-        // Detección de base de datos MySQL en la nube (TiDB Cloud, Aiven, Railway, Supabase o VPS)
+        // 1. Detección prioritaria de Supabase / PostgreSQL (Integración nativa de Vercel o URI manual)
+        $pgUrl  = $resolveEnv(['POSTGRES_URL_NON_POOLING', 'POSTGRES_URL', 'SUPABASE_DB_URL', 'DATABASE_URL']);
+        $pgHost = $resolveEnv(['POSTGRES_HOST', 'SUPABASE_HOST', 'PGHOST']);
+        $pgUser = $resolveEnv(['POSTGRES_USER', 'SUPABASE_USER', 'PGUSER']);
+        $pgPass = $resolveEnv(['POSTGRES_PASSWORD', 'SUPABASE_PASSWORD', 'PGPASSWORD']);
+        $pgName = $resolveEnv(['POSTGRES_DATABASE', 'SUPABASE_DATABASE', 'PGDATABASE']);
+        $pgPort = (int) ($resolveEnv(['POSTGRES_PORT', 'SUPABASE_PORT', 'PGPORT']) ?: 0);
+
+        $isPostgresUrl = !empty($pgUrl) && (
+            str_starts_with($pgUrl, 'postgres://')
+            || str_starts_with($pgUrl, 'postgresql://')
+            || str_starts_with($pgUrl, 'pgsql://')
+        );
+
+        if ($isPostgresUrl) {
+            $parsed = parse_url($pgUrl);
+            $pgHost = $pgHost ?: ($parsed['host'] ?? null);
+            $pgUser = $pgUser ?: (isset($parsed['user']) ? urldecode($parsed['user']) : null);
+            $pgPass = $pgPass ?: (isset($parsed['pass']) ? urldecode($parsed['pass']) : null);
+            $pgPort = $pgPort ?: (int) ($parsed['port'] ?? 5432);
+            $pgName = $pgName ?: (!empty($parsed['path']) ? ltrim($parsed['path'], '/') : 'postgres');
+        }
+
+        if (!empty($pgHost)) {
+            // En Supabase Pooler (pooler.supabase.com), el puerto 5432 corresponde a Session Mode (compatible con LASTVAL/secuencias de CI4)
+            if (str_contains($pgHost, 'pooler.supabase.com') && $pgPort === 6543) {
+                $pgPort = 5432;
+            }
+
+            $this->default = [
+                'DSN'             => '',
+                'hostname'        => $pgHost,
+                'username'        => $pgUser ?: 'postgres',
+                'password'        => $pgPass ?? '',
+                'database'        => $pgName ?: 'postgres',
+                'schema'          => 'public',
+                'DBDriver'        => 'Postgre',
+                'DBPrefix'        => '',
+                'pConnect'        => false,
+                'DBDebug'         => true,
+                'charset'         => 'utf8',
+                'swapPre'         => '',
+                'failover'        => [],
+                'port'            => $pgPort ?: 5432,
+                'connect_timeout' => '5',
+                'sslmode'         => 'require',
+                'dateFormat'      => [
+                    'date'     => 'Y-m-d',
+                    'datetime' => 'Y-m-d H:i:s',
+                    'time'     => 'H:i:s',
+                ],
+            ];
+            return;
+        }
+
+        // 2. Detección de base de datos MySQL en la nube (TiDB Cloud, Aiven, Railway o VPS)
         $dbUrl     = $resolveEnv(['DATABASE_URL', 'TIDB_URL', 'MYSQL_URL', 'JAWSDB_URL', 'CLEARDB_DATABASE_URL']);
         $cloudHost = $resolveEnv(['TIDB_HOST', 'DB_HOST', 'MYSQL_HOST', 'MYSQLHOST', 'DATABASE_HOST']);
         $cloudUser = $resolveEnv(['TIDB_USER', 'DB_USER', 'MYSQL_USER', 'MYSQLUSER', 'DATABASE_USER']);
@@ -252,7 +201,7 @@ class Database extends Config
                 ];
             }
         } elseif (getenv('VERCEL') && empty(getenv('database.default.hostname'))) {
-            // Fallback SQLite en Vercel si no se configuró base de datos externa
+            // 3. Fallback SQLite en Vercel si aún no se configuró base de datos externa
             $tmp = sys_get_temp_dir();
             $baseWritable = (!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp';
             $dbPath = rtrim($baseWritable, '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable' . DIRECTORY_SEPARATOR . 'materiax_db.sqlite';

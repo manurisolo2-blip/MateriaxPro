@@ -23,7 +23,7 @@ $routes->get('estado-db', static function () {
     }
 
     $driver = $db->DBDriver;
-    $isMySQL = ($driver === 'MySQLi');
+    $isCloudPersistent = ($driver === 'Postgre' || $driver === 'MySQLi');
 
     $resolveEnv = static function (array $keys): ?string {
         foreach ($keys as $key) {
@@ -41,6 +41,8 @@ $routes->get('estado-db', static function () {
         return null;
     };
 
+    $pgUrl    = $resolveEnv(['POSTGRES_URL_NON_POOLING', 'POSTGRES_URL', 'SUPABASE_DB_URL']);
+    $pgHost   = $resolveEnv(['POSTGRES_HOST', 'SUPABASE_HOST']);
     $tidbHost = $resolveEnv(['TIDB_HOST']);
     $dbHost   = $resolveEnv(['DB_HOST', 'MYSQL_HOST', 'MYSQLHOST']);
     $dbUrl    = $resolveEnv(['DATABASE_URL', 'TIDB_URL']);
@@ -50,20 +52,22 @@ $routes->get('estado-db', static function () {
         'ambiente' => [
             'plataforma'       => (getenv('VERCEL') || !empty($_ENV['VERCEL']) || !empty($_SERVER['VERCEL'])) ? 'Vercel Serverless' : 'Servidor Local (XAMPP / Dedicado)',
             'driver_activo'    => $driver,
-            'host_conectado'   => $isMySQL ? $db->hostname : '(Archivo local SQLite en contenedor)',
+            'host_conectado'   => $isCloudPersistent ? $db->hostname : '(Archivo local SQLite en contenedor)',
             'base_datos'       => $db->database,
-            'persistencia'     => $isMySQL ? 'PERMANENTE (Nube)' : 'TEMPORAL (SQLite efimero)',
+            'persistencia'     => $isCloudPersistent ? 'PERMANENTE (Nube - ' . ($driver === 'Postgre' ? 'Supabase PostgreSQL' : 'MySQL') . ')' : 'TEMPORAL (SQLite efimero)',
         ],
         'variables_entorno' => [
-            'TIDB_HOST'    => $tidbHost ? 'CONFIGURADA (' . substr($tidbHost, 0, 15) . '...)' : 'NO DEFINIDA',
-            'DB_HOST'      => $dbHost ? 'CONFIGURADA (' . substr($dbHost, 0, 15) . '...)' : 'NO DEFINIDA',
-            'DATABASE_URL' => $dbUrl ? 'CONFIGURADA (' . substr($dbUrl, 0, 15) . '...)' : 'NO DEFINIDA',
+            'POSTGRES_URL'  => $pgUrl ? 'CONFIGURADA (' . substr($pgUrl, 0, 18) . '...)' : 'NO DEFINIDA',
+            'POSTGRES_HOST' => $pgHost ? 'CONFIGURADA (' . substr($pgHost, 0, 18) . '...)' : 'NO DEFINIDA',
+            'DATABASE_URL'  => $dbUrl ? 'CONFIGURADA (' . substr($dbUrl, 0, 18) . '...)' : 'NO DEFINIDA',
+            'TIDB_HOST'     => $tidbHost ? 'CONFIGURADA (' . substr($tidbHost, 0, 15) . '...)' : 'NO DEFINIDA',
+            'DB_HOST'       => $dbHost ? 'CONFIGURADA (' . substr($dbHost, 0, 15) . '...)' : 'NO DEFINIDA',
         ],
         'estado_persistencia' => [
-            'los_usuarios_se_mantienen_tras_actualizacion' => $isMySQL,
-            'diagnostico' => $isMySQL
-                ? 'Base de datos en la nube conectada exitosamente. Las cuentas y mensajes son 100% permanentes y no se borraran con ninguna actualizacion.'
-                : 'ALERTA: Estas corriendo en SQLite efimero dentro del contenedor de Vercel. Cada vez que se sube un cambio de codigo a GitHub, Vercel crea un contenedor nuevo y borra los datos temporales. Para que las cuentas nunca mas se borren, conecta TiDB Cloud o MySQL en Vercel Settings -> Environment Variables.',
+            'los_usuarios_se_mantienen_tras_actualizacion' => $isCloudPersistent,
+            'diagnostico' => $isCloudPersistent
+                ? 'Base de datos en la nube (' . ($driver === 'Postgre' ? 'Supabase PostgreSQL' : 'MySQL') . ') conectada exitosamente. Las cuentas, lotes y mensajes son 100% permanentes y no se borraran con ninguna actualizacion.'
+                : 'ALERTA: Estas corriendo en SQLite efimero dentro del contenedor de Vercel. Para que las cuentas nunca mas se borren, conecta Supabase en Vercel (pestaña Storage / Integrations -> Supabase, o pega POSTGRES_URL / DATABASE_URL en Environment Variables).',
         ],
         'metricas' => [
             'total_usuarios_en_base' => $totalUsuarios,
