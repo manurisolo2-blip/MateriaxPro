@@ -261,7 +261,7 @@
 </div>
 
 <?php if ($isLogged && !$esPropio): ?>
-<script src="<?= base_url('assets/chat.js') ?>?v=2.2"></script>
+<script src="<?= base_url('assets/chat.js') ?>?v=2.4"></script>
 <?php endif; ?>
 
 <?= view('templates/footer') ?>

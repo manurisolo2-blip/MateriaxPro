@@ -5,6 +5,9 @@ putenv('VERCEL=1');
 $_ENV['VERCEL'] = '1';
 $_SERVER['VERCEL'] = '1';
 
+@ini_set('session.gc_maxlifetime', '31536000');
+@ini_set('session.cookie_lifetime', '31536000');
+
 // Configurar entorno en modo desarrollo
 if (!getenv('CI_ENVIRONMENT')) {
     putenv('CI_ENVIRONMENT=development');
@@ -483,6 +486,8 @@ if (empty($pgHost) && empty($cloudHost) && (!file_exists($sqliteInitMarker) || !
     try {
         $db = new PDO('sqlite:' . $dbPath);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        @$db->exec('PRAGMA journal_mode = WAL;');
+        @$db->exec('PRAGMA busy_timeout = 5000;');
 
         $db->exec("CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,

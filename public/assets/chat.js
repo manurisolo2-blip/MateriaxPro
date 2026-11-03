@@ -1,13 +1,17 @@
 /**
- * MateriaX Pro — Motor de Chat y Negociación en Tiempo Real (B2B Live Messaging v2.2)
- * Envío optimista instantáneo (0ms), sincronización entre pestañas (BroadcastChannel)
- * y polling ligero sin bloqueos ni recargas de página.
+ * MateriaX Pro — Motor de Chat y Negociación en Tiempo Real (B2B Live Messaging v2.4)
+ * Envío optimista instantáneo (0ms) con cola secuencial FIFO, reintentos automáticos
+ * idempotentes ante microcortes, sincronización entre pestañas (BroadcastChannel)
+ * y polling inteligente coordinado sin bloqueos ni recargas de página.
  */
 document.addEventListener('DOMContentLoaded', () => {
     const chatContainer  = document.getElementById('chatContainer');
     const chatForm       = document.getElementById('chatForm');
     const mensajeInput   = document.getElementById('chatInput');
     const inboxContainer = document.getElementById('inboxContainer');
+
+    // Contador global de envíos activos para dar prioridad absoluta al envío frente al polling
+    let activeSends = 0;
 
     // Normalizar URL al mismo origen actual para evitar fallos CORS entre localhost / IP LAN / HTTPS
     const toSameOriginUrl = (rawUrl) => {
@@ -25,6 +29,97 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.textContent = text == null ? '' : String(text);
         return div.innerHTML;
+    };
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    // Envío HTTP robusto con codificación URL-encoded ligera, parseo JSON seguro y reintentos automáticos
+    const postMessageWithRetry = async (url, fieldsObj, shouldAbortFn = null, maxAttempts = 4) => {
+        let lastErrorMsg = 'No se pudo completar el envío';
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            if (typeof shouldAbortFn === 'function' && shouldAbortFn()) {
+                return { abortedAsConfirmed: true };
+            }
+
+            const params = new URLSearchParams();
+            Object.entries(fieldsObj).forEach(([k, v]) => {
+                if (v !== undefined && v !== null) {
+                    params.append(k, String(v));
+                }
+            });
+            if (attempt > 1) {
+                params.set('_retry', '1');
+            }
+
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timeoutId  = controller ? setTimeout(() => controller.abort(), 12000) : null;
+
+            try {
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: params.toString(),
+                    credentials: 'same-origin',
+                    cache: 'no-store',
+                    signal: controller ? controller.signal : undefined
+                });
+
+                if (timeoutId) clearTimeout(timeoutId);
+
+                const rawText = await res.text();
+                let data = null;
+                try {
+                    data = rawText ? JSON.parse(rawText) : null;
+                } catch (_) {
+                    data = null;
+                }
+
+                // Respuesta JSON exitosa
+                if (res.ok && data && data.status === 'success') {
+                    return { ok: true, status: res.status, data };
+                }
+
+                // Errores de validación o negocio definitivos (400, 401, 403, 404) con JSON válido: no reintentar
+                if (data && (res.status === 400 || res.status === 401 || res.status === 403 || res.status === 404)) {
+                    return {
+                        ok: false,
+                        status: res.status,
+                        code: data.code || '',
+                        message: data.message || 'No se pudo enviar el mensaje.'
+                    };
+                }
+
+                // Error transitorio (500, 502, 503, 504, 429 o respuesta no-JSON): reintentar con backoff
+                lastErrorMsg = (data && data.message) ? data.message : 'Reintentando envío...';
+            } catch (networkErr) {
+                if (timeoutId) clearTimeout(timeoutId);
+                lastErrorMsg = 'Sin respuesta del servidor';
+            }
+
+            if (attempt < maxAttempts) {
+                const backoffMs = attempt === 1 ? 400 : (attempt === 2 ? 900 : 1800);
+                await sleep(backoffMs);
+            }
+        }
+
+        return { ok: false, status: 0, message: lastErrorMsg };
+    };
+
+    // Extraer campos de un formulario a objeto plano antes de limpiar inputs
+    const serializeFormFields = (formEl) => {
+        const fd  = new FormData(formEl);
+        const obj = {};
+        fd.forEach((value, key) => {
+            if (typeof value === 'string') {
+                obj[key] = value;
+            }
+        });
+        return obj;
     };
 
     // Actualizar insignia de mensajes no leídos en la barra de navegación superior
@@ -70,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const receptorId    = chatContainer.dataset.receptorId || '';
         const currentUserId = parseInt(chatContainer.dataset.userId || '0', 10);
         const baseUrl       = toSameOriginUrl(chatContainer.dataset.baseUrl || '/');
+        const sendUrl       = toSameOriginUrl(chatForm.action);
 
         const getUltimoId = () => {
             const messages = chatContainer.querySelectorAll('[data-msg-id]');
@@ -134,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
             msgDiv.style.display = 'flex';
             msgDiv.style.flexDirection = 'column';
             msgDiv.style.alignItems = isOwn ? 'flex-end' : 'flex-start';
-            msgDiv.style.opacity = isPending ? '0.78' : '1';
+            msgDiv.style.opacity = isPending ? '0.82' : '1';
             msgDiv.style.transition = 'opacity 0.15s ease';
 
             const senderLabel = isOwn ? 'Tú' : (msg.emisor_nombre || 'Contraparte');
@@ -187,7 +283,15 @@ document.addEventListener('DOMContentLoaded', () => {
             node.dataset.msgId = String(realId);
             delete node.dataset.pending;
             delete node.dataset.pendingText;
+            delete node.dataset.failed;
             node.style.opacity = '1';
+
+            const box = node.querySelector('.chat-bubble-box');
+            if (box) {
+                box.style.backgroundColor = 'var(--color-primary)';
+                box.style.cursor = 'default';
+                box.title = '';
+            }
 
             const timeEl = node.querySelector('.msg-time');
             if (timeEl && serverMsg.created_at) {
@@ -219,17 +323,109 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
+        // Cola secuencial FIFO de salida para evitar colisiones en envíos rápidos consecutivos
+        const sendQueue = [];
+        let isDrainingQueue = false;
+
+        const drainSendQueue = async () => {
+            if (isDrainingQueue) return;
+            isDrainingQueue = true;
+            activeSends++;
+
+            try {
+                while (sendQueue.length > 0) {
+                    const item = sendQueue.shift();
+                    const { tempNode, fields } = item;
+
+                    if (!tempNode || !tempNode.isConnected || !tempNode.dataset.pending) {
+                        continue;
+                    }
+
+                    const result = await postMessageWithRetry(
+                        sendUrl,
+                        fields,
+                        () => !tempNode.isConnected || !tempNode.dataset.pending,
+                        4
+                    );
+
+                    if (result.abortedAsConfirmed) {
+                        continue;
+                    }
+
+                    if (result.ok && result.data && result.data.data) {
+                        confirmPendingNode(tempNode, result.data.data);
+                        notifyOtherTabs({
+                            type: 'new_message',
+                            transaccionId,
+                            productoId,
+                            msgId: result.data.data.id
+                        });
+                    } else {
+                        tempNode.style.opacity = '1';
+                        tempNode.dataset.failed = '1';
+                        const box  = tempNode.querySelector('.chat-bubble-box');
+                        const tick = tempNode.querySelector('.msg-status-tick');
+                        if (box) {
+                            box.style.backgroundColor = '#dc2626';
+                            box.style.cursor = 'pointer';
+                            box.title = 'Haz clic para reintentar el envío';
+                        }
+                        if (tick) {
+                            const errMsg = result.status >= 400 && result.status < 500
+                                ? (result.message || 'No enviado')
+                                : 'No enviado (clic para reintentar)';
+                            tick.textContent = errMsg;
+                        }
+                    }
+                }
+            } finally {
+                activeSends = Math.max(0, activeSends - 1);
+                isDrainingQueue = false;
+                setTimeout(pollNuevos, 250);
+            }
+        };
+
+        // Reintentar manualmente haciendo clic sobre una burbuja fallida
+        chatContainer.addEventListener('click', (e) => {
+            const row = e.target.closest('.chat-bubble-row[data-failed="1"]');
+            if (!row) return;
+
+            const texto = row.dataset.pendingText || '';
+            if (!texto) return;
+
+            delete row.dataset.failed;
+            row.dataset.pending = '1';
+            row.style.opacity = '0.82';
+
+            const box  = row.querySelector('.chat-bubble-box');
+            const tick = row.querySelector('.msg-status-tick');
+            if (box) {
+                box.style.backgroundColor = 'var(--color-primary)';
+                box.style.cursor = 'default';
+                box.title = '';
+            }
+            if (tick) {
+                tick.textContent = 'Reintentando...';
+            }
+
+            const fields = serializeFormFields(chatForm);
+            fields.mensaje = texto;
+            fields._retry  = '1';
+
+            sendQueue.push({ tempNode: row, fields });
+            drainSendQueue();
+        });
+
         // Función central de envío instantáneo
-        const sendMessage = async () => {
+        const sendMessage = () => {
             const texto = mensajeInput.value.trim();
             if (texto.length < 1) {
                 mensajeInput.focus();
                 return;
             }
 
-            // Capturar datos del formulario antes de limpiar el campo
-            const formData = new FormData(chatForm);
-            formData.set('mensaje', texto);
+            const fields = serializeFormFields(chatForm);
+            fields.mensaje = texto;
 
             // Limpiar input al instante (0ms) para permitir escribir el siguiente mensaje sin esperar
             mensajeInput.value = '';
@@ -246,49 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 leido: 0
             }, true);
 
-            try {
-                const sendUrl = toSameOriginUrl(chatForm.action);
-                const res = await fetch(sendUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: formData,
-                    credentials: 'same-origin'
-                });
-
-                const data = await res.json();
-                if (res.ok && data.status === 'success' && data.data) {
-                    confirmPendingNode(tempNode, data.data);
-                    notifyOtherTabs({
-                        type: 'new_message',
-                        transaccionId,
-                        productoId,
-                        msgId: data.data.id
-                    });
-                } else {
-                    tempNode.style.opacity = '1';
-                    const box = tempNode.querySelector('.chat-bubble-box');
-                    if (box) {
-                        box.style.backgroundColor = '#dc2626';
-                    }
-                    const tick = tempNode.querySelector('.msg-status-tick');
-                    if (tick) {
-                        tick.textContent = `Error: ${data.message || 'No enviado'}`;
-                    }
-                }
-            } catch (err) {
-                tempNode.style.opacity = '1';
-                const box = tempNode.querySelector('.chat-bubble-box');
-                if (box) {
-                    box.style.backgroundColor = '#dc2626';
-                }
-                const tick = tempNode.querySelector('.msg-status-tick');
-                if (tick) {
-                    tick.textContent = 'Error de red al enviar';
-                }
-            }
+            sendQueue.push({ tempNode, fields });
+            drainSendQueue();
         };
 
         chatForm.addEventListener('submit', (e) => {
@@ -303,10 +458,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Polling ultrarrápido de mensajes entrantes y estado de lectura
+        // Polling coordinado de mensajes entrantes y estado de lectura
         let isPolling = false;
-        const pollNuevos = async () => {
-            if (isPolling) return;
+        async function pollNuevos() {
+            if (isPolling || activeSends > 0 || document.hidden) return;
             isPolling = true;
 
             try {
@@ -331,8 +486,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (res.ok) {
-                    const data = await res.json();
-                    if (data.status === 'success') {
+                    const rawText = await res.text();
+                    let data = null;
+                    try {
+                        data = rawText ? JSON.parse(rawText) : null;
+                    } catch (_) {
+                        data = null;
+                    }
+
+                    if (data && data.status === 'success') {
                         if (Array.isArray(data.nuevos) && data.nuevos.length > 0) {
                             data.nuevos.forEach(nuevo => {
                                 const msgId = parseInt(nuevo.id, 10);
@@ -373,10 +535,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } finally {
                 isPolling = false;
             }
-        };
+        }
 
-        // Polling cada 800ms para respuesta en tiempo real (< 1 segundo)
-        setInterval(pollNuevos, 800);
+        // Polling cada 1500ms para respuesta en vivo sin saturar conexiones de BD
+        setInterval(pollNuevos, 1500);
 
         // Disparo inmediato al recibir aviso por BroadcastChannel o foco de ventana
         if (broadcastChannel) {
@@ -445,8 +607,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const formData = new FormData(form);
-            formData.set('mensaje', texto);
+            const fields = serializeFormFields(form);
+            fields.mensaje = texto;
 
             // Actualizar vista previa de la tarjeta de conversación al instante (0ms)
             const card = form.closest('.inbox-conv-card');
@@ -480,18 +642,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 status.style.color = 'var(--color-ink-2)';
             }
 
+            activeSends++;
             try {
-                const res = await fetch(sendUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: formData,
-                    credentials: 'same-origin'
-                });
-                const data = await res.json();
-                if (res.ok && data.status === 'success') {
+                const result = await postMessageWithRetry(sendUrl, fields, null, 4);
+                if (result.ok) {
                     if (status) {
                         status.innerHTML = '&check; Enviado al instante';
                         status.style.color = 'var(--color-success-text)';
@@ -501,15 +655,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     notifyOtherTabs({ type: 'new_message', ts: Date.now() });
                 } else if (status) {
-                    status.textContent = data.message || 'Error al enviar';
-                    status.style.color = '#dc2626';
-                }
-            } catch (err) {
-                if (status) {
-                    status.textContent = 'Error de conexión';
+                    status.textContent = result.message || 'Error al enviar';
                     status.style.color = '#dc2626';
                 }
             } finally {
+                activeSends = Math.max(0, activeSends - 1);
                 if (btn) btn.disabled = false;
             }
         });
@@ -517,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sincronización automática de la bandeja de conversaciones sin recargar
         let isPollingInbox = false;
         const pollInbox = async () => {
-            if (isPollingInbox) return;
+            if (isPollingInbox || activeSends > 0 || document.hidden) return;
             // No re-renderizar si el usuario está escribiendo activamente en un input de respuesta rápida
             const activeEl = document.activeElement;
             if (activeEl && activeEl.classList && activeEl.classList.contains('quick-reply-input') && activeEl.value.trim().length > 0) {
@@ -537,8 +687,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (res.ok) {
-                    const data = await res.json();
-                    if (data.status === 'success' && Array.isArray(data.conversaciones)) {
+                    const rawText = await res.text();
+                    let data = null;
+                    try {
+                        data = rawText ? JSON.parse(rawText) : null;
+                    } catch (_) {
+                        data = null;
+                    }
+
+                    if (data && data.status === 'success' && Array.isArray(data.conversaciones)) {
                         updateHeaderBadge(data.total_no_leidos || 0);
 
                         const totalHilosEl    = document.getElementById('metricTotalConversaciones');
@@ -638,7 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        setInterval(pollInbox, 1200);
+        setInterval(pollInbox, 2000);
         if (broadcastChannel) {
             broadcastChannel.addEventListener('message', pollInbox);
         }
@@ -646,5 +803,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'materiax_chat_sync_event') pollInbox();
         });
         window.addEventListener('focus', pollInbox);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) pollInbox();
+        });
     }
 });

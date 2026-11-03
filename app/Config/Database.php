@@ -75,7 +75,7 @@ class Database extends Config
         'failover'    => [],
         'port'        => 3306,
         'foreignKeys' => true,
-        'busyTimeout' => 1000,
+        'busyTimeout' => 5000,
         'synchronous' => null,
         'dateFormat'  => [
             'date'     => 'Y-m-d',
@@ -165,7 +165,7 @@ class Database extends Config
                 'swapPre'         => '',
                 'failover'        => [],
                 'port'            => $pgPort ?: 5432,
-                'connect_timeout' => '5',
+                'connect_timeout' => '10',
                 'sslmode'         => 'require',
                 'dateFormat'      => [
                     'date'     => 'Y-m-d',
@@ -228,7 +228,7 @@ class Database extends Config
                 'swapPre'     => '',
                 'failover'    => [],
                 'foreignKeys' => true,
-                'busyTimeout' => 1000,
+                'busyTimeout' => 5000,
                 'synchronous' => null,
                 'dateFormat'  => [
                     'date'     => 'Y-m-d',

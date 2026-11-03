@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\PersistentAuth;
 use App\Models\UserModel;
 use App\Models\ProductoModel;
 use CodeIgniter\HTTP\RedirectResponse;
@@ -18,17 +19,42 @@ class Perfil extends BaseController
         $this->productoModel = new ProductoModel();
     }
 
-    protected function getAuthUser(): array|RedirectResponse
+    protected function getAuthUser(): array
     {
-        $userId = (int) session()->get('user_id');
-        $user   = $this->userModel->find($userId);
-        return $user ?: redirect()->to(site_url('logout'));
+        $session = session();
+        $userId  = (int) $session->get('user_id');
+        $user    = $userId > 0 ? $this->userModel->find($userId) : null;
+
+        if (!$user && $session->get('email')) {
+            $user = $this->userModel->findByEmail((string) $session->get('email'));
+            if ($user) {
+                $session->set('user_id', (int) $user['id']);
+                PersistentAuth::syncFromSession();
+            }
+        }
+
+        if (!$user) {
+            $user = [
+                'id'        => $userId,
+                'nombre'    => (string) ($session->get('nombre') ?: 'Empresa Registrada'),
+                'email'     => (string) $session->get('email'),
+                'cuit'      => (string) $session->get('cuit'),
+                'telefono'  => (string) $session->get('telefono'),
+                'rubro'     => (string) $session->get('rubro'),
+                'ciudad'    => (string) $session->get('ciudad'),
+                'provincia' => (string) $session->get('provincia'),
+                'direccion' => (string) $session->get('direccion'),
+                'rol'       => (string) ($session->get('rol') ?: 'empresa'),
+                'password'  => '',
+            ];
+        }
+
+        return $user;
     }
 
     public function index()
     {
         $user = $this->getAuthUser();
-        if ($user instanceof RedirectResponse) return $user;
 
         $localidadModel = new \App\Models\LocalidadModel();
         $provincias = $localidadModel->getProvincias();
@@ -51,7 +77,6 @@ class Perfil extends BaseController
     public function actualizar()
     {
         $user = $this->getAuthUser();
-        if ($user instanceof RedirectResponse) return $user;
 
         $ciudad = trim((string) $this->request->getPost('ciudad'));
         $ciudadOtra = trim((string) $this->request->getPost('ciudad_otra'));
@@ -80,8 +105,11 @@ class Perfil extends BaseController
         $data   = array_map(fn($v) => trim((string)$v), $this->request->getPost($fields));
         $data['ciudad'] = $ciudad;
 
-        $this->userModel->update($user['id'], $data);
+        if (!empty($user['id'])) {
+            $this->userModel->update($user['id'], $data);
+        }
         session()->set($data);
+        PersistentAuth::syncFromSession();
 
         return redirect()->to(site_url('perfil'))->with('success', '¡Datos empresariales actualizados correctamente!');
     }
@@ -89,7 +117,6 @@ class Perfil extends BaseController
     public function cambiarPassword()
     {
         $user = $this->getAuthUser();
-        if ($user instanceof RedirectResponse) return $user;
 
         $rules = [
             'current_password' => ['rules' => 'required', 'errors' => ['required' => 'Debes ingresar tu contraseña actual.']],
@@ -101,7 +128,7 @@ class Perfil extends BaseController
             return redirect()->back()->with('errors', $this->validator->getErrors());
         }
 
-        if (!password_verify((string) $this->request->getPost('current_password'), $user['password'])) {
+        if (empty($user['password']) || !password_verify((string) $this->request->getPost('current_password'), $user['password'])) {
             return redirect()->back()->with('error', 'La contraseña actual ingresada es incorrecta.');
         }
 

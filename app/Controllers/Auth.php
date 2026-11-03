@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\PersistentAuth;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\RedirectResponse;
 
@@ -17,6 +18,7 @@ class Auth extends BaseController
 
     protected function redirectIfLoggedIn(): ?RedirectResponse
     {
+        PersistentAuth::ensureSession();
         if (session()->get('isLoggedIn')) {
             return redirect()->to(site_url(session()->get('rol') === 'admin' ? 'admin' : 'panel'));
         }
@@ -66,7 +68,7 @@ class Auth extends BaseController
 
         $userModel->updateLastLogin((int) $user['id']);
         session()->regenerate();
-        session()->set([
+        $sessionData = [
             'user_id'    => (int) $user['id'],
             'nombre'     => $user['nombre'],
             'email'      => $user['email'],
@@ -78,7 +80,9 @@ class Auth extends BaseController
             'direccion'  => $user['direccion'] ?? '',
             'rol'        => $user['rol'] ?? 'empresa',
             'isLoggedIn' => true,
-        ]);
+        ];
+        session()->set($sessionData);
+        PersistentAuth::persistUser($sessionData);
 
         $esAdmin = ($user['rol'] === 'admin');
         $destino = $esAdmin ? 'admin' : 'panel';
@@ -185,7 +189,7 @@ class Auth extends BaseController
 
     public function logout()
     {
-        session()->destroy();
+        PersistentAuth::clear();
         return redirect()->to(site_url('login'))->with('success', 'Has cerrado tu sesión de forma segura.');
     }
 }

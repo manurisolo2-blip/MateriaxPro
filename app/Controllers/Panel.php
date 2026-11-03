@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\PersistentAuth;
 use App\Models\UserModel;
 use App\Models\ProductoModel;
 use App\Models\PlantaModel;
@@ -13,9 +14,33 @@ class Panel extends BaseController
 
     public function index()
     {
-        $userId = (int) session()->get('user_id');
-        if (!($user = (new UserModel())->find($userId))) {
-            return redirect()->to(site_url('logout'));
+        $session   = session();
+        $userId    = (int) $session->get('user_id');
+        $userModel = new UserModel();
+        $user      = $userId > 0 ? $userModel->find($userId) : null;
+
+        if (!$user && $session->get('email')) {
+            $user = $userModel->findByEmail((string) $session->get('email'));
+            if ($user) {
+                $userId = (int) $user['id'];
+                $session->set('user_id', $userId);
+                PersistentAuth::syncFromSession();
+            }
+        }
+
+        if (!$user) {
+            $user = [
+                'id'        => $userId,
+                'nombre'    => (string) ($session->get('nombre') ?: 'Empresa Registrada'),
+                'email'     => (string) $session->get('email'),
+                'cuit'      => (string) $session->get('cuit'),
+                'telefono'  => (string) $session->get('telefono'),
+                'rubro'     => (string) $session->get('rubro'),
+                'ciudad'    => (string) $session->get('ciudad'),
+                'provincia' => (string) $session->get('provincia'),
+                'direccion' => (string) $session->get('direccion'),
+                'rol'       => (string) ($session->get('rol') ?: 'empresa'),
+            ];
         }
 
         $productoModel    = new ProductoModel();
