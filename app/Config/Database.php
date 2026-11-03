@@ -136,8 +136,17 @@ class Database extends Config
         }
 
         if (!empty($pgHost)) {
-            // En Supabase Pooler (pooler.supabase.com), el puerto 5432 corresponde a Session Mode (compatible con LASTVAL/secuencias de CI4)
-            if (str_contains($pgHost, 'pooler.supabase.com') && $pgPort === 6543) {
+            // Si el usuario pegó el host Direct Connection de Supabase (db.<ref>.supabase.co, que es solo IPv6 y falla en Vercel),
+            // redirigir automáticamente al Session Pooler IPv4 (aws-1-sa-east-1.pooler.supabase.com:5432) con usuario postgres.<ref>
+            if (preg_match('/^db\.([a-z0-9]+)\.supabase\.co$/i', $pgHost, $m)) {
+                $projectRef = $m[1];
+                $pgHost     = $resolveEnv(['SUPABASE_POOLER_HOST']) ?: 'aws-1-sa-east-1.pooler.supabase.com';
+                $pgPort     = 5432;
+                if (empty($pgUser) || $pgUser === 'postgres') {
+                    $pgUser = 'postgres.' . $projectRef;
+                }
+            } elseif (str_contains($pgHost, 'pooler.supabase.com') && $pgPort === 6543) {
+                // En Supabase Pooler (pooler.supabase.com), el puerto 5432 corresponde a Session Mode (compatible con LASTVAL/secuencias de CI4)
                 $pgPort = 5432;
             }
 

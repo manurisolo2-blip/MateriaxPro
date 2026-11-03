@@ -81,8 +81,17 @@ if ($isPostgresUrl) {
     $pgName = $pgName ?: (!empty($parsed['path']) ? ltrim($parsed['path'], '/') : 'postgres');
 }
 
-if (!empty($pgHost) && str_contains($pgHost, 'pooler.supabase.com') && $pgPort === 6543) {
-    $pgPort = 5432;
+if (!empty($pgHost)) {
+    if (preg_match('/^db\.([a-z0-9]+)\.supabase\.co$/i', $pgHost, $m)) {
+        $projectRef = $m[1];
+        $pgHost     = $resolveEnv(['SUPABASE_POOLER_HOST']) ?: 'aws-1-sa-east-1.pooler.supabase.com';
+        $pgPort     = 5432;
+        if (empty($pgUser) || $pgUser === 'postgres') {
+            $pgUser = 'postgres.' . $projectRef;
+        }
+    } elseif (str_contains($pgHost, 'pooler.supabase.com') && $pgPort === 6543) {
+        $pgPort = 5432;
+    }
 }
 
 $pgInitMarker = !empty($pgHost) ? ($targetDir . DIRECTORY_SEPARATOR . '.pg_init_' . md5($pgHost . ($pgName ?? 'postgres'))) : '';
