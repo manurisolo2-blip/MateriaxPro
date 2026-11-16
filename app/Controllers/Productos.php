@@ -2,16 +2,14 @@
 
 namespace App\Controllers;
 
-use App\Models\ProductoModel;
-use App\Models\PlantaModel;
+use App\Models\{MensajeModel, PlantaModel, ProductoModel};
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 
 class Productos extends BaseController
 {
-    protected ProductoModel $productoModel;
-    protected PlantaModel $plantaModel;
-    protected $helpers = ['form', 'url'];
+    protected ?ProductoModel $productoModel = null;
+    protected ?PlantaModel $plantaModel = null;
 
     protected array $rules = [
         'nombre'          => 'required|min_length[3]|max_length[150]',
@@ -23,10 +21,14 @@ class Productos extends BaseController
         'planta_id'       => 'permit_empty|is_natural_no_zero',
     ];
 
-    public function __construct()
+    protected function getProductoModel(): ProductoModel
     {
-        $this->productoModel = new ProductoModel();
-        $this->plantaModel   = new PlantaModel();
+        return $this->productoModel ??= new ProductoModel();
+    }
+
+    protected function getPlantaModel(): PlantaModel
+    {
+        return $this->plantaModel ??= new PlantaModel();
     }
 
     public function index()
@@ -34,28 +36,27 @@ class Productos extends BaseController
         $tipoPolimero = $this->request->getGet('polimero');
         $busqueda     = $this->request->getGet('q');
 
-        $builder = $this->productoModel->select('productos.*, 
-                                                usuarios.nombre as empresa_nombre, 
-                                                usuarios.email as empresa_email, 
-                                                usuarios.telefono as empresa_telefono,
-                                                plantas_industriales.nombre_planta')
-                                       ->join('usuarios', 'usuarios.id = productos.user_id', 'left')
-                                       ->join('plantas_industriales', 'plantas_industriales.id = productos.planta_id', 'left');
+        $b = $this->getProductoModel()->select(
+            'productos.*, usuarios.nombre as empresa_nombre, usuarios.email as empresa_email,
+             usuarios.telefono as empresa_telefono, plantas_industriales.nombre_planta'
+        )
+            ->join('usuarios', 'usuarios.id = productos.user_id', 'left')
+            ->join('plantas_industriales', 'plantas_industriales.id = productos.planta_id', 'left');
 
         if (!empty($tipoPolimero)) {
-            $builder->where('productos.tipo_polimero', $tipoPolimero);
+            $b->where('productos.tipo_polimero', $tipoPolimero);
         }
         if (!empty($busqueda)) {
-            $builder->groupStart()
-                    ->like('productos.nombre', $busqueda)
-                    ->orLike('productos.descripcion', $busqueda)
-                    ->orLike('productos.ubicacion', $busqueda)
-                    ->groupEnd();
+            $b->groupStart()
+                ->like('productos.nombre', $busqueda)
+                ->orLike('productos.descripcion', $busqueda)
+                ->orLike('productos.ubicacion', $busqueda)
+              ->groupEnd();
         }
 
         return view('productos/index', [
             'pageTitle'    => 'Inventario de Polímeros Industriales | MateriaX',
-            'productos'    => $builder->orderBy('productos.created_at', 'DESC')->findAll(),
+            'productos'    => $b->orderBy('productos.created_at', 'DESC')->findAll(),
             'filtroActual' => $tipoPolimero,
             'busqueda'     => $busqueda,
         ]);
@@ -63,12 +64,9 @@ class Productos extends BaseController
 
     public function crear()
     {
-        $userId = (int) session()->get('user_id');
-        $plantas = $this->plantaModel->getPlantasPorEmpresa($userId, true);
-
         return view('productos/crear', [
             'pageTitle' => 'Publicar Excedente Industrial | MateriaX',
-            'plantas'   => $plantas,
+            'plantas'   => $this->getPlantaModel()->getPlantasPorEmpresa($this->userId(), true),
         ]);
     }
 
@@ -78,10 +76,10 @@ class Productos extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $data = $this->getFormData();
-        $data['user_id'] = (int) session()->get('user_id');
+        $data            = $this->getFormData();
+        $data['user_id'] = $this->userId();
 
-        if (!$this->productoModel->insert($data)) {
+        if (!$this->getProductoModel()->insert($data)) {
             return redirect()->back()->withInput()->with('error', 'Ocurrió un error al registrar el lote de material.');
         }
 
@@ -90,19 +88,21 @@ class Productos extends BaseController
 
     public function ver($id = null)
     {
-        if (empty($id) || !($producto = $this->productoModel->getProductosConUsuario($id))) {
+        if (empty($id) || !($producto = $this->getProductoModel()->getProductosConUsuario($id))) {
             throw PageNotFoundException::forPageNotFound('El producto solicitado no existe o fue eliminado.');
         }
 
-        $userId = (int) session()->get('user_id');
-        $consultas = [];
+        $userId             = $this->userId();
+        $consultas          = [];
         $consultasRecibidas = [];
         if ($userId > 0) {
-            $mensajeModel = new \App\Models\MensajeModel();
-            if ($userId !== (int)$producto['user_id']) {
-                $consultas = $mensajeModel->getMensajesPorProducto((int)$id, $userId, (int)$producto['user_id']);
+            $mensajeModel = new MensajeModel();
+            if ($userId !== (int) $producto['user_id']) {
+                // Marcar como leídas las respuestas del vendedor al entrar a la ficha del lote
+                $mensajeModel->marcarLeidosProducto((int) $id, (int) $producto['user_id'], $userId);
+                $consultas = $mensajeModel->getMensajesPorProducto((int) $id, $userId, (int) $producto['user_id']);
             } else {
-                $consultasRecibidas = $mensajeModel->getMensajesPorProducto((int)$id);
+                $consultasRecibidas = $mensajeModel->getMensajesPorProducto((int) $id);
             }
         }
 
@@ -117,39 +117,48 @@ class Productos extends BaseController
 
     public function editar($id = null)
     {
-        $producto = $this->findOrNotFound($id);
-        if ($redirect = $this->checkOwnership($producto, 'editar')) return $redirect;
-
-        $plantas = $this->plantaModel->getPlantasPorEmpresa((int) $producto['user_id']);
+        if (empty($id) || !($producto = $this->getProductoModel()->find($id))) {
+            throw PageNotFoundException::forPageNotFound('El producto solicitado no existe.');
+        }
+        if ($r = $this->checkOwnership($producto, 'editar')) {
+            return $r;
+        }
 
         return view('productos/editar', [
             'pageTitle' => 'Editar: ' . esc($producto['nombre']) . ' | MateriaX',
             'producto'  => $producto,
-            'plantas'   => $plantas,
+            'plantas'   => $this->getPlantaModel()->getPlantasPorEmpresa((int) $producto['user_id']),
         ]);
     }
 
     public function actualizar($id = null)
     {
-        if (empty($id) || !($producto = $this->productoModel->find($id))) {
+        $productoModel = $this->getProductoModel();
+        if (empty($id) || !($producto = $productoModel->find($id))) {
             return redirect()->to(site_url('productos'))->with('error', 'El producto solicitado no existe.');
         }
-        if ($redirect = $this->checkOwnership($producto, 'modificar')) return $redirect;
-
+        if ($r = $this->checkOwnership($producto, 'modificar')) {
+            return $r;
+        }
         if (!$this->validate($this->rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $this->productoModel->update($id, $this->getFormData());
+        $productoModel->update($id, $this->getFormData());
         return redirect()->to(site_url('productos'))->with('success', '¡Los datos técnicos y comerciales del lote fueron actualizados con éxito!');
     }
 
     public function confirmarEliminar($id = null)
     {
-        if (empty($id) || !($producto = $this->productoModel->select('productos.*, usuarios.nombre as empresa_nombre')->join('usuarios', 'usuarios.id = productos.user_id', 'left')->find($id))) {
+        $producto = !empty($id)
+            ? $this->getProductoModel()->select('productos.*, usuarios.nombre as empresa_nombre')->join('usuarios', 'usuarios.id = productos.user_id', 'left')->find($id)
+            : null;
+        if (!$producto) {
             return redirect()->to(site_url('productos'))->with('error', 'El lote de material no existe o ya fue eliminado.');
         }
-        if ($redirect = $this->checkOwnership($producto, 'dar de baja')) return $redirect;
+        if ($r = $this->checkOwnership($producto, 'dar de baja')) {
+            return $r;
+        }
 
         return view('productos/confirmar_eliminar', [
             'pageTitle' => 'Confirmar Eliminación de Lote #' . $id . ' | MateriaX',
@@ -159,36 +168,30 @@ class Productos extends BaseController
 
     public function eliminar($id = null)
     {
-        if (empty($id) || !($producto = $this->productoModel->find($id))) {
+        $productoModel = $this->getProductoModel();
+        if (empty($id) || !($producto = $productoModel->find($id))) {
             return redirect()->to(site_url('productos'))->with('error', 'El lote no existe o ya fue eliminado previamente.');
         }
-        if ($redirect = $this->checkOwnership($producto, 'eliminar')) return $redirect;
+        if ($r = $this->checkOwnership($producto, 'eliminar')) {
+            return $r;
+        }
 
-        $this->productoModel->delete($id);
-        return redirect()->to(site_url('productos'))->with('success', 'El lote de material #' . $id . ' fue retirado y eliminado definitivamente de la red.');
+        $productoModel->delete($id);
+        return redirect()->to(site_url('productos'))->with('success', "El lote de material #{$id} fue retirado y eliminado definitivamente de la red.");
     }
 
     protected function checkOwnership(array $producto, string $verb): ?RedirectResponse
     {
-        $userId = (int) session()->get('user_id');
-        if ((int) $producto['user_id'] !== $userId && session()->get('rol') !== 'admin') {
-            return redirect()->to(site_url('productos'))->with('error', "Acceso denegado: El lote #{$producto['id']} pertenece a otra empresa. Sólo puedes {$verb} publicaciones de tu propia autoría.");
+        if ((int) $producto['user_id'] !== $this->userId() && !$this->isAdmin()) {
+            return redirect()->to(site_url('productos'))
+                ->with('error', "Acceso denegado: El lote #{$producto['id']} pertenece a otra empresa. Sólo puedes {$verb} publicaciones de tu propia autoría.");
         }
         return null;
-    }
-
-    protected function findOrNotFound($id): array
-    {
-        if (empty($id) || !($producto = $this->productoModel->find($id))) {
-            throw PageNotFoundException::forPageNotFound('El producto solicitado no existe.');
-        }
-        return $producto;
     }
 
     protected function getFormData(): array
     {
         $plantaId = $this->request->getPost('planta_id');
-
         return [
             'nombre'          => trim((string) $this->request->getPost('nombre')),
             'tipo_polimero'   => trim((string) $this->request->getPost('tipo_polimero')),

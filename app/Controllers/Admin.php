@@ -2,83 +2,89 @@
 
 namespace App\Controllers;
 
-use App\Models\ProductoModel;
-use App\Models\UserModel;
+use App\Models\{ProductoModel, UserModel};
 use CodeIgniter\HTTP\RedirectResponse;
 
 class Admin extends BaseController
 {
-    protected UserModel $userModel;
-    protected ProductoModel $productoModel;
+    protected ?UserModel $userModel = null;
+    protected ?ProductoModel $productoModel = null;
 
-    public function __construct()
+    protected function getUserModel(): UserModel
     {
-        $this->userModel     = new UserModel();
-        $this->productoModel = new ProductoModel();
+        return $this->userModel ??= new UserModel();
+    }
+
+    protected function getProductoModel(): ProductoModel
+    {
+        return $this->productoModel ??= new ProductoModel();
     }
 
     public function index()
     {
-        $empresasPendientes = $this->userModel->where('rol !=', 'admin')->where('estado', 'pendiente')->orderBy('created_at', 'ASC')->findAll();
-        $empresasAuditadas  = $this->userModel->where('rol !=', 'admin')->where('estado !=', 'pendiente')->orderBy('created_at', 'DESC')->findAll();
+        $userModel     = $this->getUserModel();
+        $productoModel = $this->getProductoModel();
+        $pendientes    = $userModel->where(['rol !=' => 'admin', 'estado' => 'pendiente'])->orderBy('created_at', 'ASC')->findAll();
+        $auditadas     = $userModel->where(['rol !=' => 'admin', 'estado !=' => 'pendiente'])->orderBy('created_at', 'DESC')->findAll();
+        $loteCounts    = $productoModel->getCountsByUser();
 
-        $loteCounts = $this->productoModel->getCountsByUser();
-        foreach ($empresasAuditadas as &$ea) {
+        foreach ($auditadas as &$ea) {
             $ea['total_lotes'] = $loteCounts[$ea['id']] ?? 0;
         }
-        unset($ea);
 
         return view('admin/dashboard', [
             'pageTitle'          => 'Panel de Administración y Auditoría | MateriaX',
-            'empresasPendientes' => $empresasPendientes,
-            'empresasAuditadas'  => $empresasAuditadas,
-            'totalPendientes'    => count($empresasPendientes),
-            'empresasActivas'    => count(array_filter($empresasAuditadas, fn($e) => $e['estado'] === 'activo')),
-            'totalLotes'         => $this->productoModel->countAllResults(),
-            'totalKg'            => $this->productoModel->getTotalKg(),
+            'empresasPendientes' => $pendientes,
+            'empresasAuditadas'  => $auditadas,
+            'totalPendientes'    => count($pendientes),
+            'empresasActivas'    => count(array_filter($auditadas, static fn ($e) => $e['estado'] === 'activo')),
+            'totalLotes'         => $productoModel->countAllResults(),
+            'totalKg'            => $productoModel->getTotalKg(),
         ]);
     }
 
     public function aprobar($usuarioId)
     {
         $empresa = $this->findEmpresa($usuarioId, 'aprobación');
-        if ($empresa instanceof RedirectResponse) return $empresa;
-
-        $this->userModel->update($usuarioId, ['estado' => 'activo']);
+        if ($empresa instanceof RedirectResponse) {
+            return $empresa;
+        }
+        $this->getUserModel()->update($usuarioId, ['estado' => 'activo']);
         return redirect()->to(site_url('admin'))->with('success', "¡Empresa \"{$empresa['nombre']}\" aprobada con éxito! Ya tiene habilitado el acceso comercial a la plataforma.");
     }
 
     public function rechazar($usuarioId)
     {
         $empresa = $this->findEmpresa($usuarioId, 'moderación');
-        if ($empresa instanceof RedirectResponse) return $empresa;
-
-        $this->userModel->update($usuarioId, ['estado' => 'rechazado']);
+        if ($empresa instanceof RedirectResponse) {
+            return $empresa;
+        }
+        $this->getUserModel()->update($usuarioId, ['estado' => 'rechazado']);
         return redirect()->to(site_url('admin'))->with('success', "La solicitud de registro de \"{$empresa['nombre']}\" ha sido rechazada.");
     }
 
     public function cambiarEstado($usuarioId)
     {
         $empresa = $this->findEmpresa($usuarioId, 'moderación');
-        if ($empresa instanceof RedirectResponse) return $empresa;
-
-        $nuevoEstado = ($empresa['estado'] === 'activo') ? 'inactivo' : 'activo';
-        $this->userModel->update($usuarioId, ['estado' => $nuevoEstado]);
-
-        $accion = ($nuevoEstado === 'activo') ? 'reactivada' : 'suspendida/inactivada';
+        if ($empresa instanceof RedirectResponse) {
+            return $empresa;
+        }
+        $nuevo  = ($empresa['estado'] === 'activo') ? 'inactivo' : 'activo';
+        $accion = ($nuevo === 'activo') ? 'reactivada' : 'suspendida/inactivada';
+        $this->getUserModel()->update($usuarioId, ['estado' => $nuevo]);
         return redirect()->to(site_url('admin'))->with('success', "La empresa \"{$empresa['nombre']}\" ha sido {$accion} correctamente.");
     }
 
     public function verEmpresa($usuarioId)
     {
-        if (!($empresa = $this->userModel->find($usuarioId))) {
+        if (!($empresa = $this->getUserModel()->find($usuarioId))) {
             return redirect()->to(site_url('admin'))->with('error', 'Empresa no encontrada.');
         }
 
         return view('admin/ver_empresa', [
             'pageTitle' => "Detalle de Empresa: {$empresa['nombre']} | MateriaX",
             'empresa'   => $empresa,
-            'lotes'     => $this->productoModel->where('user_id', $usuarioId)->orderBy('created_at', 'DESC')->findAll(),
+            'lotes'     => $this->getProductoModel()->where('user_id', $usuarioId)->orderBy('created_at', 'DESC')->findAll(),
         ]);
     }
 
@@ -86,23 +92,23 @@ class Admin extends BaseController
     {
         return view('admin/lotes', [
             'pageTitle' => 'Supervisión de Lotes de Polímeros | MateriaX',
-            'lotes'     => $this->productoModel->getProductosConUsuario(),
+            'lotes'     => $this->getProductoModel()->getProductosConUsuario(),
         ]);
     }
 
     public function eliminarLote($productoId)
     {
-        if (!($producto = $this->productoModel->find($productoId))) {
+        $productoModel = $this->getProductoModel();
+        if (!($producto = $productoModel->find($productoId))) {
             return redirect()->to(site_url('admin/lotes'))->with('error', 'El lote no existe o ya fue eliminado.');
         }
-
-        $this->productoModel->delete($productoId);
+        $productoModel->delete($productoId);
         return redirect()->to(site_url('admin/lotes'))->with('success', "El lote \"{$producto['nombre']}\" ha sido eliminado por moderación.");
     }
 
     protected function findEmpresa($usuarioId, string $context): array|RedirectResponse
     {
-        $empresa = $this->userModel->find($usuarioId);
+        $empresa = $this->getUserModel()->find($usuarioId);
         if (!$empresa || $empresa['rol'] === 'admin') {
             return redirect()->to(site_url('admin'))->with('error', "Empresa no encontrada o no sujeta a {$context}.");
         }

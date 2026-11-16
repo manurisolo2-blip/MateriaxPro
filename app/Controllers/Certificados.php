@@ -2,16 +2,13 @@
 
 namespace App\Controllers;
 
-use App\Models\CertificadoModel;
-use App\Models\UserModel;
+use App\Models\{CertificadoModel, UserModel};
 use CodeIgniter\Exceptions\PageNotFoundException;
-use CodeIgniter\HTTP\RedirectResponse;
 
 class Certificados extends BaseController
 {
     protected CertificadoModel $certificadoModel;
     protected UserModel $userModel;
-    protected $helpers = ['form', 'url'];
 
     public function __construct()
     {
@@ -19,49 +16,33 @@ class Certificados extends BaseController
         $this->userModel        = new UserModel();
     }
 
-    /**
-     * Listado y métricas de huella ecológica de la empresa logueada
-     */
     public function index()
     {
-        $userId = (int) session()->get('user_id');
-
-        $certificados = $this->certificadoModel->getCertificadosPorEmpresa($userId);
-        $metricas     = $this->certificadoModel->getMetricasEmpresa($userId);
-
+        $userId = $this->userId();
         return view('certificados/index', [
             'pageTitle'    => 'Certificados Ambientales y Huella Verde | MateriaX',
-            'certificados' => $certificados,
-            'metricas'     => $metricas,
+            'certificados' => $this->certificadoModel->getCertificadosPorEmpresa($userId),
+            'metricas'     => $this->certificadoModel->getMetricasEmpresa($userId),
         ]);
     }
 
-    /**
-     * Vista de constancia formal e imprimible del certificado
-     */
     public function ver($codigo = null)
     {
-        if (empty($codigo)) {
-            throw PageNotFoundException::forPageNotFound('Identificador de certificado no provisto.');
+        if (empty($codigo) || !($cert = $this->certificadoModel->getDetalleCertificado($codigo))) {
+            throw PageNotFoundException::forPageNotFound(
+                empty($codigo) ? 'Identificador de certificado no provisto.' : 'El certificado solicitado no existe en el registro circular.'
+            );
         }
 
-        $certificado = $this->certificadoModel->getDetalleCertificado($codigo);
-        if (!$certificado) {
-            throw PageNotFoundException::forPageNotFound('El certificado solicitado no existe en el registro circular.');
-        }
-
-        $userId = (int) session()->get('user_id');
-        $rol    = session()->get('rol');
-
-        // Verificación de acceso
-        if ($rol !== 'admin' && (int)$certificado['generadora_id'] !== $userId && (int)$certificado['revalorizadora_id'] !== $userId) {
+        $userId = $this->userId();
+        if (!$this->isAdmin() && (int) $cert['generadora_id'] !== $userId && (int) $cert['revalorizadora_id'] !== $userId) {
             return redirect()->to(site_url('panel'))
-                             ->with('error', 'Acceso denegado: este certificado pertenece a operaciones de otras empresas.');
+                ->with('error', 'Acceso denegado: este certificado pertenece a operaciones de otras empresas.');
         }
 
         return view('certificados/ver', [
-            'pageTitle'   => "Certificado {$certificado['codigo_certificado']} | MateriaX",
-            'certificado' => $certificado,
+            'pageTitle'   => "Certificado {$cert['codigo_certificado']} | MateriaX",
+            'certificado' => $cert,
         ]);
     }
 }

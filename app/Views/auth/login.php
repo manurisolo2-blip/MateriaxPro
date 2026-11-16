@@ -1,57 +1,27 @@
-<?= view('templates/header', ['pageTitle' => 'Iniciar Sesión | MateriaX']) ?>
+<?= view('templates/header', ['pageTitle' => 'Ingresar | MateriaX']) ?>
 
-<div style="max-width: 480px; margin: 2rem auto;">
-  <div class="card">
-    <div class="card-header" style="text-align: center; display: block;">
-      <h2 class="card-title">Acceso a la Red MateriaX</h2>
-      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 0.25rem;">
-        Ingresa con tus credenciales de empresa homologada
-      </p>
-    </div>
-
-    <div class="card-body">
-      <form action="<?= site_url('login') ?>" method="POST">
-        <?= csrf_field() ?>
-
-        <div class="form-group">
-          <label for="email" class="form-label">Correo Electrónico Corporativo</label>
-          <input 
-            type="email" 
-            name="email" 
-            id="email" 
-            class="form-control" 
-            value="<?= old('email') ?>" 
-            placeholder="contacto@empresa.com" 
-            autocomplete="email"
-            required 
-            autofocus
-          >
+<div class="container-sm">
+    <div class="card stack-md">
+        <div class="page-header">
+            <h1 class="page-title">Ingresar a MateriaX</h1>
+            <p class="page-sub">Acceda con las credenciales de su empresa registrada.</p>
         </div>
-
-        <div class="form-group">
-          <label for="password" class="form-label">Contraseña</label>
-          <input 
-            type="password" 
-            name="password" 
-            id="password" 
-            class="form-control" 
-            placeholder="Tu contraseña de acceso" 
-            autocomplete="current-password"
-            required
-          >
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-          Iniciar Sesión
-        </button>
-      </form>
+        <form action="<?= site_url('login') ?>" method="POST" class="stack-md">
+            <?= csrf_field() ?>
+            <div class="form-group">
+                <label for="email" class="form-label">Correo Electrónico <span class="required-indicator">*</span></label>
+                <input type="email" id="email" name="email" class="form-control" value="<?= esc(old('email') ?? '') ?>" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="password" class="form-label">Contraseña <span class="required-indicator">*</span></label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <div class="flex-between">
+                <a href="<?= site_url('register') ?>" class="text-sec">¿No tiene cuenta? Registre su empresa</a>
+                <button type="submit" class="btn btn-primary">Ingresar</button>
+            </div>
+        </form>
     </div>
-
-    <div class="card-footer" style="text-align: center; font-size: 0.9rem;">
-      ¿Aún no tienes cuenta institucional? 
-      <a href="<?= site_url('register') ?>" style="font-weight: 600;">Registrar Empresa</a>
-    </div>
-  </div>
 </div>
 
 <?= view('templates/footer') ?>

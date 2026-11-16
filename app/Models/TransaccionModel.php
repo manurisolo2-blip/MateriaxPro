@@ -6,38 +6,14 @@ use CodeIgniter\Model;
 
 class TransaccionModel extends Model
 {
-    protected $table            = 'transacciones';
-    protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = [
-        'codigo_operacion',
-        'producto_id',
-        'comprador_id',
-        'vendedor_id',
-        'planta_origen_id',
-        'cantidad_kg',
-        'precio_unitario_pactado',
-        'subtotal',
-        'costo_flete',
-        'monto_total',
-        'modalidad_retiro',
-        'estado',
-        'ticket_balanza_kg',
-        'numero_remito',
-        'observaciones',
-        'fecha_solicitud',
-        'fecha_acuerdo',
-        'fecha_despacho',
-        'fecha_cierre',
+    protected $table         = 'transacciones';
+    protected $allowedFields = [
+        'codigo_operacion', 'producto_id', 'comprador_id', 'vendedor_id', 'planta_origen_id',
+        'cantidad_kg', 'precio_unitario_pactado', 'subtotal', 'costo_flete', 'monto_total',
+        'modalidad_retiro', 'estado', 'ticket_balanza_kg', 'numero_remito', 'observaciones',
+        'fecha_solicitud', 'fecha_acuerdo', 'fecha_despacho', 'fecha_cierre',
     ];
 
-    // Fechas
-    protected $useTimestamps = false; // Manejado explícitamente en el flujo de negocio
-
-    // Reglas de validación
     protected $validationRules = [
         'codigo_operacion'        => 'required|max_length[20]',
         'producto_id'             => 'required|is_natural_no_zero',
@@ -52,7 +28,7 @@ class TransaccionModel extends Model
     ];
 
     protected $validationMessages = [
-        'cantidad_kg' => [
+        'cantidad_kg'             => [
             'required'     => 'Debe indicar la cantidad de kilogramos solicitados.',
             'greater_than' => 'La cantidad debe ser mayor a 0 kg.',
         ],
@@ -60,118 +36,75 @@ class TransaccionModel extends Model
             'required'              => 'Debe indicar el precio por kilogramo propuesto.',
             'greater_than_equal_to' => 'El precio debe ser mayor o igual a 0.',
         ],
-        'modalidad_retiro' => [
+        'modalidad_retiro'        => [
             'required' => 'Debe seleccionar una modalidad logística de retiro.',
             'in_list'  => 'Modalidad de retiro inválida.',
         ],
     ];
 
-    protected $skipValidation = false;
-
-    /**
-     * Genera un código de operación único para la transacción (ej: TRX-2026-X8A2)
-     */
     public function generarCodigoOperacion(): string
     {
         $anio = date('Y');
         do {
-            $aleatorio = strtoupper(substr(bin2hex(random_bytes(3)), 0, 5));
-            $codigo = "TRX-{$anio}-{$aleatorio}";
-            $existe = $this->where('codigo_operacion', $codigo)->first();
-        } while ($existe !== null);
+            $codigo = "TRX-{$anio}-" . strtoupper(substr(bin2hex(random_bytes(3)), 0, 5));
+        } while ($this->where('codigo_operacion', $codigo)->first() !== null);
 
         return $codigo;
     }
 
-    /**
-     * Solicitudes enviadas por el usuario logueado como comprador
-     */
+    private function getSolicitudesPorRol(string $filtroCol, string $contraparteCol, string $alias, string $prefijo, int $userId): array
+    {
+        $extraPlanta = $alias === 'vendedores' ? ', plantas_industriales.provincia as planta_provincia' : '';
+        return $this->select(
+            "transacciones.*, productos.nombre as producto_nombre, productos.tipo_polimero,
+             productos.cantidad_kg as producto_stock_original,
+             {$alias}.nombre as {$prefijo}_nombre, {$alias}.email as {$prefijo}_email,
+             {$alias}.telefono as {$prefijo}_telefono, {$alias}.cuit as {$prefijo}_cuit,
+             plantas_industriales.nombre_planta, plantas_industriales.localidad as planta_localidad{$extraPlanta}"
+        )
+            ->join('productos', 'productos.id = transacciones.producto_id', 'left')
+            ->join("usuarios as {$alias}", "{$alias}.id = transacciones.{$contraparteCol}", 'left')
+            ->join('plantas_industriales', 'plantas_industriales.id = transacciones.planta_origen_id', 'left')
+            ->where("transacciones.{$filtroCol}", $userId)
+            ->orderBy('transacciones.fecha_solicitud', 'DESC')
+            ->findAll();
+    }
+
     public function getSolicitudesEnviadas(int $compradorId): array
     {
-        return $this->select('transacciones.*, 
-                             productos.nombre as producto_nombre, 
-                             productos.tipo_polimero,
-                             productos.cantidad_kg as producto_stock_original,
-                             vendedores.nombre as vendedor_nombre,
-                             vendedores.email as vendedor_email,
-                             vendedores.telefono as vendedor_telefono,
-                             vendedores.cuit as vendedor_cuit,
-                             plantas_industriales.nombre_planta,
-                             plantas_industriales.localidad as planta_localidad,
-                             plantas_industriales.provincia as planta_provincia')
-                    ->join('productos', 'productos.id = transacciones.producto_id', 'left')
-                    ->join('usuarios as vendedores', 'vendedores.id = transacciones.vendedor_id', 'left')
-                    ->join('plantas_industriales', 'plantas_industriales.id = transacciones.planta_origen_id', 'left')
-                    ->where('transacciones.comprador_id', $compradorId)
-                    ->orderBy('transacciones.fecha_solicitud', 'DESC')
-                    ->findAll();
+        return $this->getSolicitudesPorRol('comprador_id', 'vendedor_id', 'vendedores', 'vendedor', $compradorId);
     }
 
-    /**
-     * Solicitudes recibidas por el usuario logueado como vendedor de sus lotes
-     */
     public function getSolicitudesRecibidas(int $vendedorId): array
     {
-        return $this->select('transacciones.*, 
-                             productos.nombre as producto_nombre, 
-                             productos.tipo_polimero,
-                             productos.cantidad_kg as producto_stock_original,
-                             compradores.nombre as comprador_nombre,
-                             compradores.email as comprador_email,
-                             compradores.telefono as comprador_telefono,
-                             compradores.cuit as comprador_cuit,
-                             plantas_industriales.nombre_planta,
-                             plantas_industriales.localidad as planta_localidad')
-                    ->join('productos', 'productos.id = transacciones.producto_id', 'left')
-                    ->join('usuarios as compradores', 'compradores.id = transacciones.comprador_id', 'left')
-                    ->join('plantas_industriales', 'plantas_industriales.id = transacciones.planta_origen_id', 'left')
-                    ->where('transacciones.vendedor_id', $vendedorId)
-                    ->orderBy('transacciones.fecha_solicitud', 'DESC')
-                    ->findAll();
+        return $this->getSolicitudesPorRol('vendedor_id', 'comprador_id', 'compradores', 'comprador', $vendedorId);
     }
 
-    /**
-     * Detalle completo de una transacción específica
-     */
     public function getDetalleTransaccion(int $id): ?array
     {
-        return $this->select('transacciones.*, 
-                             productos.nombre as producto_nombre, 
-                             productos.tipo_polimero, 
-                             productos.descripcion as producto_descripcion,
-                             productos.ubicacion as producto_ubicacion,
-                             productos.estado as producto_estado,
-                             compradores.nombre as comprador_nombre,
-                             compradores.email as comprador_email,
-                             compradores.telefono as comprador_telefono,
-                             compradores.cuit as comprador_cuit,
-                             compradores.ciudad as comprador_ciudad,
-                             vendedores.nombre as vendedor_nombre,
-                             vendedores.email as vendedor_email,
-                             vendedores.telefono as vendedor_telefono,
-                             vendedores.cuit as vendedor_cuit,
-                             vendedores.ciudad as vendedor_ciudad,
-                             plantas_industriales.nombre_planta,
-                             plantas_industriales.direccion as planta_direccion,
-                             plantas_industriales.localidad as planta_localidad,
-                             plantas_industriales.provincia as planta_provincia,
-                             plantas_industriales.posee_bascula as planta_posee_bascula,
-                             plantas_industriales.capacidad_carga_camiones as planta_capacidad_carga')
-                    ->join('productos', 'productos.id = transacciones.producto_id', 'left')
-                    ->join('usuarios as compradores', 'compradores.id = transacciones.comprador_id', 'left')
-                    ->join('usuarios as vendedores', 'vendedores.id = transacciones.vendedor_id', 'left')
-                    ->join('plantas_industriales', 'plantas_industriales.id = transacciones.planta_origen_id', 'left')
-                    ->where('transacciones.id', $id)
-                    ->first();
+        return $this->select(
+            'transacciones.*, productos.nombre as producto_nombre, productos.tipo_polimero,
+             productos.descripcion as producto_descripcion, productos.ubicacion as producto_ubicacion,
+             productos.estado as producto_estado,
+             compradores.nombre as comprador_nombre, compradores.email as comprador_email,
+             compradores.telefono as comprador_telefono, compradores.cuit as comprador_cuit, compradores.ciudad as comprador_ciudad,
+             vendedores.nombre as vendedor_nombre, vendedores.email as vendedor_email,
+             vendedores.telefono as vendedor_telefono, vendedores.cuit as vendedor_cuit, vendedores.ciudad as vendedor_ciudad,
+             plantas_industriales.nombre_planta, plantas_industriales.direccion as planta_direccion,
+             plantas_industriales.localidad as planta_localidad, plantas_industriales.provincia as planta_provincia,
+             plantas_industriales.posee_bascula as planta_posee_bascula,
+             plantas_industriales.capacidad_carga_camiones as planta_capacidad_carga'
+        )
+            ->join('productos', 'productos.id = transacciones.producto_id', 'left')
+            ->join('usuarios as compradores', 'compradores.id = transacciones.comprador_id', 'left')
+            ->join('usuarios as vendedores', 'vendedores.id = transacciones.vendedor_id', 'left')
+            ->join('plantas_industriales', 'plantas_industriales.id = transacciones.planta_origen_id', 'left')
+            ->where('transacciones.id', $id)
+            ->first();
     }
 
-    /**
-     * Cuenta solicitudes pendientes recibidas para mostrar insignia/alerta
-     */
     public function contarPendientesRecibidas(int $vendedorId): int
     {
-        return $this->where('vendedor_id', $vendedorId)
-                    ->where('estado', 'solicitada')
-                    ->countAllResults();
+        return $this->where(['vendedor_id' => $vendedorId, 'estado' => 'solicitada'])->countAllResults();
     }
 }

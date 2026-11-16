@@ -1,304 +1,118 @@
-<?= view('templates/header', ['pageTitle' => $pageTitle ?? 'Ficha de Operación | MateriaX']) ?>
+<?= view('templates/header', ['pageTitle' => 'Operación ' . esc($tx['codigo_operacion'] ?? '') . ' | MateriaX']) ?>
 
 <?php
-  $userId      = (int) session()->get('user_id');
-  $esVendedor  = ((int) $transaccion['vendedor_id'] === $userId);
-  $esComprador = ((int) $transaccion['comprador_id'] === $userId);
-  $esAdmin     = (session()->get('rol') === 'admin');
-  $receptorId  = $esVendedor ? (int)$transaccion['comprador_id'] : (int)$transaccion['vendedor_id'];
-  $receptorNombre = $esVendedor ? $transaccion['comprador_nombre'] : $transaccion['vendedor_nombre'];
+$estado = strtolower($tx['estado'] ?? 'solicitada');
+$backUrl = !empty($esVendedor) ? site_url('solicitudes/recibidas') : site_url('solicitudes/enviadas');
 ?>
 
-<!-- Migas de pan -->
-<nav aria-label="Migas de pan" class="breadcrumb" style="max-width: 900px; margin: 0 auto 1.25rem;">
-  <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
-  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
-  <span class="breadcrumb-item"><a href="<?= site_url('solicitudes/' . ($esVendedor ? 'recibidas' : 'enviadas')) ?>">Solicitudes</a></span>
-  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
-  <span class="breadcrumb-item" aria-current="page"><?= esc($transaccion['codigo_operacion']) ?></span>
-</nav>
+<div class="container-lg stack-md">
+    <nav class="breadcrumb">
+        <span class="breadcrumb-item"><a href="<?= $backUrl ?>"><?= !empty($esVendedor) ? 'Solicitudes Recibidas' : 'Solicitudes Enviadas' ?></a></span>
+        <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+        <span class="breadcrumb-item" aria-current="page"><?= esc($tx['codigo_operacion']) ?></span>
+    </nav>
 
-<div style="max-width: 900px; margin: 0 auto 2.5rem;">
-
-  <!-- Encabezado de la transacción -->
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-    <div>
-      <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.35rem; flex-wrap: wrap;">
-        <h1 style="font-size: 1.9rem; font-weight: 700; color: var(--color-ink); margin: 0;">
-          Operación <?= esc($transaccion['codigo_operacion']) ?>
-        </h1>
-        <span class="badge <?= badge_transaccion_class($transaccion['estado']) ?>" style="font-size: 0.85rem; padding: 0.35rem 0.65rem;">
-          <?= label_transaccion_estado($transaccion['estado']) ?>
-        </span>
-      </div>
-      <p style="color: var(--color-ink-2); font-size: 0.92rem; margin: 0;">
-        Iniciada el <?= date('d/m/Y H:i', strtotime($transaccion['fecha_solicitud'])) ?> &bull; 
-        Lote: <a href="<?= site_url('productos/ver/' . $transaccion['producto_id']) ?>" style="color: inherit; text-decoration: underline;"><strong><?= esc($transaccion['producto_nombre']) ?></strong></a>
-      </p>
-    </div>
-
-    <!-- Botones de respuesta para el vendedor si está pendiente -->
-    <?php if ($esVendedor && $transaccion['estado'] === 'solicitada'): ?>
-      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <form action="<?= site_url('solicitudes/responder/' . $transaccion['id']) ?>" method="POST" style="margin: 0;">
-          <?= csrf_field() ?>
-          <input type="hidden" name="accion" value="aceptar">
-          <button type="submit" class="btn btn-primary">
-            &check; Aceptar Oferta y Reservar Lote
-          </button>
-        </form>
-
-        <form action="<?= site_url('solicitudes/responder/' . $transaccion['id']) ?>" method="POST" style="margin: 0;">
-          <?= csrf_field() ?>
-          <input type="hidden" name="accion" value="rechazar">
-          <button type="submit" class="btn btn-danger">
-            &cross; Rechazar Propuesta
-          </button>
-        </form>
-      </div>
-    <?php endif; ?>
-
-    <!-- Botón cancelar para el comprador si está pendiente -->
-    <?php if ($esComprador && $transaccion['estado'] === 'solicitada'): ?>
-      <form action="<?= site_url('solicitudes/cancelar/' . $transaccion['id']) ?>" method="POST" style="margin: 0;">
-        <?= csrf_field() ?>
-        <button type="submit" class="btn btn-danger btn-sm">
-          Cancelar Mi Solicitud
-        </button>
-      </form>
-    <?php endif; ?>
-  </div>
-
-  <!-- Notificación si tiene certificado ambiental emitido -->
-  <?php if (!empty($certificado)): ?>
-    <div class="card" style="margin-bottom: 1.5rem; background-color: var(--color-success-bg); border-color: var(--color-success-border); padding: 1.25rem 1.5rem;">
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-        <div>
-          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.25rem;">
-            <span class="badge badge-success">Certificado Ambiental Emitido</span>
-            <strong style="color: var(--color-success-text); font-family: var(--font-mono); font-size: 0.95rem;">
-              <?= esc($certificado['codigo_certificado']) ?>
-            </strong>
-          </div>
-          <div style="font-size: 0.88rem; color: var(--color-ink-2);">
-            Impacto verificado: <strong><?= format_kg($certificado['kg_recuperados']) ?></strong> de polímero circular &bull; 
-            <strong><?= number_format($certificado['co2_evitado_kg'], 1, ',', '.') ?> kg de CO₂eq</strong> mitigados.
-          </div>
-        </div>
-        <a href="<?= site_url('certificados/ver/' . $certificado['codigo_certificado']) ?>" class="btn btn-primary btn-sm">
-          Ver Certificado Oficial &rarr;
-        </a>
-      </div>
-    </div>
-  <?php endif; ?>
-
-  <!-- Métricas económicas del acuerdo -->
-  <div class="grid-3" style="margin-bottom: 1.5rem;">
-    <div class="metric-card">
-      <span class="metric-card-label">Volumen Solicitado</span>
-      <div class="metric-card-value">
-        <?= format_kg($transaccion['cantidad_kg']) ?>
-      </div>
-      <span class="metric-card-sub">Polímero: <?= esc($transaccion['tipo_polimero']) ?></span>
-    </div>
-
-    <div class="metric-card">
-      <span class="metric-card-label">Precio Pactado</span>
-      <div class="metric-card-value" style="color: var(--color-ink);">
-        <?= format_precio($transaccion['precio_unitario_pactado']) ?> <span style="font-size: 0.9rem; font-weight: 500; color: var(--color-ink-2);">/ kg</span>
-      </div>
-      <span class="metric-card-sub">Subtotal: <?= format_precio($transaccion['subtotal']) ?></span>
-    </div>
-
-    <div class="metric-card">
-      <span class="metric-card-label">Monto Total de Operación</span>
-      <div class="metric-card-value" style="color: var(--color-success-text);">
-        <?= format_precio($transaccion['monto_total']) ?>
-      </div>
-      <span class="metric-card-sub">Flete incluido: <?= format_precio($transaccion['costo_flete']) ?></span>
-    </div>
-  </div>
-
-  <!-- Desglose de partes comerciales -->
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
-    <!-- Oferente / Vendedor -->
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Empresa Oferente (Vendedora)</h3>
-      </div>
-      <div class="card-body" style="font-size: 0.9rem; line-height: 1.6; color: var(--color-ink-2);">
-        <div><strong style="color: var(--color-ink);">Razón Social:</strong> <?= esc($transaccion['vendedor_nombre']) ?></div>
-        <div><strong>CUIT:</strong> <?= esc($transaccion['vendedor_cuit'] ?? 'N/D') ?></div>
-        <div><strong>Ciudad:</strong> <?= esc($transaccion['vendedor_ciudad'] ?? 'No especificada') ?></div>
-        <div><strong>Email de Contacto:</strong> <?= esc($transaccion['vendedor_email']) ?></div>
-        <div><strong>Teléfono:</strong> <?= esc($transaccion['vendedor_telefono'] ?? 'No informado') ?></div>
-      </div>
-    </div>
-
-    <!-- Comprador / Solicitante -->
-    <div class="card">
-      <div class="card-header">
-        <h3 class="card-title">Empresa Solicitante (Compradora)</h3>
-      </div>
-      <div class="card-body" style="font-size: 0.9rem; line-height: 1.6; color: var(--color-ink-2);">
-        <div><strong style="color: var(--color-ink);">Razón Social:</strong> <?= esc($transaccion['comprador_nombre']) ?></div>
-        <div><strong>CUIT:</strong> <?= esc($transaccion['comprador_cuit'] ?? 'N/D') ?></div>
-        <div><strong>Ciudad:</strong> <?= esc($transaccion['comprador_ciudad'] ?? 'No especificada') ?></div>
-        <div><strong>Email de Contacto:</strong> <?= esc($transaccion['comprador_email']) ?></div>
-        <div><strong>Teléfono:</strong> <?= esc($transaccion['comprador_telefono'] ?? 'No informado') ?></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Logística y Punto de Carga -->
-  <div class="card" style="margin-bottom: 1.5rem;">
-    <div class="card-header">
-      <h3 class="card-title">Condiciones Logísticas y Centro de Retiro</h3>
-    </div>
-    <div class="card-body">
-      <div class="form-row" style="margin-bottom: 1rem;">
-        <div>
-          <strong style="color: var(--color-ink-2); font-size: 0.85rem;">Modalidad Acordada:</strong>
-          <p style="font-size: 1.05rem; font-weight: 600; color: var(--color-ink); margin: 0.2rem 0 0 0;">
-            <?= label_modalidad_retiro($transaccion['modalidad_retiro']) ?>
-          </p>
-        </div>
-
-        <div>
-          <strong style="color: var(--color-ink-2); font-size: 0.85rem;">Fecha de Acuerdo:</strong>
-          <p style="font-size: 1.05rem; color: var(--color-ink); margin: 0.2rem 0 0 0;">
-            <?= !empty($transaccion['fecha_acuerdo']) ? date('d/m/Y H:i', strtotime($transaccion['fecha_acuerdo'])) : '<em>Pendiente de aceptación</em>' ?>
-          </p>
-        </div>
-      </div>
-
-      <?php if (!empty($transaccion['nombre_planta'])): ?>
-        <div style="padding: 1rem; background-color: var(--color-paper-2); border-radius: var(--radius-sm); border: 1px solid var(--color-rule);">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap;">
-            <strong style="color: var(--color-ink);">Sede Fabril: <?= esc($transaccion['nombre_planta']) ?></strong>
-            <span class="badge <?= !empty($transaccion['planta_posee_bascula']) ? 'badge-success' : 'badge-warning' ?>">
-              <?= !empty($transaccion['planta_posee_bascula']) ? 'Báscula Homologada Disponible' : 'Sin Báscula en Planta' ?>
-            </span>
-          </div>
-          <div style="font-size: 0.88rem; color: var(--color-ink-2); line-height: 1.5;">
-            <div><strong>Dirección de carga:</strong> <?= esc($transaccion['planta_direccion']) ?> (<?= esc($transaccion['planta_localidad']) ?>, <?= esc($transaccion['planta_provincia']) ?>)</div>
-            <div><strong>Capacidad admitida:</strong> <?= esc($transaccion['planta_capacidad_carga'] ?: 'Hasta 45 Ton') ?></div>
-          </div>
-        </div>
-      <?php else: ?>
-        <p style="font-size: 0.9rem; color: var(--color-ink-2); margin: 0;">
-          Ubicación de referencia indicada en el lote: <strong><?= esc($transaccion['producto_ubicacion']) ?></strong>.
-        </p>
-      <?php endif; ?>
-
-      <?php if (!empty($transaccion['observaciones'])): ?>
-        <div style="margin-top: 1.25rem;">
-          <strong style="color: var(--color-ink-2); font-size: 0.85rem;">Observaciones y Notas de la Solicitud:</strong>
-          <div style="margin-top: 0.35rem; padding: 0.85rem 1rem; background-color: var(--color-paper-surface); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); color: var(--color-ink); white-space: pre-line; font-size: 0.9rem;">
-            <?= esc($transaccion['observaciones']) ?>
-          </div>
-        </div>
-      <?php endif; ?>
-    </div>
-  </div>
-
-  <!-- Canal de Comunicación B2B y Negociación Directa -->
-  <div id="chat" class="card" style="margin-bottom: 1.5rem;">
-    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-      <h3 class="card-title" style="margin: 0;">
-        💬 Canal de Comunicación entre Empresas
-      </h3>
-      <span id="chatMsgCount" style="font-size: 0.85rem; color: var(--color-ink-2);">
-        <?= count($mensajes ?? []) ?> mensaje(s)
-      </span>
-    </div>
-    <div class="card-body">
-      <p style="font-size: 0.88rem; color: var(--color-ink-2); margin-top: 0; margin-bottom: 1rem;">
-        Utilicen este canal directo para coordinar especificaciones del polímero, logística de flete, ingreso a báscula y fecha de retiro.
-      </p>
-
-      <!-- Historial de mensajes -->
-      <div 
-        id="chatContainer" 
-        class="chat-thread" 
-        data-transaccion-id="<?= esc($transaccion['id']) ?>" 
-        data-producto-id="<?= esc($transaccion['producto_id']) ?>" 
-        data-receptor-id="<?= esc($receptorId) ?>" 
-        data-user-id="<?= esc($userId) ?>" 
-        data-base-url="<?= site_url('/') ?>" 
-        style="display: flex; flex-direction: column; gap: 0.85rem; max-height: 420px; overflow-y: auto; padding: 1rem; background-color: var(--color-paper-2); border: 1px solid var(--color-rule); border-radius: var(--radius-sm); margin-bottom: 1.25rem;"
-      >
-        <?php if (!empty($mensajes)): ?>
-          <?php foreach ($mensajes as $msg): ?>
-            <?php $esMio = ((int) $msg['emisor_id'] === $userId); ?>
-            <div id="msg-<?= $msg['id'] ?>" data-msg-id="<?= $msg['id'] ?>" class="chat-bubble-row" style="display: flex; flex-direction: column; align-items: <?= $esMio ? 'flex-end' : 'flex-start' ?>;">
-              <div style="font-size: 0.75rem; color: var(--color-ink-2); margin-bottom: 0.2rem; padding: 0 0.25rem; text-transform: uppercase; font-weight: 600;">
-                <?= $esMio ? 'Tú' : esc($msg['emisor_nombre']) ?>
-              </div>
-              <div class="chat-bubble-box" style="max-width: 80%; padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.92rem; line-height: 1.5; word-break: break-word; <?= $esMio ? 'background-color: var(--color-primary); color: #ffffff; border-bottom-right-radius: 2px;' : 'background-color: var(--color-paper-surface); color: var(--color-ink); border: 1px solid var(--color-rule); border-bottom-left-radius: 2px;' ?>">
-                <div class="chat-bubble-text"><?= nl2br(esc($msg['mensaje'])) ?></div>
-                <div class="chat-bubble-meta" style="font-size: 0.7rem; color: <?= $esMio ? 'rgba(255,255,255,0.82)' : 'var(--color-ink-2)' ?>; text-align: right; margin-top: 0.35rem;">
-                  <span class="msg-time"><?= date('d/m/Y H:i', strtotime($msg['created_at'])) ?></span>
-                  <?php if ($esMio): ?>
-                    <span class="msg-status-tick" style="margin-left: 0.25rem;"><?= $msg['leido'] ? '&check;&check; Leído' : '&check; Enviado' ?></span>
-                  <?php endif; ?>
-                </div>
-              </div>
+    <div class="card flex-between">
+        <div class="stack-sm">
+            <div class="flex-row">
+                <span class="badge <?= badge_transaccion_class($estado) ?>"><?= esc(label_transaccion_estado($estado)) ?></span>
+                <span class="text-mono text-muted">Lote #<?= esc($tx['producto_id']) ?></span>
             </div>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <div id="emptyChatPlaceholder" style="text-align: center; padding: 2rem 1rem; color: var(--color-ink-2); font-size: 0.9rem;">
-            Aún no se han enviado mensajes en esta operación. Escribe el primero a continuación.
-          </div>
-        <?php endif; ?>
-      </div>
-
-      <!-- Formulario para enviar mensaje nuevo -->
-      <form id="chatForm" action="<?= site_url('mensajes/enviar') ?>" method="POST" style="margin: 0;">
-        <?= csrf_field() ?>
-        <input type="hidden" name="transaccion_id" value="<?= esc($transaccion['id']) ?>">
-        <input type="hidden" name="producto_id" value="<?= esc($transaccion['producto_id']) ?>">
-        <input type="hidden" name="receptor_id" value="<?= esc($receptorId) ?>">
-
-        <div class="form-group" style="margin-bottom: 0.75rem;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-            <label for="chatInput" class="form-label" style="font-size: 0.88rem; margin: 0;">
-              Enviar mensaje a <strong><?= esc($receptorNombre) ?></strong>:
-            </label>
-            <span style="font-size: 0.75rem; color: var(--color-ink-2);">
-              Presiona <kbd style="background: var(--color-paper-surface); border: 1px solid var(--color-rule); padding: 1px 4px; border-radius: 4px;">Enter</kbd> para envío instantáneo
-            </span>
-          </div>
-          <textarea 
-            name="mensaje" 
-            id="chatInput" 
-            rows="2" 
-            class="form-control" 
-            placeholder="Escribe tu mensaje de coordinación aquí y presiona Enter..." 
-            required 
-            minlength="1" 
-            maxlength="2000"
-            style="resize: vertical;"
-          ></textarea>
+            <h1 class="page-title">Operación <?= esc($tx['codigo_operacion']) ?></h1>
         </div>
-
-        <div style="display: flex; justify-content: flex-end;">
-          <button type="submit" class="btn btn-primary">
-            Enviar Mensaje &rarr;
-          </button>
+        <div class="flex-row">
+            <?php if (!empty($esVendedor) && $estado === 'solicitada'): ?>
+                <form action="<?= site_url('solicitudes/responder/' . $tx['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="accion" value="aceptar">
+                    <button type="submit" class="btn btn-primary">Aceptar Operación</button>
+                </form>
+                <form action="<?= site_url('solicitudes/responder/' . $tx['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="accion" value="rechazar">
+                    <button type="submit" class="btn btn-danger">Rechazar</button>
+                </form>
+            <?php elseif (!empty($esComprador) && $estado === 'solicitada'): ?>
+                <form action="<?= site_url('solicitudes/cancelar/' . $tx['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-danger">Cancelar Solicitud</button>
+                </form>
+            <?php endif; ?>
         </div>
-      </form>
     </div>
-  </div>
 
-  <div style="display: flex; gap: 0.75rem;">
-    <a href="<?= site_url('solicitudes/' . ($esVendedor ? 'recibidas' : 'enviadas')) ?>" class="btn btn-secondary">
-      &larr; Volver a Solicitudes
-    </a>
-  </div>
+    <?php if (!empty($certificado)): ?>
+        <div class="alert alert-success flex-between">
+            <span>Certificado ambiental emitido: <strong><?= esc($certificado['codigo_certificado']) ?></strong></span>
+            <a href="<?= site_url('certificados/ver/' . $certificado['codigo_certificado']) ?>" class="btn btn-primary btn-sm">Ver Certificado</a>
+        </div>
+    <?php endif; ?>
 
+    <div class="grid-3">
+        <div class="metric-card">
+            <span class="metric-card-label">Cantidad Acordada</span>
+            <div class="metric-card-value text-mono"><?= format_kg($tx['cantidad_kg']) ?></div>
+            <span class="metric-card-sub"><?= esc($tx['tipo_polimero'] ?? '') ?></span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-card-label">Precio Unitario Pactado</span>
+            <div class="metric-card-value text-mono"><?= format_precio($tx['precio_unitario_pactado']) ?>/kg</div>
+            <span class="metric-card-sub">Subtotal: <?= format_precio($tx['subtotal']) ?></span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-card-label">Monto Total</span>
+            <div class="metric-card-value text-mono"><?= format_precio($tx['monto_total']) ?></div>
+            <span class="metric-card-sub">Flete: <?= format_precio($tx['costo_flete'] ?? 0) ?></span>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card stack-sm">
+            <h2>Vendedor</h2>
+            <p><strong>Empresa:</strong> <?= esc($tx['vendedor_nombre'] ?? '—') ?></p>
+            <p><strong>CUIT:</strong> <span class="text-mono"><?= esc($tx['vendedor_cuit'] ?? '—') ?></span></p>
+            <p><strong>Correo:</strong> <?= esc($tx['vendedor_email'] ?? '—') ?></p>
+            <p><strong>Teléfono:</strong> <?= esc($tx['vendedor_telefono'] ?? '—') ?></p>
+        </div>
+        <div class="card stack-sm">
+            <h2>Comprador</h2>
+            <p><strong>Empresa:</strong> <?= esc($tx['comprador_nombre'] ?? '—') ?></p>
+            <p><strong>CUIT:</strong> <span class="text-mono"><?= esc($tx['comprador_cuit'] ?? '—') ?></span></p>
+            <p><strong>Correo:</strong> <?= esc($tx['comprador_email'] ?? '—') ?></p>
+            <p><strong>Teléfono:</strong> <?= esc($tx['comprador_telefono'] ?? '—') ?></p>
+        </div>
+    </div>
+
+    <div class="card stack-sm">
+        <h2>Logística y Acuerdo</h2>
+        <p><strong>Modalidad de Retiro:</strong> <?= esc(label_modalidad_retiro($tx['modalidad_retiro'] ?? '')) ?></p>
+        <p><strong>Fecha de Acuerdo:</strong> <?= !empty($tx['fecha_acuerdo']) ? date('d/m/Y H:i', strtotime($tx['fecha_acuerdo'])) : 'Pendiente de confirmación' ?></p>
+        <?php if (!empty($tx['nombre_planta'])): ?>
+            <p><strong>Planta Despachante:</strong> <?= esc($tx['nombre_planta']) ?></p>
+        <?php endif; ?>
+        <p><strong>Observaciones:</strong> <?= nl2br(esc($tx['observaciones'] ?? 'Sin observaciones registradas.')) ?></p>
+    </div>
+
+    <section id="chat" class="card stack-md">
+        <div class="flex-between">
+            <h2>Mensajería de la Operación</h2>
+            <span id="chatMsgCount" class="text-muted"><?= count($mensajes ?? []) ?> mensaje(s)</span>
+        </div>
+        <?= view('templates/chat_box', [
+            'mensajes'      => $mensajes ?? [],
+            'userId'        => $userId,
+            'transaccionId' => $tx['id'],
+            'productoId'    => $tx['producto_id'],
+            'receptorId'    => $receptorId,
+            'placeholder'   => 'Coordine fechas de retiro, documentación o pesaje en báscula...',
+            'emptyText'     => 'No hay mensajes en esta operación todavía.',
+        ]) ?>
+    </section>
+
+    <div>
+        <a href="<?= $backUrl ?>" class="btn btn-secondary">Volver al listado</a>
+    </div>
 </div>
 
-<script src="<?= base_url('assets/chat.js') ?>?v=2.4"></script>
-
+<script src="<?= base_url('assets/chat.js') ?>?v=2.2"></script>
 <?= view('templates/footer') ?>

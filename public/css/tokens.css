@@ -1,13 +1,12 @@
 /* Variables de diseño de MateriaX Pro */
-
 :root {
-  /* Colores */
   --color-paper: oklch(98.8% 0.006 195);
   --color-paper-2: oklch(96.5% 0.010 195);
   --color-paper-surface: oklch(100% 0 0);
   --color-ink: oklch(18% 0.02 240);
   --color-ink-2: oklch(42% 0.02 240);
   --color-ink-muted: oklch(60% 0.015 240);
+  --color-ink-3: var(--color-ink-muted);
   --color-rule: oklch(89% 0.01 200);
   --color-rule-subtle: oklch(94% 0.008 200);
   --color-accent: oklch(51.8% 0.112 188.4);
@@ -16,16 +15,16 @@
   --color-signal-cyan: oklch(56% 0.13 220);
   --color-focus: oklch(52% 0.14 188);
 
-  /* División de secciones */
   --container-max-width: 100%;
   --color-section-divider: oklch(51.8% 0.112 188.4);
   --color-section-divider-cyan: oklch(56% 0.13 220);
   --color-section-bg-alt: color-mix(in oklch, var(--color-accent) 4.5%, var(--color-paper-2));
   --color-section-border-alt: color-mix(in oklch, var(--color-accent) 22%, var(--color-rule));
 
-  /* Compatibilidad con variables anteriores */
+  /* Compatibilidad */
   --bg-main: var(--color-paper);
   --bg-surface: var(--color-paper-surface);
+  --bg-card: var(--color-paper-surface);
   --bg-subtle: var(--color-paper-2);
   --border-color: var(--color-rule);
   --border-subtle: var(--color-rule-subtle);
@@ -35,8 +34,8 @@
   --text-muted: var(--color-ink-muted);
   --color-primary: var(--color-accent);
   --color-primary-hover: var(--color-accent-hover);
+  --brand-teal: var(--color-accent);
 
-  /* Estados y alertas */
   --color-success: oklch(52% 0.13 145);
   --color-success-bg: oklch(97% 0.03 145);
   --color-success-border: oklch(88% 0.06 145);
@@ -52,11 +51,9 @@
   --color-danger-border: oklch(88% 0.09 25);
   --color-danger-text: oklch(38% 0.15 25);
 
-  /* Tipografía */
   --font-display: 'Red Hat Display', system-ui, -apple-system, sans-serif;
   --font-body: 'Red Hat Text', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
-
   --tracking-tight: -0.025em;
   --tracking-normal: -0.01em;
 
@@ -70,7 +67,6 @@
   --text-3xl: 2.25rem;
   --text-display: clamp(2.3rem, 4.4vw + 0.5rem, 3.8rem);
 
-  /* Espaciado */
   --space-3xs: 0.25rem;
   --space-2xs: 0.5rem;
   --space-xs: 0.75rem;
@@ -81,24 +77,19 @@
   --space-2xl: 4.5rem;
   --space-3xl: 6rem;
 
-  /* Bordes redondeados */
   --radius-xs: 3px;
   --radius-sm: 5px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-pill: 9999px;
 
-  /* Sombras */
   --shadow-hairline: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
   --shadow-card: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.06);
   --shadow-overlay: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06);
 
-  /* Animaciones y transiciones */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --dur-fast: 120ms;
   --dur-short: 180ms;
-
-  /* Capas (z-index) */
   --z-sticky: 100;
   --z-sticky-nav: 300;
 }

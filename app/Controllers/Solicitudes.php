@@ -2,11 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\TransaccionModel;
-use App\Models\ProductoModel;
-use App\Models\UserModel;
-use App\Models\CertificadoModel;
-use App\Models\MensajeModel;
+use App\Models\{CertificadoModel, MensajeModel, ProductoModel, TransaccionModel, UserModel};
 use CodeIgniter\Exceptions\PageNotFoundException;
 use CodeIgniter\HTTP\RedirectResponse;
 
@@ -16,7 +12,7 @@ class Solicitudes extends BaseController
     protected ProductoModel $productoModel;
     protected UserModel $userModel;
     protected CertificadoModel $certificadoModel;
-    protected $helpers = ['form', 'url'];
+    protected MensajeModel $mensajeModel;
 
     public function __construct()
     {
@@ -27,73 +23,46 @@ class Solicitudes extends BaseController
         $this->mensajeModel     = new MensajeModel();
     }
 
-    /**
-     * Bandeja principal: redirige a solicitudes recibidas
-     */
     public function index()
     {
         return redirect()->to(site_url('solicitudes/recibidas'));
     }
 
-    /**
-     * Solicitudes y ofertas recibidas sobre los lotes del usuario logueado
-     */
     public function recibidas()
     {
-        $userId = (int) session()->get('user_id');
-        $solicitudes = $this->transaccionModel->getSolicitudesRecibidas($userId);
-
-        $pendientes = count(array_filter($solicitudes, fn($s) => $s['estado'] === 'solicitada'));
-        $aprobadas  = count(array_filter($solicitudes, fn($s) => $s['estado'] === 'aprobada'));
-
+        $solicitudes = $this->transaccionModel->getSolicitudesRecibidas($this->userId());
         return view('solicitudes/recibidas', [
             'pageTitle'   => 'Solicitudes Recibidas (Ventas) | MateriaX',
             'solicitudes' => $solicitudes,
-            'pendientes'  => $pendientes,
-            'aprobadas'   => $aprobadas,
+            'pendientes'  => count(array_filter($solicitudes, static fn ($s) => $s['estado'] === 'solicitada')),
+            'aprobadas'   => count(array_filter($solicitudes, static fn ($s) => $s['estado'] === 'aprobada')),
         ]);
     }
 
-    /**
-     * Solicitudes de compra enviadas por el usuario logueado a otros oferentes
-     */
     public function enviadas()
     {
-        $userId = (int) session()->get('user_id');
-        $solicitudes = $this->transaccionModel->getSolicitudesEnviadas($userId);
-
         return view('solicitudes/enviadas', [
             'pageTitle'   => 'Mis Compras y Solicitudes Enviadas | MateriaX',
-            'solicitudes' => $solicitudes,
+            'solicitudes' => $this->transaccionModel->getSolicitudesEnviadas($this->userId()),
         ]);
     }
 
-    /**
-     * Formulario para iniciar una solicitud de compra sobre un lote de polímero
-     */
     public function crear($productoId = null)
     {
         if (empty($productoId) || !is_numeric($productoId)) {
             throw PageNotFoundException::forPageNotFound('Identificador de lote no válido.');
         }
-
         $producto = $this->productoModel->getProductosConUsuario((int) $productoId);
         if (!$producto) {
             throw PageNotFoundException::forPageNotFound('El lote seleccionado no existe.');
         }
-
-        $userId = (int) session()->get('user_id');
-
-        // Regla de negocio: una empresa no puede comprar su propio lote
-        if ((int) $producto['user_id'] === $userId) {
-            return redirect()->to(site_url('productos/ver/' . $productoId))
-                             ->with('error', 'No puedes enviar una solicitud de compra sobre un lote de tu propia empresa.');
+        if ((int) $producto['user_id'] === $this->userId()) {
+            return redirect()->to(site_url("productos/ver/{$productoId}"))
+                ->with('error', 'No puedes enviar una solicitud de compra sobre un lote de tu propia empresa.');
         }
-
-        // Regla: Solo lotes disponibles
         if ($producto['estado'] !== 'Disponible') {
-            return redirect()->to(site_url('productos/ver/' . $productoId))
-                             ->with('error', "Este lote ya no se encuentra disponible (Estado actual: {$producto['estado']}).");
+            return redirect()->to(site_url("productos/ver/{$productoId}"))
+                ->with('error', "Este lote ya no se encuentra disponible (Estado actual: {$producto['estado']}).");
         }
 
         return view('solicitudes/crear', [
@@ -102,22 +71,21 @@ class Solicitudes extends BaseController
         ]);
     }
 
-    /**
-     * Procesa y registra la solicitud de compra
-     */
     public function guardar()
     {
         $productoId = (int) $this->request->getPost('producto_id');
-        $producto   = $this->productoModel->find($productoId);
-
-        if (!$producto) {
+        if (!($producto = $this->productoModel->find($productoId))) {
             throw PageNotFoundException::forPageNotFound('El producto no existe.');
         }
 
-        $userId = (int) session()->get('user_id');
+        $userId = $this->userId();
         if ((int) $producto['user_id'] === $userId) {
             return redirect()->to(site_url('productos'))
-                             ->with('error', 'Operación denegada: no puedes solicitar tus propias publicaciones.');
+                ->with('error', 'Operación denegada: no puedes solicitar tus propias publicaciones.');
+        }
+        if ($producto['estado'] !== 'Disponible') {
+            return redirect()->to(site_url("productos/ver/{$productoId}"))
+                ->with('error', "Este lote ya no se encuentra disponible (Estado actual: {$producto['estado']}).");
         }
 
         $rules = [
@@ -128,20 +96,23 @@ class Solicitudes extends BaseController
             'modalidad_retiro'        => 'required|in_list[retiro_comprador_planta,entrega_vendedor,flete_convenido]',
             'observaciones'           => 'permit_empty|max_length[1000]',
         ];
-
         if (!$this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $cantidadKg   = (float) $this->request->getPost('cantidad_kg');
-        $precioKg     = (float) $this->request->getPost('precio_unitario_pactado');
-        $costoFlete   = (float) ($this->request->getPost('costo_flete') ?: 0);
-        $subtotal     = round($cantidadKg * $precioKg, 2);
-        $montoTotal   = round($subtotal + $costoFlete, 2);
+        $cantidadKg = (float) $this->request->getPost('cantidad_kg');
+        if ($cantidadKg > (float) $producto['cantidad_kg']) {
+            return redirect()->back()->withInput()->with('errors', [
+                'cantidad_kg' => 'La cantidad solicitada (' . format_kg($cantidadKg) . ') supera el stock disponible (' . format_kg($producto['cantidad_kg']) . ').',
+            ]);
+        }
 
-        $codigoOp = $this->transaccionModel->generarCodigoOperacion();
+        $precioKg   = (float) $this->request->getPost('precio_unitario_pactado');
+        $costoFlete = (float) ($this->request->getPost('costo_flete') ?: 0);
+        $subtotal   = round($cantidadKg * $precioKg, 2);
+        $codigoOp   = $this->transaccionModel->generarCodigoOperacion();
 
-        $data = [
+        $ok = $this->transaccionModel->insert([
             'codigo_operacion'        => $codigoOp,
             'producto_id'             => $productoId,
             'comprador_id'            => $userId,
@@ -151,24 +122,21 @@ class Solicitudes extends BaseController
             'precio_unitario_pactado' => $precioKg,
             'subtotal'                => $subtotal,
             'costo_flete'             => $costoFlete,
-            'monto_total'             => $montoTotal,
+            'monto_total'             => round($subtotal + $costoFlete, 2),
             'modalidad_retiro'        => $this->request->getPost('modalidad_retiro'),
             'estado'                  => 'solicitada',
             'observaciones'           => trim((string) $this->request->getPost('observaciones')),
             'fecha_solicitud'         => date('Y-m-d H:i:s'),
-        ];
+        ]);
 
-        if (!$this->transaccionModel->insert($data)) {
+        if (!$ok) {
             return redirect()->back()->withInput()->with('error', 'Error al emitir la solicitud de compra.');
         }
 
         return redirect()->to(site_url('solicitudes/enviadas'))
-                         ->with('success', "¡Solicitud {$codigoOp} enviada con éxito al vendedor! Podrás hacer el seguimiento de su respuesta aquí.");
+            ->with('success', "¡Solicitud {$codigoOp} enviada con éxito al vendedor! Podrás hacer el seguimiento de su respuesta aquí.");
     }
 
-    /**
-     * Ficha detallada de la transacción
-     */
     public function ver($id = null)
     {
         $trx = $this->validarAccesoTransaccion($id);
@@ -176,146 +144,97 @@ class Solicitudes extends BaseController
             return $trx;
         }
 
-        $certificado = $this->certificadoModel->where('transaccion_id', $trx['id'])->first();
-
-        $userId = (int) session()->get('user_id');
-        $this->mensajeModel->marcarLeidosTransaccion((int) $trx['id'], $userId);
-        $mensajes = $this->mensajeModel->getMensajesPorTransaccion((int) $trx['id']);
+        $this->mensajeModel->marcarLeidosTransaccion((int) $trx['id'], $this->userId());
 
         return view('solicitudes/ver', [
             'pageTitle'   => "Operación {$trx['codigo_operacion']} | MateriaX",
             'transaccion' => $trx,
-            'certificado' => $certificado,
-            'mensajes'    => $mensajes,
+            'certificado' => $this->certificadoModel->where('transaccion_id', $trx['id'])->first(),
+            'mensajes'    => $this->mensajeModel->getMensajesPorTransaccion((int) $trx['id']),
         ]);
     }
 
-    /**
-     * El vendedor acepta o rechaza una propuesta
-     */
     public function responder($id = null)
     {
-        if (empty($id) || !is_numeric($id)) {
-            throw PageNotFoundException::forPageNotFound('Operación no válida.');
-        }
-
-        $userId = (int) session()->get('user_id');
-        $trx = $this->transaccionModel->find((int) $id);
-
-        if (!$trx) {
-            throw PageNotFoundException::forPageNotFound('Transacción no encontrada.');
-        }
-
-        // Solo el vendedor puede responder a la oferta
-        if ((int) $trx['vendedor_id'] !== $userId && session()->get('rol') !== 'admin') {
+        $trx = $this->findTrxOrFail($id);
+        if ((int) $trx['vendedor_id'] !== $this->userId() && !$this->isAdmin()) {
             return redirect()->to(site_url('solicitudes/recibidas'))
-                             ->with('error', 'Acceso denegado: solo el titular del lote puede responder a esta oferta.');
+                ->with('error', 'Acceso denegado: solo el titular del lote puede responder a esta oferta.');
         }
-
         if ($trx['estado'] !== 'solicitada') {
-            return redirect()->to(site_url('solicitudes/ver/' . $id))
-                             ->with('error', "La transacción ya fue procesada previamente (Estado: {$trx['estado']}).");
+            return redirect()->to(site_url("solicitudes/ver/{$id}"))
+                ->with('error', "La transacción ya fue procesada previamente (Estado: {$trx['estado']}).");
         }
 
         $accion = $this->request->getPost('accion');
-
         if ($accion === 'aceptar') {
-            $this->transaccionModel->update($id, [
-                'estado'        => 'aprobada',
-                'fecha_acuerdo' => date('Y-m-d H:i:s'),
-            ]);
+            $this->transaccionModel->update($id, ['estado' => 'aprobada', 'fecha_acuerdo' => date('Y-m-d H:i:s')]);
+            $this->productoModel->update($trx['producto_id'], ['estado' => 'Reservado']);
 
-            // Actualizar estado del producto a Reservado
-            $this->productoModel->update($trx['producto_id'], [
-                'estado' => 'Reservado',
-            ]);
+            $cert = $this->certificadoModel->emitirParaTransaccion(
+                array_merge($trx, ['estado' => 'aprobada']),
+                $this->productoModel->find($trx['producto_id']) ?? []
+            );
 
-            // Emisión automática del Certificado de Impacto Ambiental
-            $producto = $this->productoModel->find($trx['producto_id']);
-            $trxActualizada = array_merge($trx, ['estado' => 'aprobada']);
-            $cert = $this->certificadoModel->emitirParaTransaccion($trxActualizada, $producto ?? []);
-
-            $mensaje = "¡Solicitud {$trx['codigo_operacion']} ACEPTADA! El lote quedó en estado 'Reservado'";
-            if ($cert) {
-                $mensaje .= " y se emitió automáticamente el Certificado de Huella Verde ({$cert['codigo_certificado']}).";
-            } else {
-                $mensaje .= " para coordinar el retiro logístico.";
-            }
-
-            return redirect()->to(site_url('solicitudes/ver/' . $id))->with('success', $mensaje);
+            $mensaje = "¡Solicitud {$trx['codigo_operacion']} ACEPTADA! El lote quedó en estado 'Reservado'" . (
+                $cert
+                    ? " y se emitió automáticamente el Certificado de Huella Verde ({$cert['codigo_certificado']})."
+                    : ' para coordinar el retiro logístico.'
+            );
+            return redirect()->to(site_url("solicitudes/ver/{$id}"))->with('success', $mensaje);
         }
 
         if ($accion === 'rechazar') {
-            $this->transaccionModel->update($id, [
-                'estado'       => 'rechazada',
-                'fecha_cierre' => date('Y-m-d H:i:s'),
-            ]);
-
+            $this->transaccionModel->update($id, ['estado' => 'rechazada', 'fecha_cierre' => date('Y-m-d H:i:s')]);
             return redirect()->to(site_url('solicitudes/recibidas'))
-                             ->with('success', "La solicitud {$trx['codigo_operacion']} fue rechazada.");
+                ->with('success', "La solicitud {$trx['codigo_operacion']} fue rechazada.");
         }
 
         return redirect()->to(site_url('solicitudes/recibidas'));
     }
 
-    /**
-     * El comprador cancela su solicitud pendiente
-     */
     public function cancelar($id = null)
+    {
+        $trx = $this->findTrxOrFail($id);
+        if ((int) $trx['comprador_id'] !== $this->userId()) {
+            return redirect()->to(site_url('solicitudes/enviadas'))
+                ->with('error', 'Acceso denegado: no puedes cancelar solicitudes de otras empresas.');
+        }
+        if ($trx['estado'] !== 'solicitada') {
+            return redirect()->to(site_url('solicitudes/enviadas'))
+                ->with('error', "No puedes cancelar una solicitud que ya está en estado {$trx['estado']}.");
+        }
+
+        $this->transaccionModel->update($id, ['estado' => 'cancelada', 'fecha_cierre' => date('Y-m-d H:i:s')]);
+        return redirect()->to(site_url('solicitudes/enviadas'))
+            ->with('success', "Has cancelado la solicitud {$trx['codigo_operacion']}.");
+    }
+
+    protected function findTrxOrFail($id): array
     {
         if (empty($id) || !is_numeric($id)) {
             throw PageNotFoundException::forPageNotFound('Operación no válida.');
         }
-
-        $userId = (int) session()->get('user_id');
-        $trx = $this->transaccionModel->find((int) $id);
-
-        if (!$trx) {
+        if (!($trx = $this->transaccionModel->find((int) $id))) {
             throw PageNotFoundException::forPageNotFound('Transacción no encontrada.');
         }
-
-        if ((int) $trx['comprador_id'] !== $userId) {
-            return redirect()->to(site_url('solicitudes/enviadas'))
-                             ->with('error', 'Acceso denegado: no puedes cancelar solicitudes de otras empresas.');
-        }
-
-        if ($trx['estado'] !== 'solicitada') {
-            return redirect()->to(site_url('solicitudes/enviadas'))
-                             ->with('error', "No puedes cancelar una solicitud que ya está en estado {$trx['estado']}.");
-        }
-
-        $this->transaccionModel->update($id, [
-            'estado'       => 'cancelada',
-            'fecha_cierre' => date('Y-m-d H:i:s'),
-        ]);
-
-        return redirect()->to(site_url('solicitudes/enviadas'))
-                         ->with('success', "Has cancelado la solicitud {$trx['codigo_operacion']}.");
+        return $trx;
     }
 
-    /**
-     * Valida permisos para visualizar la ficha de la transacción
-     */
     protected function validarAccesoTransaccion($id): array|RedirectResponse
     {
         if (empty($id) || !is_numeric($id)) {
             throw PageNotFoundException::forPageNotFound('Operación no válida.');
         }
-
-        $trx = $this->transaccionModel->getDetalleTransaccion((int) $id);
-        if (!$trx) {
+        if (!($trx = $this->transaccionModel->getDetalleTransaccion((int) $id))) {
             throw PageNotFoundException::forPageNotFound('Transacción no encontrada.');
         }
 
-        $userId = (int) session()->get('user_id');
-        $rol    = session()->get('rol');
-
-        // Permiso: solo comprador, vendedor o admin
-        if ((int) $trx['comprador_id'] !== $userId && (int) $trx['vendedor_id'] !== $userId && $rol !== 'admin') {
+        $userId = $this->userId();
+        if ((int) $trx['comprador_id'] !== $userId && (int) $trx['vendedor_id'] !== $userId && !$this->isAdmin()) {
             return redirect()->to(site_url('panel'))
-                             ->with('error', 'Acceso denegado: no formas parte de esta transacción comercial.');
+                ->with('error', 'Acceso denegado: no formas parte de esta transacción comercial.');
         }
-
         return $trx;
     }
 }

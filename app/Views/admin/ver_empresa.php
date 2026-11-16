@@ -1,247 +1,113 @@
 <?= view('templates/header', ['pageTitle' => 'Detalle de Empresa | MateriaX Admin']) ?>
 
-<!-- Migas de pan -->
-<nav aria-label="Migas de pan" class="breadcrumb">
-  <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
-  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
-  <span class="breadcrumb-item"><a href="<?= site_url('admin') ?>">Panel Admin</a></span>
-  <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
-  <span class="breadcrumb-item" aria-current="page">Auditoría: <?= esc($empresa['nombre']) ?></span>
-</nav>
+<div class="container-lg stack-md">
+    <nav aria-label="Migas de pan" class="breadcrumb">
+        <span class="breadcrumb-item"><a href="<?= site_url('/') ?>">Inicio</a></span>
+        <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+        <span class="breadcrumb-item"><a href="<?= site_url('admin') ?>">Panel Admin</a></span>
+        <span class="breadcrumb-separator" aria-hidden="true">&rsaquo;</span>
+        <span class="breadcrumb-item" aria-current="page">Auditoría: <?= esc($empresa['nombre']) ?></span>
+    </nav>
 
-<div style="margin-bottom: 1.5rem;">
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
-    <div>
-      <h1 style="font-size: 2rem; font-weight: 700; color: var(--text-primary); margin-top: 0.25rem;">
-        <?= esc($empresa['nombre']) ?>
-      </h1>
-      <p style="color: var(--text-secondary); font-size: 0.95rem;">
-        Auditoría de datos institucionales y monitoreo de materiales publicados.
-      </p>
+    <div class="page-header flex-between">
+        <div>
+            <h1 class="page-title"><?= esc($empresa['nombre']) ?></h1>
+            <p class="page-sub">Auditoría de datos institucionales y monitoreo de materiales publicados.</p>
+        </div>
+        <div class="flex-row">
+            <?php if ($empresa['estado'] === 'pendiente'): ?>
+                <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-primary">Aprobar Empresa</button>
+                </form>
+                <form action="<?= site_url('admin/empresa/rechazar/' . $empresa['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-danger">Rechazar Solicitud</button>
+                </form>
+            <?php elseif ($empresa['estado'] === 'activo'): ?>
+                <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-danger">Suspender Acceso</button>
+                </form>
+            <?php elseif ($empresa['estado'] === 'inactivo'): ?>
+                <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-primary">Reactivar Acceso</button>
+                </form>
+            <?php elseif ($empresa['estado'] === 'rechazado'): ?>
+                <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn btn-primary">Reconsiderar y Aprobar</button>
+                </form>
+            <?php endif; ?>
+        </div>
     </div>
 
-    <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-      <?php if ($empresa['estado'] === 'pendiente'): ?>
-        <!-- Aprobar empresa -->
-        <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
-          <?= csrf_field() ?>
-          <button type="submit" class="btn btn-primary" style="background: #059669; border-color: #10b981;">
-            Aprobar Empresa
-          </button>
-        </form>
-        <!-- Rechazar empresa -->
-        <form action="<?= site_url('admin/empresa/rechazar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
-          <?= csrf_field() ?>
-          <button type="submit" class="btn btn-secondary" style="color: #dc2626; border-color: rgba(220, 38, 38, 0.4);">
-            Rechazar Solicitud
-          </button>
-        </form>
-      <?php elseif ($empresa['estado'] === 'activo'): ?>
-        <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
-          <?= csrf_field() ?>
-          <button type="submit" class="btn btn-secondary" style="color: #dc2626; border-color: rgba(220, 38, 38, 0.4);">
-            Suspender Acceso
-          </button>
-        </form>
-      <?php elseif ($empresa['estado'] === 'inactivo'): ?>
-        <form action="<?= site_url('admin/empresa/cambiar-estado/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
-          <?= csrf_field() ?>
-          <button type="submit" class="btn btn-secondary" style="color: #16a34a; border-color: rgba(22, 163, 74, 0.4);">
-            Reactivar Acceso
-          </button>
-        </form>
-      <?php elseif ($empresa['estado'] === 'rechazado'): ?>
-        <form action="<?= site_url('admin/empresa/aprobar/' . $empresa['id']) ?>" method="POST" style="margin: 0; display: inline;">
-          <?= csrf_field() ?>
-          <button type="submit" class="btn btn-secondary" style="color: #059669; border-color: rgba(5, 150, 105, 0.4);">
-            Reconsiderar y Aprobar
-          </button>
-        </form>
-      <?php endif; ?>
+    <div class="card">
+        <div class="card-header"><h3 class="card-title">Información Fiscal y de Contacto</h3></div>
+        <div class="card-body grid-3">
+            <div><span class="text-muted">Razón Social</span><br><strong><?= esc($empresa['nombre']) ?></strong></div>
+            <div><span class="text-muted">CUIT</span><br><strong class="text-mono"><?= esc($empresa['cuit']) ?></strong></div>
+            <div><span class="text-muted">Correo Electrónico</span><br><?= esc($empresa['email']) ?></div>
+            <div><span class="text-muted">Teléfono</span><br><?= esc($empresa['telefono']) ?></div>
+            <div><span class="text-muted">Rubro / Sector</span><br><?= esc($empresa['rubro'] ?? 'No especificado') ?></div>
+            <div><span class="text-muted">Ubicación</span><br><?= esc($empresa['ciudad'] ?? '-') ?>, <?= esc($empresa['provincia'] ?? '-') ?></div>
+            <div><span class="text-muted">Dirección / Planta</span><br><?= esc($empresa['direccion'] ?? 'Sin registrar') ?></div>
+            <div>
+                <span class="text-muted">Estado de la Cuenta</span><br>
+                <?php if ($empresa['estado'] === 'pendiente'): ?>
+                    <span class="badge badge-warning">En Auditoría (Pendiente)</span>
+                <?php elseif ($empresa['estado'] === 'activo'): ?>
+                    <span class="badge badge-success">Cuenta Habilitada</span>
+                <?php elseif ($empresa['estado'] === 'rechazado'): ?>
+                    <span class="badge badge-danger">Solicitud Rechazada</span>
+                <?php else: ?>
+                    <span class="badge badge-secondary">Cuenta Suspendida</span>
+                <?php endif; ?>
+            </div>
+            <div><span class="text-muted">Registro / Último Login</span><br><?= date('d/m/Y H:i', strtotime($empresa['created_at'])) ?> · <?= !empty($empresa['ultimo_login']) ? date('d/m/Y H:i', strtotime($empresa['ultimo_login'])) : 'Sin login' ?></div>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- Datos de la empresa -->
-<div class="card" style="margin-bottom: 2rem;">
-  <div class="card-header">
-    <h3 class="card-title">Información Fiscal y de Contacto</h3>
-  </div>
-  <div class="card-body">
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem;">
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Razón Social
-        </label>
-        <div style="font-size: 1rem; color: var(--text-primary); font-weight: 600; margin-top: 0.25rem;">
-          <?= esc($empresa['nombre']) ?>
+    <div class="card">
+        <div class="card-header flex-between">
+            <div>
+                <h3 class="card-title">Lotes Publicados por <?= esc($empresa['nombre']) ?></h3>
+                <p class="text-sec">Materiales y excedentes industriales asociados a esta cuenta.</p>
+            </div>
+            <span class="badge badge-secondary"><?= count($lotes) ?> lotes</span>
         </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          CUIT
-        </label>
-        <div style="font-size: 1rem; font-family: monospace; color: var(--color-accent); font-weight: 700; margin-top: 0.25rem;">
-          <?= esc($empresa['cuit']) ?>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Lote</th><th>Tipo Polímero</th><th>Volumen (kg)</th><th>Precio Unit.</th>
+                        <th>Ubicación</th><th>Estado</th><th>Fecha Publicación</th><th style="text-align:right;">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($lotes)): ?>
+                        <?php foreach ($lotes as $lote): ?>
+                            <tr>
+                                <td><strong><?= esc($lote['nombre']) ?></strong></td>
+                                <td><span class="badge badge-polimero <?= badge_polimero_class($lote['tipo_polimero']) ?>"><?= esc($lote['tipo_polimero']) ?></span></td>
+                                <td><?= format_kg($lote['cantidad_kg']) ?></td>
+                                <td><?= format_precio($lote['precio_unitario']) ?> /kg</td>
+                                <td><?= esc($lote['ubicacion']) ?></td>
+                                <td><span class="badge <?= badge_estado_class($lote['estado']) ?>"><?= esc($lote['estado']) ?></span></td>
+                                <td class="text-sec"><?= date('d/m/Y', strtotime($lote['created_at'])) ?></td>
+                                <td style="text-align:right;"><a href="<?= site_url('productos/ver/' . $lote['id']) ?>" class="btn btn-secondary btn-sm" target="_blank">Ver Ficha</a></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="8" class="empty-state">Esta empresa aún no ha publicado lotes en el inventario.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Correo Electrónico
-        </label>
-        <div style="font-size: 1rem; color: var(--text-primary); margin-top: 0.25rem;">
-          <?= esc($empresa['email']) ?>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Teléfono de Contacto
-        </label>
-        <div style="font-size: 1rem; color: var(--text-primary); margin-top: 0.25rem;">
-          <?= esc($empresa['telefono']) ?>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Rubro / Sector
-        </label>
-        <div style="font-size: 1rem; color: var(--text-primary); margin-top: 0.25rem;">
-          <?= esc($empresa['rubro'] ?? 'No especificado') ?>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Ubicación Geográfica
-        </label>
-        <div style="font-size: 1rem; color: var(--text-primary); margin-top: 0.25rem;">
-          <?= esc($empresa['ciudad'] ?? '-') ?>, <?= esc($empresa['provincia'] ?? '-') ?>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Dirección / Planta
-        </label>
-        <div style="font-size: 1rem; color: var(--text-primary); margin-top: 0.25rem;">
-          <?= esc($empresa['direccion'] ?? 'Sin registrar') ?>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Estado de la Cuenta
-        </label>
-        <div style="margin-top: 0.25rem;">
-          <?php if ($empresa['estado'] === 'pendiente'): ?>
-            <span class="badge badge-warning">
-              En Auditoría (Pendiente)
-            </span>
-          <?php elseif ($empresa['estado'] === 'activo'): ?>
-            <span class="badge badge-success">Cuenta Habilitada</span>
-          <?php elseif ($empresa['estado'] === 'rechazado'): ?>
-            <span class="badge" style="background: #fef2f2; color: #991b1b; border: 1px solid #fecaca;">
-              Solicitud Rechazada
-            </span>
-          <?php else: ?>
-            <span class="badge" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;">
-              Cuenta Suspendida
-            </span>
-          <?php endif; ?>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Fecha de Registro
-        </label>
-        <div style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.25rem;">
-          <?= date('d/m/Y H:i', strtotime($empresa['created_at'])) ?>
-        </div>
-      </div>
-
-      <div>
-        <label style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">
-          Último Acceso al Sistema
-        </label>
-        <div style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.25rem;">
-          <?= !empty($empresa['ultimo_login']) ? date('d/m/Y H:i', strtotime($empresa['ultimo_login'])) : 'Sin registros de login' ?>
-        </div>
-      </div>
     </div>
-  </div>
-</div>
-
-<!-- Lotes publicados -->
-<div class="card">
-  <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-    <div>
-      <h3 class="card-title" style="margin: 0;">Lotes Publicados por <?= esc($empresa['nombre']) ?></h3>
-      <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0.25rem 0 0 0;">
-        Materiales y excedentes industriales asociados a esta cuenta.
-      </p>
-    </div>
-    <span class="badge" style="background: var(--bg-main); color: var(--text-primary); border: 1px solid var(--border-color);">
-      <?= count($lotes) ?> lotes
-    </span>
-  </div>
-
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Lote</th>
-          <th scope="col">Tipo Polímero</th>
-          <th scope="col">Volumen (kg)</th>
-          <th scope="col">Precio Unit.</th>
-          <th scope="col">Ubicación</th>
-          <th scope="col">Estado</th>
-          <th scope="col">Fecha Publicación</th>
-          <th scope="col" style="text-align: right;">Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php if (!empty($lotes)): ?>
-          <?php foreach ($lotes as $lote): ?>
-            <tr>
-              <td>
-                <strong style="color: var(--text-primary);"><?= esc($lote['nombre']) ?></strong>
-              </td>
-              <td>
-                <span class="badge badge-polimero <?= badge_polimero_class($lote['tipo_polimero']) ?>">
-                  <?= esc($lote['tipo_polimero']) ?>
-                </span>
-              </td>
-              <td><?= format_kg($lote['cantidad_kg']) ?></td>
-              <td><?= format_precio($lote['precio_unitario']) ?> /kg</td>
-              <td><?= esc($lote['ubicacion']) ?></td>
-              <td>
-                <span class="badge <?= badge_estado_class($lote['estado']) ?>"><?= esc($lote['estado']) ?></span>
-              </td>
-              <td style="font-size: 0.85rem; color: var(--text-secondary);">
-                <?= date('d/m/Y', strtotime($lote['created_at'])) ?>
-              </td>
-              <td style="text-align: right;">
-                <a href="<?= site_url('productos/ver/' . $lote['id']) ?>" class="btn btn-secondary btn-sm" target="_blank">
-                  Ver Ficha
-                </a>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        <?php else: ?>
-          <tr>
-            <td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
-              Esta empresa aún no ha publicado lotes en el inventario.
-            </td>
-          </tr>
-        <?php endif; ?>
-      </tbody>
-    </table>
-  </div>
 </div>
 
 <?= view('templates/footer') ?>

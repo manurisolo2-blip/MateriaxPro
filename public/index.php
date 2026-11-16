@@ -3,7 +3,6 @@
 use CodeIgniter\Boot;
 use Config\Paths;
 
-// Evitar que el recolector de basura de PHP elimine sesiones activas prematuramente (default 1440s = 24 min)
 @ini_set('session.gc_maxlifetime', '31536000');
 @ini_set('session.cookie_lifetime', '31536000');
 

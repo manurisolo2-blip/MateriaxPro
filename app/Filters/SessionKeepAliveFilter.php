@@ -4,18 +4,13 @@ namespace App\Filters;
 
 use App\Libraries\PersistentAuth;
 use CodeIgniter\Filters\FilterInterface;
-use CodeIgniter\HTTP\RequestInterface;
-use CodeIgniter\HTTP\ResponseInterface;
+use CodeIgniter\HTTP\{RequestInterface, ResponseInterface};
 
 class SessionKeepAliveFilter implements FilterInterface
 {
-    /**
-     * Restaura y mantiene viva la sesión del usuario en todas las rutas públicas y privadas,
-     * salvo cuando solicita explícitamente cerrar sesión (/logout).
-     */
     public function before(RequestInterface $request, $arguments = null)
     {
-        if (is_cli()) {
+        if (is_cli() || ENVIRONMENT === 'testing') {
             return;
         }
 
@@ -27,8 +22,5 @@ class SessionKeepAliveFilter implements FilterInterface
         PersistentAuth::ensureSession();
     }
 
-    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)
-    {
-        // No se requiere procesamiento posterior
-    }
+    public function after(RequestInterface $request, ResponseInterface $response, $arguments = null) {}
 }

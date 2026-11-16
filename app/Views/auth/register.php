@@ -1,224 +1,95 @@
 <?= view('templates/header', ['pageTitle' => 'Registro de Empresa | MateriaX']) ?>
 
-<div style="max-width: 680px; margin: 1.5rem auto;">
-  <div class="card">
-    <div class="card-header" style="text-align: center; display: block;">
-      <h2 class="card-title">Registro en la Red MateriaX</h2>
-      <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 0.25rem;">
-        Crea tu cuenta empresarial para publicar, cotizar y solicitar excedentes de polímeros industriales
-      </p>
+<?php
+$rubros = [
+    'Inyección de Plásticos',
+    'Extrusión y Soplado',
+    'Rotomoldeo',
+    'Termoformado',
+    'Reciclador / Recuperador',
+    'Automotriz y Autopartes',
+    'Construcción y Tuberías',
+    'Envases y Packaging',
+    'Otro / Distribuidor Industrial',
+];
+$selRubro = old('rubro') ?? '';
+$selProv  = old('provincia') ?? ($selectedProvincia ?? '');
+$selCiudad = old('ciudad') ?? ($selectedCiudad ?? '');
+?>
+
+<div class="container-md">
+    <div class="card stack-md">
+        <div class="page-header">
+            <h1 class="page-title">Alta de Empresa Industrial</h1>
+            <p class="page-sub">El CUIT y correo fiscal quedan registrados para auditar cada operación y emitir certificados ambientales.</p>
+        </div>
+
+        <div class="alert alert-info">
+            Verifique que la razón social y el CUIT coincidan con su constancia fiscal antes de enviar la solicitud.
+        </div>
+
+        <form action="<?= site_url('register') ?>" method="POST" class="stack-md">
+            <?= csrf_field() ?>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre" class="form-label">Razón Social / Empresa <span class="required-indicator">*</span></label>
+                    <input type="text" id="nombre" name="nombre" class="form-control" value="<?= esc(old('nombre') ?? '') ?>" required>
+                </div>
+                <div class="form-group">
+                    <label for="cuit" class="form-label">CUIT <span class="required-indicator">*</span></label>
+                    <input type="text" id="cuit" name="cuit" class="form-control" placeholder="30-71234567-9" value="<?= esc(old('cuit') ?? '') ?>" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="rubro" class="form-label">Rubro Industrial <span class="required-indicator">*</span></label>
+                    <select id="rubro" name="rubro" class="form-select" required>
+                        <option value="">Seleccione un rubro...</option>
+                        <?php foreach ($rubros as $r): ?>
+                            <option value="<?= esc($r) ?>"<?= $selRubro === $r ? ' selected' : '' ?>><?= esc($r) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Correo Corporativo <span class="required-indicator">*</span></label>
+                    <input type="email" id="email" name="email" class="form-control" value="<?= esc(old('email') ?? '') ?>" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="telefono" class="form-label">Teléfono de Contacto</label>
+                    <input type="text" id="telefono" name="telefono" class="form-control" value="<?= esc(old('telefono') ?? '') ?>">
+                </div>
+                <div class="form-group">
+                    <label for="direccion" class="form-label">Dirección Fiscal</label>
+                    <input type="text" id="direccion" name="direccion" class="form-control" value="<?= esc(old('direccion') ?? '') ?>">
+                </div>
+            </div>
+
+            <?= view('templates/localidades_fields', [
+                'provincias'       => $provincias ?? [],
+                'todasLocalidades' => $todasLocalidades ?? [],
+                'selProv'          => $selProv,
+                'selCiudad'        => $selCiudad,
+                'required'         => false,
+            ]) ?>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña <span class="required-indicator">*</span></label>
+                    <input type="password" id="password" name="password" class="form-control" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="pass_confirm" class="form-label">Confirmar Contraseña <span class="required-indicator">*</span></label>
+                    <input type="password" id="pass_confirm" name="pass_confirm" class="form-control" minlength="6" required>
+                </div>
+            </div>
+            <div class="flex-between">
+                <a href="<?= site_url('login') ?>" class="text-sec">¿Ya tiene cuenta? Ingresar</a>
+                <button type="submit" class="btn btn-primary">Registrar Empresa</button>
+            </div>
+        </form>
     </div>
-
-    <div class="card-body">
-      <form action="<?= site_url('register') ?>" method="POST">
-        <?= csrf_field() ?>
-
-        <!-- Aviso de revisión -->
-        <div style="background: rgba(15, 118, 110, 0.06); border: 1px solid rgba(15, 118, 110, 0.2); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.5rem;">
-          <div style="font-size: 0.88rem; color: var(--text-secondary); line-height: 1.45;">
-            <strong style="color: var(--color-primary);">Proceso de Auditoría Fiscal:</strong> Al completar el formulario, tu solicitud será revisada por el administrador para validar el CUIT y los datos de tu empresa antes de habilitar el acceso comercial a la plataforma.
-          </div>
-        </div>
-
-        <!-- Datos de la empresa -->
-        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-bottom: 1rem;">
-          1. Identificación Corporativa
-        </h3>
-
-        <div class="form-group">
-          <label for="nombre" class="form-label">Razón Social o Nombre de la Empresa <span class="required-indicator" aria-hidden="true">*</span></label>
-          <input 
-            type="text" 
-            name="nombre" 
-            id="nombre" 
-            class="form-control" 
-            value="<?= old('nombre') ?>" 
-            placeholder="Ej: Industrias Plásticas del Centro S.A." 
-            autocomplete="organization"
-            required
-            autofocus
-          >
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="cuit" class="form-label">CUIT de la Empresa <span class="required-indicator" aria-hidden="true">*</span></label>
-            <input 
-              type="text" 
-              name="cuit" 
-              id="cuit" 
-              class="form-control" 
-              value="<?= old('cuit') ?>" 
-              placeholder="30-XXXXXXXX-X"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-            <label for="rubro" class="form-label">Rubro / Sector Productivo <span class="required-indicator" aria-hidden="true">*</span></label>
-            <select name="rubro" id="rubro" class="form-select" required>
-              <option value="">-- Seleccionar Rubro --</option>
-              <?php 
-                $rubros = [
-                  'Moldeo por Inyección', 'Extrusión de Película / Film', 'Reciclado & Granza',
-                  'Soplado de Cuerpos Huecos', 'Compuestos & Masterbatch', 'Termoformado & Envases',
-                  'Automotriz & Autopartes', 'Petroquímica & Resinas', 'Otro Sector Industrial'
-                ];
-                foreach ($rubros as $rb): 
-              ?>
-                <option value="<?= $rb ?>" <?= (old('rubro') === $rb) ? 'selected' : '' ?>><?= $rb ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-        </div>
-
-        <!-- Contacto y ubicación -->
-        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1rem;">
-          2. Radicación & Datos de Contacto
-        </h3>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="email" class="form-label">Correo Electrónico Corporativo <span class="required-indicator" aria-hidden="true">*</span></label>
-            <input 
-              type="email" 
-              name="email" 
-              id="email" 
-              class="form-control" 
-              value="<?= old('email') ?>" 
-              placeholder="contacto@empresa.com" 
-              autocomplete="email"
-              required
-            >
-            <p class="form-hint">Se utilizará para iniciar sesión en la plataforma.</p>
-          </div>
-
-          <div class="form-group">
-            <label for="telefono" class="form-label">Teléfono Institucional <span class="required-indicator" aria-hidden="true">*</span></label>
-            <input 
-              type="tel" 
-              name="telefono" 
-              id="telefono" 
-              class="form-control" 
-              value="<?= old('telefono') ?>" 
-              placeholder="+54 3571 XXXXXX"
-              autocomplete="tel"
-              required
-            >
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="direccion" class="form-label">Domicilio de Planta o Sede Fiscal <span class="required-indicator" aria-hidden="true">*</span></label>
-          <input 
-            type="text" 
-            name="direccion" 
-            id="direccion" 
-            class="form-control" 
-            value="<?= old('direccion') ?>" 
-            placeholder="Ej: Av. Industrial 1250, Parque Industrial" 
-            autocomplete="street-address"
-            required
-          >
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="provincia" class="form-label">Provincia <span class="required-indicator" aria-hidden="true">*</span></label>
-            <select name="provincia" id="provincia" class="form-select" required>
-              <option value="">-- Seleccionar Provincia --</option>
-              <?php 
-                $selProv = $selectedProvincia ?? old('provincia', 'Córdoba');
-                if (!empty($provincias)): 
-                  foreach ($provincias as $prov): 
-                    $pNombre = is_array($prov) ? $prov['provincia'] : $prov;
-                    $pId = is_array($prov) ? $prov['id'] : '';
-              ?>
-                <option value="<?= esc($pNombre) ?>" data-id="<?= esc($pId) ?>" <?= ($selProv === $pNombre) ? 'selected' : '' ?>>
-                  <?= esc($pNombre) ?>
-                </option>
-              <?php 
-                  endforeach; 
-                endif; 
-              ?>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label for="ciudad" class="form-label">Ciudad / Localidad <span class="required-indicator" aria-hidden="true">*</span></label>
-            <input 
-              type="text" 
-              name="ciudad" 
-              id="ciudad" 
-              list="lista-localidades"
-              class="form-control" 
-              value="<?= esc(old('ciudad', $selectedCiudad ?? '')) ?>" 
-              placeholder="Escribe para buscar (ej: Río Tercero, Tero Cojido)..." 
-              autocomplete="off"
-              required
-            >
-            <!-- Datalist nativo basado directamente en las 2.383 localidades del SQL de Argentina -->
-            <datalist id="lista-localidades">
-              <?php if (!empty($todasLocalidades)): ?>
-                <?php foreach ($todasLocalidades as $loc): ?>
-                  <option value="<?= esc($loc['localidad']) ?>" data-provincia="<?= esc($loc['provincia'] ?? '') ?>" data-prov-id="<?= esc($loc['id_privincia'] ?? '') ?>">
-                    <?= esc($loc['localidad']) ?> (<?= esc($loc['provincia'] ?? '') ?>)
-                  </option>
-                <?php endforeach; ?>
-              <?php endif; ?>
-            </datalist>
-            <p class="form-hint" id="hint-localidades">
-              A medida que escribas aparecerán las sugerencias oficiales. También puedes ingresar una localidad personalizada.
-            </p>
-          </div>
-        </div>
-
-        <!-- Contraseña de acceso -->
-        <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; margin-top: 1.5rem; margin-bottom: 1rem;">
-          3. Credenciales de Acceso
-        </h3>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="password" class="form-label">Contraseña de Acceso <span class="required-indicator" aria-hidden="true">*</span></label>
-            <input 
-              type="password" 
-              name="password" 
-              id="password" 
-              class="form-control" 
-              placeholder="Mínimo 6 caracteres" 
-              autocomplete="new-password"
-              required
-            >
-          </div>
-
-          <div class="form-group">
-            <label for="pass_confirm" class="form-label">Confirmar Contraseña <span class="required-indicator" aria-hidden="true">*</span></label>
-            <input 
-              type="password" 
-              name="pass_confirm" 
-              id="pass_confirm" 
-              class="form-control" 
-              placeholder="Repite la contraseña" 
-              autocomplete="new-password"
-              required
-            >
-          </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
-          Enviar Solicitud de Registro
-        </button>
-      </form>
-    </div>
-
-    <div class="card-footer" style="text-align: center; font-size: 0.9rem;">
-      ¿Ya tienes una cuenta empresarial en MateriaX? 
-      <a href="<?= site_url('login') ?>" style="font-weight: 600;">Iniciar Sesión</a>
-    </div>
-  </div>
 </div>
-
-
 
 <?= view('templates/footer') ?>

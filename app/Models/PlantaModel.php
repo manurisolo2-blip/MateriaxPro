@@ -6,33 +6,14 @@ use CodeIgniter\Model;
 
 class PlantaModel extends Model
 {
-    protected $table            = 'plantas_industriales';
-    protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = [
-        'empresa_id',
-        'nombre_planta',
-        'direccion',
-        'localidad',
-        'provincia',
-        'coordenadas_gps',
-        'posee_bascula',
-        'capacidad_carga_camiones',
-        'contacto_responsable',
-        'telefono_planta',
-        'activa',
+    protected $table         = 'plantas_industriales';
+    protected $allowedFields = [
+        'empresa_id', 'nombre_planta', 'direccion', 'localidad', 'provincia',
+        'coordenadas_gps', 'posee_bascula', 'capacidad_carga_camiones',
+        'contacto_responsable', 'telefono_planta', 'activa',
     ];
-
-    // Fechas
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
 
-    // Reglas de validación
     protected $validationRules = [
         'empresa_id'               => 'required|is_natural_no_zero',
         'nombre_planta'            => 'required|min_length[3]|max_length[100]',
@@ -59,16 +40,9 @@ class PlantaModel extends Model
             'required'   => 'La ciudad o localidad es obligatoria.',
             'min_length' => 'La localidad debe tener al menos 2 caracteres.',
         ],
-        'provincia' => [
-            'required' => 'La provincia es obligatoria.',
-        ],
+        'provincia' => ['required' => 'La provincia es obligatoria.'],
     ];
 
-    protected $skipValidation = false;
-
-    /**
-     * Retorna las plantas asociadas a una empresa específica
-     */
     public function getPlantasPorEmpresa(int $empresaId, bool $soloActivas = false): array
     {
         $builder = $this->where('empresa_id', $empresaId);
@@ -78,14 +52,8 @@ class PlantaModel extends Model
         return $builder->orderBy('created_at', 'DESC')->findAll();
     }
 
-    /**
-     * Verifica si una planta pertenece a una empresa dada (medida de seguridad)
-     */
     public function perteneceAEmpresa(int $plantaId, int $empresaId): bool
     {
-        $planta = $this->where('id', $plantaId)
-                       ->where('empresa_id', $empresaId)
-                       ->first();
-        return $planta !== null;
+        return $this->where(['id' => $plantaId, 'empresa_id' => $empresaId])->first() !== null;
     }
 }

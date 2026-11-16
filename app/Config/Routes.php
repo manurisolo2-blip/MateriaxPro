@@ -2,83 +2,61 @@
 
 use CodeIgniter\Router\RouteCollection;
 
-/**
- * @var RouteCollection $routes
- */
-
-// Rutas Públicas
+/** @var RouteCollection $routes */
 $routes->get('/', 'Home::index');
 
-// Diagnostico de Conexion de Base de Datos y Persistencia
 $routes->get('estado-db', static function () {
     $db = \Config\Database::connect();
-
-    $users = [];
-    $totalUsuarios = 0;
     try {
         $users = $db->table('usuarios')->select('id, nombre, email, rol, estado, created_at')->get()->getResultArray();
-        $totalUsuarios = count($users);
+        $total = count($users);
+        $ok    = true;
     } catch (\Throwable $e) {
         $users = ['error' => $e->getMessage()];
+        $total = 0;
+        $ok    = false;
     }
 
-    $driver = $db->DBDriver;
-    $isCloudPersistent = ($driver === 'Postgre' || $driver === 'MySQLi');
+    $driver     = $db->DBDriver;
+    $persistent = in_array($driver, ['Postgre', 'MySQLi'], true);
+    $engineName = $driver === 'Postgre' ? 'Supabase PostgreSQL' : 'MySQL';
+    $prevAlert  = \Config\Database::resolveEnv(['MATERIAX_PG_ERROR', 'MATERIAX_CLOUD_ERROR']);
+    $envCheck   = static fn (array $keys, int $len = 18): string => ($v = \Config\Database::resolveEnv($keys))
+        ? 'CONFIGURADA (' . substr($v, 0, $len) . '...)'
+        : 'NO DEFINIDA';
 
-    $resolveEnv = static function (array $keys): ?string {
-        foreach ($keys as $key) {
-            $val = getenv($key);
-            if ($val !== false && $val !== null && trim((string)$val) !== '') {
-                return trim((string)$val);
-            }
-            if (!empty($_ENV[$key]) && trim((string)$_ENV[$key]) !== '') {
-                return trim((string)$_ENV[$key]);
-            }
-            if (!empty($_SERVER[$key]) && trim((string)$_SERVER[$key]) !== '') {
-                return trim((string)$_SERVER[$key]);
-            }
-        }
-        return null;
-    };
-
-    $pgUrl    = $resolveEnv(['POSTGRES_URL_NON_POOLING', 'POSTGRES_URL', 'SUPABASE_DB_URL']);
-    $pgHost   = $resolveEnv(['POSTGRES_HOST', 'SUPABASE_HOST']);
-    $tidbHost = $resolveEnv(['TIDB_HOST']);
-    $dbHost   = $resolveEnv(['DB_HOST', 'MYSQL_HOST', 'MYSQLHOST']);
-    $dbUrl    = $resolveEnv(['DATABASE_URL', 'TIDB_URL']);
-
-    $response = [
-        'sistema' => 'MateriaX Pro - Diagnostico de Base de Datos y Persistencia',
+    return service('response')->setJSON([
+        'sistema'  => 'MateriaX Pro - Diagnostico de Base de Datos y Persistencia',
         'ambiente' => [
-            'plataforma'       => (getenv('VERCEL') || !empty($_ENV['VERCEL']) || !empty($_SERVER['VERCEL'])) ? 'Vercel Serverless' : 'Servidor Local (XAMPP / Dedicado)',
-            'driver_activo'    => $driver,
-            'host_conectado'   => $isCloudPersistent ? $db->hostname : '(Archivo local SQLite en contenedor)',
-            'base_datos'       => $db->database,
-            'persistencia'     => $isCloudPersistent ? 'PERMANENTE (Nube - ' . ($driver === 'Postgre' ? 'Supabase PostgreSQL' : 'MySQL') . ')' : 'TEMPORAL (SQLite efimero)',
+            'plataforma'     => \Config\Database::resolveEnv(['VERCEL']) ? 'Vercel Serverless' : 'Servidor Local (XAMPP / Dedicado)',
+            'driver_activo'  => $driver,
+            'host_conectado' => $persistent ? $db->hostname : '(Archivo local SQLite en contenedor)',
+            'base_datos'     => $db->database,
+            'persistencia'   => $persistent ? "PERMANENTE (Nube - {$engineName})" : 'TEMPORAL (SQLite de respaldo)',
         ],
         'variables_entorno' => [
-            'POSTGRES_URL'  => $pgUrl ? 'CONFIGURADA (' . substr($pgUrl, 0, 18) . '...)' : 'NO DEFINIDA',
-            'POSTGRES_HOST' => $pgHost ? 'CONFIGURADA (' . substr($pgHost, 0, 18) . '...)' : 'NO DEFINIDA',
-            'DATABASE_URL'  => $dbUrl ? 'CONFIGURADA (' . substr($dbUrl, 0, 18) . '...)' : 'NO DEFINIDA',
-            'TIDB_HOST'     => $tidbHost ? 'CONFIGURADA (' . substr($tidbHost, 0, 15) . '...)' : 'NO DEFINIDA',
-            'DB_HOST'       => $dbHost ? 'CONFIGURADA (' . substr($dbHost, 0, 15) . '...)' : 'NO DEFINIDA',
+            'POSTGRES_URL'  => $envCheck(['POSTGRES_URL_NON_POOLING', 'POSTGRES_URL', 'SUPABASE_DB_URL']),
+            'POSTGRES_HOST' => $envCheck(['POSTGRES_HOST', 'SUPABASE_HOST']),
+            'DATABASE_URL'  => $envCheck(['DATABASE_URL', 'TIDB_URL']),
+            'TIDB_HOST'     => $envCheck(['TIDB_HOST'], 15),
+            'DB_HOST'       => $envCheck(['DB_HOST', 'MYSQL_HOST', 'MYSQLHOST'], 15),
         ],
         'estado_persistencia' => [
-            'los_usuarios_se_mantienen_tras_actualizacion' => $isCloudPersistent,
-            'diagnostico' => $isCloudPersistent
-                ? 'Base de datos en la nube (' . ($driver === 'Postgre' ? 'Supabase PostgreSQL' : 'MySQL') . ') conectada exitosamente. Las cuentas, lotes y mensajes son 100% permanentes y no se borraran con ninguna actualizacion.'
-                : 'ALERTA: Estas corriendo en SQLite efimero dentro del contenedor de Vercel. Para que las cuentas nunca mas se borren, conecta Supabase en Vercel (pestaña Storage / Integrations -> Supabase, o pega POSTGRES_URL / DATABASE_URL en Environment Variables).',
+            'operativa'                                    => $ok,
+            'los_usuarios_se_mantienen_tras_actualizacion' => $persistent,
+            'alerta_conexion_previa'                       => $prevAlert,
+            'diagnostico' => $persistent
+                ? "Base de datos en la nube ({$engineName}) conectada exitosamente. Las cuentas, lotes y mensajes son 100% permanentes y no se borraran con ninguna actualizacion."
+                : ($prevAlert
+                    ? 'Respaldo SQLite activo: PostgreSQL/MySQL en la nube no responde (proyecto Supabase pausado, eliminado o credenciales desactualizadas). El sistema sigue funcionando en SQLite temporal; actualiza POSTGRES_URL o reactiva el proyecto en Supabase para persistencia permanente.'
+                    : 'Operando en SQLite local/temporal. Conecta Supabase o MySQL en Vercel Environment Variables para persistencia permanente en la nube.'),
         ],
-        'metricas' => [
-            'total_usuarios_en_base' => $totalUsuarios,
-        ],
-        'ultimos_usuarios_registrados' => is_array($users) ? array_slice($users, -10) : [],
-    ];
-
-    return service('response')->setJSON($response);
+        'metricas'                     => ['total_usuarios_en_base' => $total],
+        'ultimos_usuarios_registrados' => is_array($users) && $ok ? array_slice($users, -10) : $users,
+    ]);
 });
 
-// Rutas de Autenticación
+// Autenticación y registro
 $routes->get('login', 'Auth::login');
 $routes->post('login', 'Auth::attemptLogin');
 $routes->get('register', 'Auth::register');
@@ -87,17 +65,14 @@ $routes->get('logout', 'Auth::logout');
 $routes->get('api/localidades', 'Auth::localidades');
 $routes->get('api/localidades/(:num)', 'Auth::localidades/$1');
 
-// Panel de Control para Empresa Registrada (Protegido con 'auth')
 $routes->get('panel', 'Panel::index', ['filter' => 'auth']);
 
-// Módulo de Gestión de Cuenta y Perfil (Protegido con 'auth')
 $routes->group('perfil', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Perfil::index');
     $routes->post('actualizar', 'Perfil::actualizar');
     $routes->post('cambiar-password', 'Perfil::cambiarPassword');
 });
 
-// Módulo Funcional (Hito 2): Sedes y Plantas Industriales (Protegido con 'auth')
 $routes->group('plantas', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Plantas::index');
     $routes->get('crear', 'Plantas::crear');
@@ -107,7 +82,6 @@ $routes->group('plantas', ['filter' => 'auth'], static function ($routes) {
     $routes->post('cambiar-estado/(:num)', 'Plantas::cambiarEstado/$1');
 });
 
-// Módulo Funcional (Hito 2): Solicitudes de Compra y Transacciones (Protegido con 'auth')
 $routes->group('solicitudes', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Solicitudes::index');
     $routes->get('recibidas', 'Solicitudes::recibidas');
@@ -119,13 +93,11 @@ $routes->group('solicitudes', ['filter' => 'auth'], static function ($routes) {
     $routes->post('cancelar/(:num)', 'Solicitudes::cancelar/$1');
 });
 
-// Módulo Funcional (Hito 2): Certificados Ambientales y Huella Verde (Protegido con 'auth')
 $routes->group('certificados', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Certificados::index');
     $routes->get('ver/(:segment)', 'Certificados::ver/$1');
 });
 
-// Módulo de Comunicación B2B y Mensajería entre Empresas (Protegido con 'auth')
 $routes->group('mensajes', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Mensajes::index');
     $routes->post('enviar', 'Mensajes::enviar');
@@ -137,8 +109,6 @@ $routes->group('mensajes', ['filter' => 'auth'], static function ($routes) {
     $routes->get('ver/(:num)', 'Mensajes::ver/$1');
 });
 
-// Módulo Funcional: CRUD de Entidad Secundaria (Productos)
-// Protegido estrictamente con el filtro de autenticación 'auth' (Solo visible para usuarios logueados)
 $routes->group('productos', ['filter' => 'auth'], static function ($routes) {
     $routes->get('/', 'Productos::index');
     $routes->get('crear', 'Productos::crear');
@@ -150,7 +120,6 @@ $routes->group('productos', ['filter' => 'auth'], static function ($routes) {
     $routes->post('eliminar/(:num)', 'Productos::eliminar/$1');
 });
 
-// Módulo de Administración Exclusivo (Protegido estrictamente con el filtro 'admin')
 $routes->group('admin', ['filter' => 'admin'], static function ($routes) {
     $routes->get('/', 'Admin::index');
     $routes->post('empresa/aprobar/(:num)', 'Admin::aprobar/$1');
