@@ -97,13 +97,27 @@ if (!empty($pgHost)) {
     }
 }
 
-$pgInitMarker = !empty($pgHost) ? ($targetDir . DIRECTORY_SEPARATOR . '.pg_init_' . md5($pgHost . ($pgName ?? 'postgres'))) : '';
+$pgUserFinal  = $pgUser ?: 'postgres';
+$pgPassFinal  = $pgPass ?? '';
+$pgNameFinal  = $pgName ?: 'postgres';
+$pgPortFinal  = $pgPort ?: 5432;
+$pgHash       = !empty($pgHost) ? md5($pgHost . '|' . $pgUserFinal . '|' . $pgNameFinal) : '';
+$pgInitMarker = !empty($pgHost) ? ($targetDir . DIRECTORY_SEPARATOR . '.pg_init_' . $pgHash) : '';
+$pgDownMarker = !empty($pgHost) ? ($targetDir . DIRECTORY_SEPARATOR . '.pg_down_' . $pgHash) : '';
+
+if (!empty($pgHost) && file_exists($pgDownMarker) && ((time() - (int) @file_get_contents($pgDownMarker)) < 60)) {
+    putenv('MATERIAX_PG_UNAVAILABLE=1');
+    $_ENV['MATERIAX_PG_UNAVAILABLE']    = '1';
+    $_SERVER['MATERIAX_PG_UNAVAILABLE'] = '1';
+    $pgHost = null;
+}
+
 if (!empty($pgHost) && !file_exists($pgInitMarker)) {
     try {
-        $pgUser = $pgUser ?: 'postgres';
-        $pgPass = $pgPass ?? '';
-        $pgName = $pgName ?: 'postgres';
-        $pgPort = $pgPort ?: 5432;
+        $pgUser = $pgUserFinal;
+        $pgPass = $pgPassFinal;
+        $pgName = $pgNameFinal;
+        $pgPort = $pgPortFinal;
 
         $pgPdo = new PDO(
             "pgsql:host={$pgHost};port={$pgPort};dbname={$pgName};sslmode=require",
@@ -111,7 +125,7 @@ if (!empty($pgHost) && !file_exists($pgInitMarker)) {
             $pgPass,
             [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_TIMEOUT => 5,
+                PDO::ATTR_TIMEOUT => 3,
             ]
         );
 
@@ -293,8 +307,19 @@ if (!empty($pgHost) && !file_exists($pgInitMarker)) {
         }
 
         @file_put_contents($pgInitMarker, (string) time());
+        @unlink($pgDownMarker);
     } catch (Throwable $e) {
         error_log('Supabase PostgreSQL initialization error: ' . $e->getMessage());
+        if (!empty($pgDownMarker)) {
+            @file_put_contents($pgDownMarker, (string) time());
+        }
+        putenv('MATERIAX_PG_UNAVAILABLE=1');
+        $_ENV['MATERIAX_PG_UNAVAILABLE']    = '1';
+        $_SERVER['MATERIAX_PG_UNAVAILABLE'] = '1';
+        putenv('MATERIAX_PG_LAST_ERROR=' . substr($e->getMessage(), 0, 220));
+        $_ENV['MATERIAX_PG_LAST_ERROR']    = substr($e->getMessage(), 0, 220);
+        $_SERVER['MATERIAX_PG_LAST_ERROR'] = substr($e->getMessage(), 0, 220);
+        $pgHost = null;
     }
 }
 
@@ -477,6 +502,10 @@ if (!empty($cloudHost) && empty($pgHost) && !file_exists($cloudInitMarker)) {
         @file_put_contents($cloudInitMarker, (string) time());
     } catch (Throwable $e) {
         error_log('Cloud database initialization error: ' . $e->getMessage());
+        putenv('MATERIAX_CLOUD_MYSQL_UNAVAILABLE=1');
+        $_ENV['MATERIAX_CLOUD_MYSQL_UNAVAILABLE']    = '1';
+        $_SERVER['MATERIAX_CLOUD_MYSQL_UNAVAILABLE'] = '1';
+        $cloudHost = null;
     }
 }
 

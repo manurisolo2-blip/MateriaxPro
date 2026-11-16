@@ -112,7 +112,14 @@ class Database extends Config
             return null;
         };
 
-        // 1. Detección prioritaria de Supabase / PostgreSQL (Integración nativa de Vercel o URI manual)
+        $tmp          = sys_get_temp_dir();
+        $baseWritable = (!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp';
+        $targetDir    = rtrim($baseWritable, '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable';
+        if (!is_dir($targetDir)) {
+            @mkdir($targetDir, 0777, true);
+        }
+
+        // 1. Detección prioritaria de Supabase / PostgreSQL (con verificación de disponibilidad y fallback automático)
         $pgUrl  = $resolveEnv(['POSTGRES_URL_NON_POOLING', 'POSTGRES_URL', 'SUPABASE_DB_URL', 'DATABASE_URL']);
         $pgHost = $resolveEnv(['POSTGRES_HOST', 'SUPABASE_HOST', 'PGHOST']);
         $pgUser = $resolveEnv(['POSTGRES_USER', 'SUPABASE_USER', 'PGUSER']);
@@ -135,9 +142,7 @@ class Database extends Config
             $pgName = $pgName ?: (!empty($parsed['path']) ? ltrim($parsed['path'], '/') : 'postgres');
         }
 
-        if (!empty($pgHost)) {
-            // Si el usuario pegó el host Direct Connection de Supabase (db.<ref>.supabase.co, que es solo IPv6 y falla en Vercel),
-            // redirigir automáticamente al Session Pooler IPv4 (aws-1-sa-east-1.pooler.supabase.com:5432) con usuario postgres.<ref>
+        if (!empty($pgHost) && $resolveEnv(['MATERIAX_PG_UNAVAILABLE']) !== '1') {
             if (preg_match('/^db\.([a-z0-9]+)\.supabase\.co$/i', $pgHost, $m)) {
                 $projectRef = $m[1];
                 $pgHost     = $resolveEnv(['SUPABASE_POOLER_HOST']) ?: 'aws-1-sa-east-1.pooler.supabase.com';
@@ -146,34 +151,75 @@ class Database extends Config
                     $pgUser = 'postgres.' . $projectRef;
                 }
             } elseif (str_contains($pgHost, 'pooler.supabase.com') && $pgPort === 6543) {
-                // En Supabase Pooler (pooler.supabase.com), el puerto 5432 corresponde a Session Mode (compatible con LASTVAL/secuencias de CI4)
                 $pgPort = 5432;
             }
 
-            $this->default = [
-                'DSN'             => '',
-                'hostname'        => $pgHost,
-                'username'        => $pgUser ?: 'postgres',
-                'password'        => $pgPass ?? '',
-                'database'        => $pgName ?: 'postgres',
-                'schema'          => 'public',
-                'DBDriver'        => 'Postgre',
-                'DBPrefix'        => '',
-                'pConnect'        => false,
-                'DBDebug'         => true,
-                'charset'         => 'utf8',
-                'swapPre'         => '',
-                'failover'        => [],
-                'port'            => $pgPort ?: 5432,
-                'connect_timeout' => '10',
-                'sslmode'         => 'require',
-                'dateFormat'      => [
-                    'date'     => 'Y-m-d',
-                    'datetime' => 'Y-m-d H:i:s',
-                    'time'     => 'H:i:s',
-                ],
-            ];
-            return;
+            $pgUserFinal = $pgUser ?: 'postgres';
+            $pgPassFinal = $pgPass ?? '';
+            $pgNameFinal = $pgName ?: 'postgres';
+            $pgPortFinal = $pgPort ?: 5432;
+
+            $pgHash       = md5($pgHost . '|' . $pgUserFinal . '|' . $pgNameFinal);
+            $pgInitMarker = $targetDir . DIRECTORY_SEPARATOR . '.pg_init_' . $pgHash;
+            $pgDownMarker = $targetDir . DIRECTORY_SEPARATOR . '.pg_down_' . $pgHash;
+
+            $isRecentlyDown = file_exists($pgDownMarker) && ((time() - (int) @file_get_contents($pgDownMarker)) < 60);
+            $isRecentlyOk   = !$isRecentlyDown && file_exists($pgInitMarker) && ((time() - (int) @file_get_contents($pgInitMarker)) < 120);
+
+            if (!$isRecentlyDown && !$isRecentlyOk) {
+                try {
+                    $testPdo = new \PDO(
+                        "pgsql:host={$pgHost};port={$pgPortFinal};dbname={$pgNameFinal};sslmode=require",
+                        $pgUserFinal,
+                        $pgPassFinal,
+                        [
+                            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                            \PDO::ATTR_TIMEOUT => 3,
+                        ]
+                    );
+                    $testPdo = null;
+                    @file_put_contents($pgInitMarker, (string) time());
+                    @unlink($pgDownMarker);
+                    $isRecentlyOk = true;
+                } catch (\Throwable $e) {
+                    @file_put_contents($pgDownMarker, (string) time());
+                    @unlink($pgInitMarker);
+                    putenv('MATERIAX_PG_UNAVAILABLE=1');
+                    $_ENV['MATERIAX_PG_UNAVAILABLE']    = '1';
+                    $_SERVER['MATERIAX_PG_UNAVAILABLE'] = '1';
+                    putenv('MATERIAX_PG_LAST_ERROR=' . substr($e->getMessage(), 0, 220));
+                    $_ENV['MATERIAX_PG_LAST_ERROR']    = substr($e->getMessage(), 0, 220);
+                    $_SERVER['MATERIAX_PG_LAST_ERROR'] = substr($e->getMessage(), 0, 220);
+                    $isRecentlyDown = true;
+                }
+            }
+
+            if ($isRecentlyOk && !$isRecentlyDown) {
+                $this->default = [
+                    'DSN'             => '',
+                    'hostname'        => $pgHost,
+                    'username'        => $pgUserFinal,
+                    'password'        => $pgPassFinal,
+                    'database'        => $pgNameFinal,
+                    'schema'          => 'public',
+                    'DBDriver'        => 'Postgre',
+                    'DBPrefix'        => '',
+                    'pConnect'        => false,
+                    'DBDebug'         => true,
+                    'charset'         => 'utf8',
+                    'swapPre'         => '',
+                    'failover'        => [],
+                    'port'            => $pgPortFinal,
+                    'connect_timeout' => '10',
+                    'sslmode'         => 'require',
+                    'dateFormat'      => [
+                        'date'     => 'Y-m-d',
+                        'datetime' => 'Y-m-d H:i:s',
+                        'time'     => 'H:i:s',
+                    ],
+                ];
+                return;
+            }
         }
 
         // 2. Detección de base de datos MySQL en la nube (TiDB Cloud, Aiven, Railway o VPS)
@@ -193,7 +239,7 @@ class Database extends Config
             $cloudName = $cloudName ?: (!empty($parsed['path']) ? ltrim($parsed['path'], '/') : null);
         }
 
-        if (!empty($cloudHost)) {
+        if (!empty($cloudHost) && $resolveEnv(['MATERIAX_CLOUD_MYSQL_UNAVAILABLE']) !== '1') {
             $this->default['hostname'] = $cloudHost;
             $this->default['username'] = $cloudUser ?: 'root';
             $this->default['password'] = $cloudPass ?: '';
@@ -209,11 +255,13 @@ class Database extends Config
                     'ssl_verify' => false,
                 ];
             }
-        } elseif (getenv('VERCEL') && empty(getenv('database.default.hostname'))) {
-            // 3. Fallback SQLite en Vercel si aún no se configuró base de datos externa
-            $tmp = sys_get_temp_dir();
-            $baseWritable = (!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp';
-            $dbPath = rtrim($baseWritable, '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable' . DIRECTORY_SEPARATOR . 'materiax_db.sqlite';
+        } elseif ((getenv('VERCEL') || !empty($_ENV['VERCEL']) || !empty($_SERVER['VERCEL'])) && empty(getenv('database.default.hostname'))) {
+            // 3. Fallback automático SQLite en Vercel si no hay base externa o si Supabase/Cloud está pausado
+            $dbPath = $targetDir . DIRECTORY_SEPARATOR . 'materiax_db.sqlite';
+            $seedDb = realpath(__DIR__ . '/../../writable/materiax_db.sqlite');
+            if ((!file_exists($dbPath) || filesize($dbPath) === 0) && $seedDb && file_exists($seedDb)) {
+                @copy($seedDb, $dbPath);
+            }
 
             $this->default = [
                 'DSN'         => '',
