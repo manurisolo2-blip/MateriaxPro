@@ -9,29 +9,13 @@ $lotesDemo = [
 ];
 ?>
 
-<section id="inicio" class="hero-wrapper">
-    <div class="container-lg">
-        <div class="marketplace-layout">
-            <aside class="marketplace-sidebar">
-                <div class="card">
-                    <h3>Polímeros Negociados</h3>
-                    <ul class="stack-sm">
-                        <li><strong>PEAD</strong> — Alta densidad soplado e inyección</li>
-                        <li><strong>PP</strong> — Homopolímero y copolímero</li>
-                        <li><strong>PETG</strong> — Lámina y termoformado técnico</li>
-                        <li><strong>PEBD</strong> — Film agrícola y embalaje</li>
-                        <li><strong>ABS / PVC</strong> — Resinas de ingeniería</li>
-                    </ul>
-                </div>
-            </aside>
-            <div class="marketplace-feed-area">
-                <h1>Excedentes y recuperados plásticos con trazabilidad verificada.</h1>
-                <p class="page-sub">Conectamos plantas generadoras e industrias transformadoras de Argentina con control de báscula, acuerdo directo y certificado de ahorro de emisiones ISO 14044.</p>
-                <div class="flex-row">
-                    <a href="<?= site_url('productos') ?>" class="btn btn-primary">Explorar Mercado</a>
-                    <a href="<?= site_url('register') ?>" class="btn btn-secondary">Registrar Empresa</a>
-                </div>
-            </div>
+<section id="inicio" class="container-lg hero-section">
+    <div class="hero-content">
+        <h1 class="hero-heading">Excedentes y recuperados plásticos con trazabilidad verificada.</h1>
+        <p class="hero-desc">Conectamos plantas generadoras e industrias transformadoras de Argentina con control de báscula, acuerdo directo y certificado de ahorro de emisiones ISO 14044.</p>
+        <div class="hero-actions">
+            <a href="<?= site_url('productos') ?>" class="btn btn-primary">Explorar Mercado</a>
+            <a href="<?= site_url('register') ?>" class="btn btn-secondary">Registrar Empresa</a>
         </div>
     </div>
 </section>

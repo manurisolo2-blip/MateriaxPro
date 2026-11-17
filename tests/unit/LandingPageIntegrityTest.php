@@ -24,6 +24,8 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
         $this->assertStringNotContainsString('id="ecosistema"', $html, 'La sección ecosistema estática no debe estar presente.');
         $this->assertStringNotContainsString('id="entregables"', $html, 'La sección entregables no debe estar presente.');
         $this->assertStringNotContainsString('marketplace-social-rail', $html, 'El riel social no funcional debe ser removido.');
+        $this->assertStringNotContainsString('marketplace-sidebar', $html, 'La barra lateral de polímeros negociados debe ser removida.');
+        $this->assertStringNotContainsString('Polímeros Negociados', $html, 'El bloque Polímeros Negociados debe ser removido.');
         $this->assertStringNotContainsString('social-post-creator', $html, 'El publicador rápido ficticio debe ser removido.');
         $this->assertStringNotContainsString('site-footer', $html, 'El footer global debe haber sido eliminado.');
         $this->assertStringNotContainsString('<footer', $html, 'No debe renderizarse etiqueta footer.');
