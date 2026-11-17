@@ -25,6 +25,8 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
         $this->assertStringNotContainsString('id="entregables"', $html, 'La sección entregables no debe estar presente.');
         $this->assertStringNotContainsString('marketplace-social-rail', $html, 'El riel social no funcional debe ser removido.');
         $this->assertStringNotContainsString('social-post-creator', $html, 'El publicador rápido ficticio debe ser removido.');
+        $this->assertStringNotContainsString('site-footer', $html, 'El footer global debe haber sido eliminado.');
+        $this->assertStringNotContainsString('<footer', $html, 'No debe renderizarse etiqueta footer.');
     }
 
     public function testPolymerLotsExistAndMetricsRemoved(): void

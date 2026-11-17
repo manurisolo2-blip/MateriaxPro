@@ -94,10 +94,11 @@ class Auth extends BaseController
         $locModel = new LocalidadModel();
         return view('auth/register', [
             'pageTitle'         => 'Registro de Empresa | MateriaX',
+            'rubros'            => self::RUBROS_INDUSTRIALES,
             'provincias'        => $locModel->getProvincias(),
             'todasLocalidades'  => $locModel->getTodasConProvincia(),
-            'selectedProvincia' => (string) old('provincia', 'Córdoba'),
-            'selectedCiudad'    => (string) old('ciudad', 'Río Tercero'),
+            'selectedProvincia' => (string) old('provincia', ''),
+            'selectedCiudad'    => (string) old('ciudad', ''),
         ]);
     }
 
@@ -106,23 +107,27 @@ class Auth extends BaseController
         $id         = $provinciaId ? (int) $provinciaId : ($this->request->getGet('provincia_id') ? (int) $this->request->getGet('provincia_id') : null);
         $provNombre = trim((string) $this->request->getGet('provincia'));
         $search     = trim((string) ($this->request->getGet('q') ?? $this->request->getGet('buscar')));
+        $limit      = ($id !== null || $provNombre !== '') ? 0 : 100;
 
-        return $this->response->setJSON((new LocalidadModel())->buscar($search, $id, $provNombre, 100));
+        return $this->response->setJSON((new LocalidadModel())->buscar($search, $id, $provNombre, $limit));
     }
 
     public function attemptRegister()
     {
-        $ciudad = $this->resolveCiudadPost();
         if (!$this->validate($this->empresaRules(true))) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-        if ($ciudad === '') {
-            return redirect()->back()->withInput()->with('errors', ['ciudad' => 'La ciudad o localidad de radicación es obligatoria.']);
-        }
 
-        $data = array_map(static fn ($v) => trim((string) $v), $this->request->getPost(['nombre', 'cuit', 'telefono', 'rubro', 'provincia', 'direccion']));
+        $data = $this->buildCleanEmpresaData([
+            'nombre'    => $this->request->getPost('nombre'),
+            'cuit'      => $this->request->getPost('cuit'),
+            'telefono'  => $this->request->getPost('telefono'),
+            'rubro'     => $this->request->getPost('rubro'),
+            'provincia' => $this->request->getPost('provincia'),
+            'ciudad'    => $this->resolveCiudadPost(),
+            'direccion' => $this->request->getPost('direccion'),
+        ]);
         $data += [
-            'ciudad'       => $ciudad,
             'email'        => strtolower(trim((string) $this->request->getPost('email'))),
             'password'     => password_hash((string) $this->request->getPost('password'), PASSWORD_DEFAULT),
             'rol'          => 'empresa',
@@ -130,7 +135,11 @@ class Auth extends BaseController
             'ultimo_login' => null,
         ];
 
-        if (!$this->getModel()->insert($data)) {
+        if (!$this->getModel()->skipValidation(true)->insert($data)) {
+            $modelErrors = $this->getModel()->errors();
+            if (!empty($modelErrors)) {
+                return redirect()->back()->withInput()->with('errors', $modelErrors);
+            }
             return redirect()->back()->withInput()->with('error', 'Ocurrió un error al registrar la cuenta en la base de datos.');
         }
 

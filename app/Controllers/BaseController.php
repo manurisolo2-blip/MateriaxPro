@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Models\LocalidadModel;
+use App\Validation\EmpresaRules;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -9,6 +11,18 @@ use Psr\Log\LoggerInterface;
 
 abstract class BaseController extends Controller
 {
+    public const RUBROS_INDUSTRIALES = [
+        'Inyección de Plásticos',
+        'Extrusión y Soplado',
+        'Rotomoldeo',
+        'Termoformado',
+        'Reciclador / Recuperador',
+        'Automotriz y Autopartes',
+        'Construcción y Tuberías',
+        'Envases y Packaging',
+        'Otro / Distribuidor Industrial',
+    ];
+
     protected $helpers = ['form', 'url'];
 
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -54,21 +68,46 @@ abstract class BaseController extends Controller
         return $ciudad === '__otra__' ? trim((string) $this->request->getPost('ciudad_otra')) : $ciudad;
     }
 
-    protected function empresaRules(bool $isRegister = false): array
+    protected function empresaRules(bool $isRegister = false, ?string $currentCuit = null, ?string $currentTelefono = null): array
     {
+        $postedCuit = (string) $this->request->getPost('cuit');
+        $postedTel  = (string) $this->request->getPost('telefono');
+        $cuitChanged = $isRegister || EmpresaRules::formatCuit((string) $currentCuit) !== EmpresaRules::formatCuit($postedCuit);
+        $telChanged  = $isRegister || trim((string) $currentTelefono) !== trim($postedTel);
+
         $rules = [
-            'nombre'    => ['rules' => 'required|min_length[3]|max_length[100]', 'errors' => ['required' => 'La razón social o nombre de la empresa es obligatorio.', 'min_length' => 'El nombre debe tener al menos 3 caracteres.']],
-            'cuit'      => ['rules' => 'required|min_length[10]|max_length[20]', 'errors' => ['required' => 'El CUIT de la empresa es obligatorio.', 'min_length' => 'El CUIT debe tener al menos 10 caracteres (ej: 30-XXXXXXXX-X).']],
-            'telefono'  => ['rules' => 'required|min_length[6]|max_length[30]', 'errors' => ['required' => 'El teléfono de contacto es obligatorio.', 'min_length' => 'El teléfono debe tener al menos 6 caracteres.']],
-            'rubro'     => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'El rubro industrial es obligatorio.']],
-            'provincia' => ['rules' => 'required|max_length[100]', 'errors' => ['required' => 'La provincia es obligatoria.']],
-            'direccion' => ['rules' => 'required|max_length[150]', 'errors' => ['required' => 'El domicilio fiscal o de la planta es obligatorio.']],
+            'nombre'    => ['rules' => 'required|valid_razon_social', 'errors' => ['required' => 'La razón social o nombre de la empresa es obligatorio.']],
+            'cuit'      => ['rules' => $cuitChanged ? 'required|valid_cuit' : 'required|min_length[10]|max_length[20]', 'errors' => ['required' => 'El CUIT o CUIL es obligatorio.']],
+            'telefono'  => ['rules' => $telChanged ? 'required|valid_telefono' : 'required|min_length[6]|max_length[30]', 'errors' => ['required' => 'El teléfono de contacto es obligatorio.']],
+            'rubro'     => $isRegister
+                ? ['rules' => 'required|in_list[' . implode(',', self::RUBROS_INDUSTRIALES) . ']', 'errors' => ['required' => 'Seleccioná el rubro industrial principal.', 'in_list' => 'Seleccioná un rubro válido de la lista.']]
+                : ['rules' => 'required|min_length[3]|max_length[100]', 'errors' => ['required' => 'El rubro industrial es obligatorio.']],
+            'provincia' => ['rules' => 'required|valid_provincia', 'errors' => ['required' => 'Seleccioná la provincia de radicación.']],
+            'ciudad'    => ['rules' => 'required|valid_ciudad_provincia[provincia]', 'errors' => ['required' => 'Seleccioná una ciudad o localidad válida.']],
+            'direccion' => ['rules' => 'required|valid_direccion', 'errors' => ['required' => 'El domicilio fiscal o de la planta es obligatorio.']],
         ];
         if ($isRegister) {
-            $rules['email']        = ['rules' => 'required|valid_email|is_unique[usuarios.email]', 'errors' => ['required' => 'El correo electrónico corporativo es obligatorio.', 'valid_email' => 'Debes ingresar un correo electrónico válido.', 'is_unique' => 'Este correo electrónico ya se encuentra registrado en MateriaX.']];
-            $rules['password']     = ['rules' => 'required|min_length[6]', 'errors' => ['required' => 'La contraseña es obligatoria.', 'min_length' => 'La contraseña debe tener un mínimo de 6 caracteres.']];
-            $rules['pass_confirm'] = ['rules' => 'required|matches[password]', 'errors' => ['required' => 'Debes confirmar la contraseña.', 'matches' => 'Las contraseñas no coinciden.']];
+            $rules['email']        = ['rules' => 'required|valid_email_corporativo|unique_email_empresa', 'errors' => ['required' => 'El correo electrónico corporativo es obligatorio.']];
+            $rules['password']     = ['rules' => 'required|valid_password_fuerte', 'errors' => ['required' => 'La contraseña es obligatoria.']];
+            $rules['pass_confirm'] = ['rules' => 'required|matches[password]', 'errors' => ['required' => 'Debés confirmar la contraseña.', 'matches' => 'Las contraseñas no coinciden.']];
         }
         return $rules;
+    }
+
+    protected function buildCleanEmpresaData(array $raw): array
+    {
+        $provInput   = trim((string) ($raw['provincia'] ?? ''));
+        $ciudadInput = trim((string) ($raw['ciudad'] ?? ''));
+        $geo         = (new LocalidadModel())->resolverEnProvincia($provInput, $ciudadInput);
+
+        return [
+            'nombre'    => EmpresaRules::normalizeWhitespace((string) ($raw['nombre'] ?? '')),
+            'cuit'      => EmpresaRules::formatCuit((string) ($raw['cuit'] ?? '')),
+            'telefono'  => EmpresaRules::normalizeWhitespace((string) ($raw['telefono'] ?? '')),
+            'rubro'     => EmpresaRules::normalizeWhitespace((string) ($raw['rubro'] ?? '')),
+            'provincia' => $geo['provincia'] ?? $provInput,
+            'ciudad'    => $geo['ciudad'] ?? $ciudadInput,
+            'direccion' => EmpresaRules::normalizeWhitespace((string) ($raw['direccion'] ?? '')),
+        ];
     }
 }

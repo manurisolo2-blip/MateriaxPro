@@ -64,6 +64,7 @@
                             'todasLocalidades' => $todasLocalidades ?? [],
                             'selProv'          => old('provincia', $userProv ?? $user['provincia'] ?? 'Córdoba'),
                             'selCiudad'        => old('ciudad', $userCiudad ?? $user['ciudad'] ?? ''),
+                            'fieldErrors'      => is_array($errors ?? null) ? $errors : [],
                             'required'         => true,
                         ]) ?>
 
@@ -131,4 +132,4 @@
     </div>
 </div>
 
-<?= view('templates/footer') ?>
+<?= view('templates/footer', ['pageScripts' => ['assets/localidades.js']], ['saveData' => false]) ?>

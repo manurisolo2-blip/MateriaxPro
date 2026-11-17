@@ -79,16 +79,19 @@ class Perfil extends BaseController
             return $user;
         }
 
-        $ciudad = $this->resolveCiudadPost();
-        if (!$this->validate($this->empresaRules(false))) {
+        if (!$this->validate($this->empresaRules(false, $user['cuit'] ?? null, $user['telefono'] ?? null))) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
-        if ($ciudad === '') {
-            return redirect()->back()->withInput()->with('errors', ['ciudad' => 'La ciudad o localidad es obligatoria.']);
-        }
 
-        $data           = array_map(static fn ($v) => trim((string) $v), $this->request->getPost(['nombre', 'cuit', 'telefono', 'rubro', 'provincia', 'direccion']));
-        $data['ciudad'] = $ciudad;
+        $data = $this->buildCleanEmpresaData([
+            'nombre'    => $this->request->getPost('nombre'),
+            'cuit'      => $this->request->getPost('cuit'),
+            'telefono'  => $this->request->getPost('telefono'),
+            'rubro'     => $this->request->getPost('rubro'),
+            'provincia' => $this->request->getPost('provincia'),
+            'ciudad'    => $this->resolveCiudadPost(),
+            'direccion' => $this->request->getPost('direccion'),
+        ]);
 
         if (!empty($user['id'])) {
             $this->userModel->update($user['id'], $data);
