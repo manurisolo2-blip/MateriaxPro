@@ -44,15 +44,19 @@ $totalNoLeidos = $totalNoLeidos ?? array_sum(array_map(fn($c) => (int) ($c['no_l
                 $pid = $conv['producto_id'] ?? null;
                 $rid = $conv['otra_empresa_id'] ?? 0;
                 $openUrl = $tid
-                    ? site_url('mensajes/chat/transaccion/' . $tid . '/' . $rid)
+                    ? site_url('mensajes/chat/transaccion/' . $tid)
                     : site_url('mensajes/chat/producto/' . $pid . '/' . $rid);
-                $convKey = $conv['conv_key'] ?? (($tid ? 'tx_' . $tid : 'prod_' . $pid) . '_' . $rid);
+                $convKey = $conv['clave'] ?? $conv['conv_key'] ?? (($tid ? 'trx_' . $tid : 'prod_' . $pid . '_' . $rid));
                 $unread = (int) ($conv['no_leidos'] ?? 0);
+                $recientes = $conv['mensajes_recientes'] ?? $conv['ultimos_mensajes'] ?? [];
                 ?>
                 <article class="card inbox-conv-card stack-sm" data-conv-key="<?= esc($convKey) ?>">
                     <div class="flex-between">
                         <div class="flex-row">
                             <strong><?= esc($conv['otra_empresa_nombre'] ?? 'Empresa') ?></strong>
+                            <?php if (!empty($conv['codigo_operacion'])): ?>
+                                <span class="badge badge-secondary"><?= esc($conv['codigo_operacion']) ?></span>
+                            <?php endif; ?>
                             <span class="badge badge-info inbox-total-count"><?= (int) ($conv['total_mensajes'] ?? 0) ?> msg</span>
                             <span class="badge badge-warning inbox-unread-badge"<?= $unread > 0 ? '' : ' style="display:none"' ?>><?= $unread ?> sin leer</span>
                         </div>
@@ -60,15 +64,18 @@ $totalNoLeidos = $totalNoLeidos ?? array_sum(array_map(fn($c) => (int) ($c['no_l
                     </div>
 
                     <p class="text-sec">
-                        <?= esc($conv['contexto_titulo'] ?? ($tid ? 'Operación #' . $tid : 'Lote #' . $pid)) ?>
+                        <?= esc($conv['producto_nombre'] ?? ($tid ? 'Operación #' . $tid : 'Lote #' . $pid)) ?>
+                        <?php if (!empty($conv['tipo_polimero'])): ?>
+                            · <?= esc($conv['tipo_polimero']) ?>
+                        <?php endif; ?>
                     </p>
 
                     <div class="inbox-recent-messages inbox-last-msg stack-sm">
-                        <?php if (!empty($conv['ultimos_mensajes'])): ?>
-                            <?php foreach ($conv['ultimos_mensajes'] as $m): ?>
-                                <?php $own = ((int) ($m['emisor_id'] ?? 0) === (int) ($userId ?? 0)); ?>
+                        <?php if (!empty($recientes)): ?>
+                            <?php foreach ($recientes as $m): ?>
+                                <?php $own = !empty($m['es_mio']) || ((int) ($m['emisor_id'] ?? 0) === (int) ($userId ?? 0)); ?>
                                 <div class="inbox-msg-line<?= $own ? ' is-own' : '' ?>">
-                                    <strong><?= esc($own ? 'Usted' : ($conv['otra_empresa_nombre'] ?? 'Empresa')) ?>:</strong>
+                                    <strong><?= esc($own ? 'Usted' : ($m['emisor_nombre'] ?? $conv['otra_empresa_nombre'] ?? 'Empresa')) ?>:</strong>
                                     <?= esc($m['mensaje'] ?? '') ?>
                                 </div>
                             <?php endforeach; ?>

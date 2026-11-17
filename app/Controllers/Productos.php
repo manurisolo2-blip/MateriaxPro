@@ -93,16 +93,38 @@ class Productos extends BaseController
         }
 
         $userId             = $this->userId();
+        $isLogged           = $userId > 0;
+        $esPropio           = $isLogged && ((int) $producto['user_id'] === $userId);
+        $esAdmin            = $this->isAdmin();
         $consultas          = [];
         $consultasRecibidas = [];
-        if ($userId > 0) {
+
+        if ($isLogged) {
             $mensajeModel = new MensajeModel();
-            if ($userId !== (int) $producto['user_id']) {
+            if (!$esPropio) {
                 // Marcar como leídas las respuestas del vendedor al entrar a la ficha del lote
                 $mensajeModel->marcarLeidosProducto((int) $id, (int) $producto['user_id'], $userId);
                 $consultas = $mensajeModel->getMensajesPorProducto((int) $id, $userId, (int) $producto['user_id']);
             } else {
-                $consultasRecibidas = $mensajeModel->getMensajesPorProducto((int) $id);
+                foreach ($mensajeModel->getMensajesPorProducto((int) $id) as $cr) {
+                    $esMioCr      = ((int) $cr['emisor_id'] === $userId);
+                    $interesadoId = $esMioCr ? (int) $cr['receptor_id'] : (int) $cr['emisor_id'];
+                    if ($interesadoId <= 0) {
+                        continue;
+                    }
+                    if (!isset($consultasRecibidas[$interesadoId])) {
+                        $consultasRecibidas[$interesadoId] = [
+                            'interesado_id'     => $interesadoId,
+                            'interesado_nombre' => $esMioCr
+                                ? ($cr['receptor_nombre'] ?? 'Empresa Interesada')
+                                : ($cr['emisor_nombre'] ?? 'Empresa Interesada'),
+                            'ultimo_mensaje'    => $cr['mensaje'] ?? '',
+                            'total'             => 0,
+                        ];
+                    }
+                    $consultasRecibidas[$interesadoId]['total']++;
+                }
+                $consultasRecibidas = array_values($consultasRecibidas);
             }
         }
 
@@ -110,6 +132,10 @@ class Productos extends BaseController
             'pageTitle'          => esc($producto['nombre']) . ' | MateriaX',
             'producto'           => $producto,
             'userId'             => $userId,
+            'isLogged'           => $isLogged,
+            'esPropio'           => $esPropio,
+            'esAdmin'            => $esAdmin,
+            'mensajes'           => $consultas,
             'consultas'          => $consultas,
             'consultasRecibidas' => $consultasRecibidas,
         ]);

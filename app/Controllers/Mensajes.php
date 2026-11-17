@@ -114,7 +114,11 @@ class Mensajes extends BaseController
     {
         $userId = $this->userId();
         $trx    = $this->transaccionModel
-            ->select('transacciones.*, p.nombre AS producto_nombre, p.tipo_polimero, c.nombre AS comprador_nombre, v.nombre AS vendedor_nombre')
+            ->select(
+                'transacciones.*, p.nombre AS producto_nombre, p.tipo_polimero,
+                 c.nombre AS comprador_nombre, c.cuit AS comprador_cuit, c.email AS comprador_email, c.telefono AS comprador_telefono,
+                 v.nombre AS vendedor_nombre, v.cuit AS vendedor_cuit, v.email AS vendedor_email, v.telefono AS vendedor_telefono'
+            )
             ->join('productos p', 'p.id = transacciones.producto_id', 'left')
             ->join('usuarios c', 'c.id = transacciones.comprador_id', 'left')
             ->join('usuarios v', 'v.id = transacciones.vendedor_id', 'left')
@@ -130,6 +134,7 @@ class Mensajes extends BaseController
         $esComprador       = ((int) $trx['comprador_id'] === $userId);
         $otraEmpresaId     = $esComprador ? (int) $trx['vendedor_id'] : (int) $trx['comprador_id'];
         $otraEmpresaNombre = $esComprador ? $trx['vendedor_nombre'] : $trx['comprador_nombre'];
+        $prefix            = $esComprador ? 'vendedor_' : 'comprador_';
 
         $this->mensajeModel->marcarLeidosTransaccion((int) $transaccionId, $userId);
 
@@ -138,7 +143,13 @@ class Mensajes extends BaseController
             'tipo'          => 'transaccion',
             'transaccion'   => $trx,
             'producto'      => null,
-            'otraEmpresa'   => ['id' => $otraEmpresaId, 'nombre' => $otraEmpresaNombre],
+            'otraEmpresa'   => [
+                'id'       => $otraEmpresaId,
+                'nombre'   => $otraEmpresaNombre,
+                'cuit'     => $trx[$prefix . 'cuit'] ?? null,
+                'email'    => $trx[$prefix . 'email'] ?? null,
+                'telefono' => $trx[$prefix . 'telefono'] ?? null,
+            ],
             'mensajes'      => $this->mensajeModel->getMensajesPorTransaccion((int) $transaccionId),
             'userId'        => $userId,
             'transaccionId' => (int) $transaccionId,
@@ -188,7 +199,13 @@ class Mensajes extends BaseController
             'tipo'          => 'producto',
             'transaccion'   => null,
             'producto'      => $producto,
-            'otraEmpresa'   => ['id' => $contraparteId, 'nombre' => $otraEmpresa['nombre']],
+            'otraEmpresa'   => [
+                'id'       => $contraparteId,
+                'nombre'   => $otraEmpresa['nombre'],
+                'cuit'     => $otraEmpresa['cuit'] ?? null,
+                'email'    => $otraEmpresa['email'] ?? null,
+                'telefono' => $otraEmpresa['telefono'] ?? null,
+            ],
             'mensajes'      => $this->mensajeModel->getMensajesPorProducto((int) $productoId, $userId, $contraparteId),
             'userId'        => $userId,
             'transaccionId' => null,

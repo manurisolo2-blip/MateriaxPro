@@ -144,11 +144,21 @@ class Solicitudes extends BaseController
             return $trx;
         }
 
-        $this->mensajeModel->marcarLeidosTransaccion((int) $trx['id'], $this->userId());
+        $userId      = $this->userId();
+        $esVendedor  = ((int) $trx['vendedor_id'] === $userId);
+        $esComprador = ((int) $trx['comprador_id'] === $userId);
+        $receptorId  = $esVendedor ? (int) $trx['comprador_id'] : (int) $trx['vendedor_id'];
+
+        $this->mensajeModel->marcarLeidosTransaccion((int) $trx['id'], $userId);
 
         return view('solicitudes/ver', [
             'pageTitle'   => "Operación {$trx['codigo_operacion']} | MateriaX",
+            'tx'          => $trx,
             'transaccion' => $trx,
+            'esVendedor'  => $esVendedor,
+            'esComprador' => $esComprador,
+            'userId'      => $userId,
+            'receptorId'  => $receptorId,
             'certificado' => $this->certificadoModel->where('transaccion_id', $trx['id'])->first(),
             'mensajes'    => $this->mensajeModel->getMensajesPorTransaccion((int) $trx['id']),
         ]);
