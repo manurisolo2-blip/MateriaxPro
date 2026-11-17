@@ -82,4 +82,34 @@ final class LandingPageIntegrityTest extends CIUnitTestCase
             $this->assertStringContainsString($cls, $css, "La clase CSS {$cls} debe existir en materiax.css");
         }
     }
+
+    public function testFaviconLinksAndAssetsExist(): void
+    {
+        $html = view('welcome_message');
+
+        $expectedLinks = [
+            'rel="icon"',
+            'favicon.ico',
+            'assets/logos/favicon-32x32.png',
+            'assets/logos/favicon-16x16.png',
+            'rel="apple-touch-icon"',
+            'assets/logos/apple-touch-icon.png',
+        ];
+
+        foreach ($expectedLinks as $fragment) {
+            $this->assertStringContainsString($fragment, $html, "Falta la referencia de favicon '{$fragment}' en el HTML.");
+        }
+
+        $iconFiles = [
+            ROOTPATH . 'public/favicon.ico',
+            ROOTPATH . 'public/assets/logos/favicon-32x32.png',
+            ROOTPATH . 'public/assets/logos/favicon-16x16.png',
+            ROOTPATH . 'public/assets/logos/apple-touch-icon.png',
+        ];
+
+        foreach ($iconFiles as $file) {
+            $this->assertFileExists($file, "Falta el archivo de icono {$file}.");
+            $this->assertGreaterThan(0, filesize($file), "El archivo de icono {$file} no debe estar vacío.");
+        }
+    }
 }

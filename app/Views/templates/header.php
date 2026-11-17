@@ -15,6 +15,10 @@ $path     = trim((string) uri_string(), '/');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= esc($docTitle) ?></title>
+    <link rel="icon" type="image/x-icon" href="<?= base_url('favicon.ico') ?>?v=2" sizes="48x48 32x32 16x16">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= base_url('assets/logos/favicon-32x32.png') ?>?v=2">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= base_url('assets/logos/favicon-16x16.png') ?>?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= base_url('assets/logos/apple-touch-icon.png') ?>?v=2">
     <link rel="stylesheet" href="<?= base_url('css/tokens.css') ?>?v=2">
     <link rel="stylesheet" href="<?= base_url('css/materiax.css') ?>?v=2">
 </head>
