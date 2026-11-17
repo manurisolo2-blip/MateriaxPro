@@ -15,7 +15,7 @@ $setEnv = static function (string $key, string $val): void {
 };
 
 $_SERVER['DOCUMENT_ROOT'] = realpath(__DIR__ . '/../public');
-$_SERVER['SCRIPT_NAME']   = $_SERVER['SCRIPT_NAME'] ?: '/index.php';
+$_SERVER['SCRIPT_NAME']   = '/index.php';
 
 $tmp       = sys_get_temp_dir();
 $targetDir = rtrim((!empty($tmp) && is_dir($tmp)) ? $tmp : '/tmp', '\\/') . DIRECTORY_SEPARATOR . 'materiax_writable';
